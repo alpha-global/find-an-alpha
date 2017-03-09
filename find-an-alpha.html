@@ -17911,8 +17911,7 @@ Contact GitHub API Training Shop Blog About
           type: Number,
           value: 53.544389,
           notify: true,
-          reflectToAttribute: true,
-          observer:"_textLat"
+          reflectToAttribute: true
         },
         longitude: {
           type: Number,
@@ -18025,8 +18024,9 @@ Contact GitHub API Training Shop Blog About
       this.longitude = event.detail.response.locations[0].geometry.location.lng;
       console.log(event.detail.response);
       var map = this.querySelector('google-map');
+      var selector = this.querySelector('google-map iron-selector');
       var markers = this.querySelector('google-map-marker');
-      Polymer.dom(map).removeChild(markers);
+      selector.removeChild(markers);
       map.setAttribute('latitude', Number(this.resultList[0].lat));
       map.setAttribute('longitude', Number(this.resultList[0].lng));
       map.setAttribute('fit-to-markers', true);
@@ -18066,10 +18066,6 @@ Contact GitHub API Training Shop Blog About
       
       _textValue:function(){
         console.log(this.selectedIndex);
-      },
-
-      _textLat:function(){
-        console.log(this.latitude);
       },
 
       _markerSelected:function(index){
