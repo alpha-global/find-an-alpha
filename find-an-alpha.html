@@ -18012,7 +18012,7 @@ Contact GitHub API Training Shop Blog About
      submitForm:function() {
        var self = this;
        var form = this.querySelector('form');
-      form.submit();
+        form.submit();
        form.addEventListener('iron-form-response', self.onResult.bind(self));
     },
 
@@ -18021,6 +18021,8 @@ Contact GitHub API Training Shop Blog About
       var pages = this.querySelector('iron-pages');
       pages.select(1);
       this.resultList = event.detail.response.items;
+      this.latitude = event.detail.response.locations[0].geometry.location.lat;
+      this.longitude = event.detail.response.locations[0].geometry.location.lng;
       console.log(event.detail.response);
       var map = this.querySelector('google-map');
       var markers = this.querySelector('google-map-marker');
@@ -18120,22 +18122,25 @@ Contact GitHub API Training Shop Blog About
       var self= this;
       var lat1 = el.lat;
       var lat2 = self.latitude;
-      var lon1 = el.lng;
-      var lon2 = self.longitude;
-      var R = 6371e3; // metres
-      var φ1 = lat1* Math.PI / 180;
-      var φ2 = lat2* Math.PI / 180;
-      var Δφ = (lat2-lat1)* Math.PI / 180;
-      var Δλ = (lon2-lon1)* Math.PI / 180;
+      var lng1 = el.lng;
+      var lng2 = self.longitude;
+      var location1 = new google.maps.LatLng(lat1, lng1);
+      var location2 = new google.maps.LatLng(lat2, lng2);
+      var d = google.maps.geometry.spherical.computeDistanceBetween(location1, location2);
+      // var R = 6371e3; // metres
+      // var φ1 = lat1* Math.PI / 180;
+      // var φ2 = lat2* Math.PI / 180;
+      // var Δφ = (lat2-lat1)* Math.PI / 180;
+      // var Δλ = (lon2-lon1)* Math.PI / 180;
 
-      var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      // var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+      //         Math.cos(φ1) * Math.cos(φ2) *
+      //         Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      // var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-      var d = (R * c)/1000;
+      var d = d/1000;
       d = Number(Math.round(d+'e2')+'e-2');
-      // console.log(lat1 + "," + lon1 + "and" + lat2 + "," + lon2 +"distance:" + d);
+      // // console.log(lat1 + "," + lon1 + "and" + lat2 + "," + lon2 +"distance:" + d);
       return d;
     },
 
