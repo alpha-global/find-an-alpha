@@ -17817,7 +17817,7 @@ Contact GitHub API Training Shop Blog About
       <iron-pages id="iron-pages" selected="0">
         <div id="search">
             <paper-button raised="" id="find-my-location" on-tap="shareLocation">Find My Location</paper-button>
-              <form is="iron-form" method="get" action="http://127.0.0.1:8000" class="clearfix">
+              <form is="iron-form" method="get" action="[[api]]" class="clearfix">
                   <div class="form-layout">
                     <label for="cityorpostalcode">City/Postal Code</label>
                     <input name="cityorpostalcode">
@@ -17826,6 +17826,7 @@ Contact GitHub API Training Shop Blog About
                     <label for="Province">Province</label>
                     <div class="selectdiv">
                       <select name="province">
+                        <option value="" selected="">Select</option>
                         <option value="AB">Alberta</option>
                         <option value="BC">British Columbia</option>
                         <option value="MB">Manitoba</option>
@@ -17859,8 +17860,11 @@ Contact GitHub API Training Shop Blog About
                     <label for="language">Language</label>
                     <div class="selectdiv">                                        
                       <select name="language">
-                        <option value="English" selected="">English</option>
+                        <option value="" selected="">Any</option>
+                        <option value="English">English</option>
                         <option value="French">French</option>
+                        <option value="Mandarin">Mandarin</option>
+                        <option value="Cantonese">Cantonese</option>
                       </select>
                     </div>
                   </div>
