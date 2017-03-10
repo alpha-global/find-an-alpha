@@ -17615,7 +17615,7 @@ a `<google-map-defaulticon>` element.
         this._listeners = {};
       },
       attached: function() {
-         console.log("attached");
+        console.log("attached");
         var contents = Polymer.dom(this.$.overlayContent).getDistributedNodes();
         if (contents.length > 0) {
           this.clusterSubIcon = contents[0];
@@ -19152,7 +19152,7 @@ Contact GitHub API Training Shop Blog About
          cityorpostalcode.name = "city"
        }
       
-
+      self.querySelector("#errors").innerHTML=""; 
         form.submit();
        form.addEventListener('iron-form-response', self.onResult.bind(self));
     },
@@ -19162,13 +19162,13 @@ Contact GitHub API Training Shop Blog About
       var pages = this.querySelector('iron-pages');
       pages.select(1);
       this.resultList = event.detail.response.items;
-      this.hasDistance = false;
+      // this.hasDistance = false;
       
-      if ( event.detail.response.locations.length !== 0){
-          this.hasDistance = true;
-          this.latitude = event.detail.response.locations[0].geometry.location.lat;
-          this.longitude = event.detail.response.locations[0].geometry.location.lng;
-      }
+      // if ( event.detail.response.locations.length !== 0){
+      //     this.hasDistance = true;
+      //     this.latitude = event.detail.response.locations[0].geometry.location.lat;
+      //     this.longitude = event.detail.response.locations[0].geometry.location.lng;
+      // }
       console.log(event.detail.response);
       var map = this.querySelector('google-map');
       var selector = this.querySelector('google-map iron-selector');
@@ -19176,8 +19176,8 @@ Contact GitHub API Training Shop Blog About
       if(markers){
         selector.removeChild(markers);
       }
-      map.setAttribute('latitude', Number(this.resultList[0].lat));
-      map.setAttribute('longitude', Number(this.resultList[0].lng));
+      // map.setAttribute('latitude', Number(this.resultList[0].lat));
+      // map.setAttribute('longitude', Number(this.resultList[0].lng));
       map.removeAttribute('zoom');
       map.setAttribute('fit-to-markers', true);
       this._setAllMarkers();
@@ -19194,8 +19194,7 @@ Contact GitHub API Training Shop Blog About
 
       },
 
-      _onMarkerClick:function(event){
-        var mark = event.target.getAttribute('label');
+      _onMarkerClick:function(mark){
         var index = Number(mark-1);
         this.selected = this.resultList[ index];
         this.$.list.selected = 1;
@@ -19219,52 +19218,73 @@ Contact GitHub API Training Shop Blog About
       },
 
       _markerSelected:function(index){
-        var self = this;
+         var self = this;
         var map = this.querySelector('google-map');
-        var markers = Polymer.dom(map).childNodes;
-        while(Polymer.dom(map).firstChild){
-          Polymer.dom(map).removeChild(Polymer.dom(map).firstChild);
-        };
-        var mark = Number(index)+1;
-        var marker = document.createElement('google-map-marker');
-        marker.setAttribute('latitude', self.selected.lat);
-        marker.setAttribute('longitude', self.selected.lng);
-        marker.setAttribute('label',mark);        
-        Polymer.dom(map).appendChild(marker);
+        var cluster =  this.querySelector('google-map-markerclusterer');
+        cluster.markers = [];
+        var bounds = new google.maps.LatLngBounds();
+           var mark = Number(index) + 1;
+           element = self.resultList[index];
+          var myLatLng = new google.maps.LatLng(element.lat, element.lng)
+          newmarker = new google.maps.Marker({
+            position: myLatLng,
+            label: String(mark)
+          })
+          bounds.extend(newmarker.getPosition());
+         map.map.fitBounds(bounds);
+          cluster.map = map.map;
+         cluster.markers = [newmarker];
       },
 
       _setAllMarkers:function(){
         var self = this;
         var map = this.querySelector('google-map');
+        var markers = [];
+        var bounds = new google.maps.LatLngBounds();
         this.resultList.forEach(function(element, index) {
-          element.distance = "";
-          if (self.hasDistance){
-            element.distance = self._computeDistance(element);
-          }
-          var marker = document.createElement('google-map-marker');
-          var mark = Number(index) + 1;
-          self.resultList[index].mark = mark;
-          marker.setAttribute('latitude', element.lat);
-          marker.setAttribute('longitude', element.lng);
-          marker.setAttribute('animation',"drop");
-          marker.setAttribute('label',mark);           
-          marker.addEventListener('google-map-marker-click', self._onMarkerClick.bind(self));
-          marker.setAttribute('click-events', true);
-          Polymer.dom(map).appendChild(marker);
+          // element.distance = "";
+          // if (self.hasDistance){
+          //   element.distance = self._computeDistance(element);
+          // }
+          // var marker = document.createElement('google-map-marker');
+           var mark = Number(index) + 1;
+           self.resultList[index].mark = mark;
+          // marker.setAttribute('latitude', element.lat);
+          // marker.setAttribute('longitude', element.lng);
+          // marker.setAttribute('animation',"drop");
+          // marker.setAttribute('label',mark);           
+          // marker.addEventListener('google-map-marker-click', self._onMarkerClick.bind(self));
+          // marker.setAttribute('click-events', true);
+          // Polymer.dom(map).appendChild(marker);
+          var myLatLng = new google.maps.LatLng(element.lat, element.lng)
+          newmarker = new google.maps.Marker({
+            position: myLatLng,
+            label: String(mark)
+          })
+          newmarker.addListener('click', function(){
+              var index = Number(mark-1);
+              self.selected = self.resultList[ index];
+              self.$.list.selected = 1;
+              self._markerSelected(index);
+          });
+          markers[ index] =newmarker; 
+          bounds.extend(newmarker.getPosition());
       });
         var gmap = this.querySelector('google-map');
-        console.log(this.map)
-        this.querySelector('google-map-markerclusterer').map = this.map;
+        gmap.map.fitBounds(bounds);
+        this.querySelector('google-map-markerclusterer').map = gmap.map;
+         this.querySelector('google-map-markerclusterer').markers = markers;
     },
     
     _setDefaultMarker:function(){
        var self = this;
         var map = this.$$('google-map');
-        var markers = Polymer.dom(map).childNodes;
-        while(Polymer.dom(map).firstChild){
-          Polymer.dom(map).removeChild(Polymer.dom(map).firstChild);
-        };
-        var marker = document.createElement('google-map-marker');
+        // var markers = Polymer.dom(map).childNodes;
+        // while(Polymer.dom(map).firstChild){
+        //   Polymer.dom(map).removeChild(Polymer.dom(map).firstChild);
+        // };
+        // var marker = document.createElement('google-map-marker');
+        this.querySelector('google-map-markerclusterer').markers = [];
         map.setAttribute('latitude', 62.522530);
         map.setAttribute('longitude', -100.924611);
         map.setAttribute('zoom', 3); 
