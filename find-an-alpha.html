@@ -18734,7 +18734,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="main" class="main">
       <div id="individual-info">
         <h2>[[selected.mark]]. [[selected.label]]</h2>
-        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if="{{item.distance}}"><span><i class="icon-map-marker"></i>[[selected.distance]]km</span></template></h3>
+        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if="{{selected.distance}}"><span><i class="icon-map-marker"></i>[[selected.distance]]km</span></template></h3>
         <p>[[day]] at [[time]]</p>
         <p>Type: [[selected.type]]</p>
         <p>[[selected.address.address]]</p>
@@ -18965,6 +18965,7 @@ form .form-layout,form .selectdiv{position:relative}:host{display:block;width:10
       <iron-pages id="iron-pages" selected="0">
         <div id="search">
             <paper-button raised="" id="find-my-location" on-tap="shareLocation">Find My Location</paper-button>
+            <iron-ajax id="geo-search" url="[[api]]" method="GET"></iron-ajax>
               <form is="iron-form" method="get" action="[[api]]" class="clearfix">
                   <div class="form-layout">
                     <label for="cityorpostalcode">City/Postal Code</label>
@@ -19022,11 +19023,11 @@ form .form-layout,form .selectdiv{position:relative}:host{display:block;width:10
                     <label for="radius">Radius</label>
                     <div class="selectdiv">                                                                                                   
                       <select name="radius">
-                        <option value="10km" selected="">10km</option>
+                        <option value="10km">10km</option>
                         <option value="20km">20km</option>
                         <option value="30km">30km</option>
                         <option value="40km">40km</option>
-                        <option value="50km">50km</option>
+                        <option value="50km" selected="">50km</option>
                         <option value="60km">60km</option>                   
                       </select>
                     </div>
@@ -19149,21 +19150,20 @@ form .form-layout,form .selectdiv{position:relative}:host{display:block;width:10
 
         this.$.search.appendChild(geo);
 
-        this.$.search.addEventListener('geo-response', function (e){
-            this.request = document.createElement("iron-ajax");
-            this.request.url = self.api;
-            this.request.method = this.getAttribute('get');
-            var form = this.querySelector('form');
-            var data = form.serialize();
-            delete data.cityorpostalcode;
-            delete data.province;
-            data.latitude = e.detail.latitude;
-            data.longitude = e.detail.longitude;
-            this.request.params = data;
-            this.request.lastResponse = this.resultList;
-            this.request.addEventListener('response', self.onResult.bind(self));
-            this.request.generateRequest();
-        })
+         self.geoHandler = function(e){
+              var request = this.querySelector('#geo-search')
+              var form = this.querySelector('form');
+              var data = form.serialize();
+              delete data.cityorpostalcode;
+              delete data.province;
+              data.latitude = e.detail.latitude;
+              data.longitude = e.detail.longitude;
+              request.params = data;
+              request.lastResponse = this.resultList;
+              request.addEventListener('response', self.onResult.bind(self));
+              request.generateRequest();
+        }
+        this.$.search.addEventListener('geo-response', self.geoHandler);
 
 
        
@@ -19200,10 +19200,17 @@ form .form-layout,form .selectdiv{position:relative}:host{display:block;width:10
     },
 
     onResult: function(event){
+      if (this.$.geo){
+        this.$.geo.remove();
+      }
+      this.$.search.removeEventListener('geo-response', this.geoHandler);
       var self = this;
       var pages = this.querySelector('iron-pages');
       pages.select(1);
       this.resultList = event.detail.response.items;
+      if (event.detail.response.count === 0){
+        return;
+      }
       // this.hasDistance = false;
       
       // if ( event.detail.response.locations.length !== 0){
