@@ -7,9 +7,9 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="bower_components/paper-styles/shadow.html">
-<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/shadow.html">
+<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="./css/modules/individual-view.html">
 
 <dom-module id="individual-view" >
@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="nav-bar">
       <a id="backToSearch" on-tap="backToSearch"><i class="icon-edit"></i>Edit Search</a> <a id="backToList" on-click="_onClearButtonClick"><i class="icon-arrow-circle-left"></i>Back To List</a>
     </div>
-    
+
     <div id="main" class="main">
       <div id="individual-info">
         <h2>[[selected.mark]]. [[selected.label]]</h2>
@@ -45,8 +45,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script type="text/javascript" src="./lib/ics.js"></script>
 <script type="text/javascript" src="./lib/filesaver.js"></script>
 <script>
-    
- 
+
+
 Polymer({
     is: 'individual-view',
     behaviors: [
@@ -151,7 +151,7 @@ Polymer({
       ];
 
       var weekdayNames = [
-        "Sunday", "Monday", "Tuesday", 
+        "Sunday", "Monday", "Tuesday",
         "Wednesday", "Thursday", "Friday",
         "Saturday", "Sunday"
       ];
@@ -168,7 +168,7 @@ Polymer({
       var date = new Date(raw);
 
       var weekdayNames = [
-        "Sunday", "Monday", "Tuesday", 
+        "Sunday", "Monday", "Tuesday",
         "Wednesday", "Thursday", "Friday",
         "Saturday", "Sunday"
       ];
