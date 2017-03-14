@@ -1,0 +1,195 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="./css/modules/list-view.html">
+
+<dom-module id="list-view" >
+  <template strip-whitespace>
+    <style include="module:list-view"/>
+    <div id="nav-bar">
+      <a id="backToSearch" on-tap='backToSearch'><i class="icon-edit"></i>Edit Search</a>
+    </div>
+
+    <div class="main">
+            <template is="dom-if" if="{{islessthan}}">
+              <div id="alerts">
+                <p>Only [[count]] results found.</p>
+                <p>Broaden your search radius to find more Alphas.<p>
+              </div>
+            </template>     
+            <template is="dom-repeat" items="{{data}}" id="locationList">
+                <div index$="{{index}}"  id="location" on-tap="_selectItem" class="single animating">
+                    <h2>[[item.mark]]. [[item.label]]</h2>
+                    <template is="dom-if" if={{item.distance}}>
+                      <p>[[item.distance]]km</p>
+                    </template>
+                </div>
+            </template>
+          <array-selector id="selector" items="{{data}}" selected="{{selected}}"></array-selector>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+    
+ 
+Polymer({
+    is: 'list-view',
+    behaviors: [
+      Polymer.NeonAnimatableBehavior
+    ],
+    listeners: {
+      'dom-change': '_onDomChanged'
+    },
+    properties: {
+      data: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
+      count:{
+        type: Number,
+      },
+      selected:{
+        type:Object,
+        notify:true,
+        // reflectToAttribute:true
+      },
+      islessthan:{
+        type:Boolean,
+        value:false,
+        computed:'_countlessthan(data)'
+      },
+      animationConfig: {
+        type: Object,
+        value: function() {
+          return {
+            'entry': [{
+              name: 'fade-in-animation',
+              node: this.$.backToSearch
+            }],
+            'exit': [{
+              name: 'fade-out-animation',
+              node: this.$.backToSearch
+            }, {
+              name: 'hero-animation',
+              id: 'hero',
+              fromPage: this
+            }]
+          };
+        }
+      }
+    },
+    // created:function(){
+    //   console.log(this.shadowRoot.querySelector("#backToSearch"));
+    // },
+   ready: function(){
+        // if(this.animationConfig == undefined){
+        //     this.animationConfig = {          
+        //       'entry': [{
+        //         name: 'fade-in-animation',
+        //         node: this.$.backToSearch
+        //       // },
+        //       // {
+        //       //   name:'slide-from-right-animation',
+        //       //   node:this,
+        //       //   transformOrigin: '50% 50%',
+        //       //   axis: 'y',
+        //        }],
+        //       'exit': [{
+        //         name: 'fade-out-animation',
+        //         node: this.$.backToSearch
+        //       }, {
+        //         name: 'hero-animation',
+        //         id: 'hero',
+        //         fromPage: this
+        //       }]
+        //   };
+        // }
+    },
+    // _onClick: function(event) {
+    //   var target = event.target;
+    //   while (target !== this && !target._templateInstance) {
+    //     target = target.parentNode;
+    //   }
+    //   // configure the page animation
+    //   this.sharedElements = {
+    //     'hero': target,
+    //   };
+    //   this.fire('item-click', {
+    //     item: target,
+    //     index:this.selectedIndex
+    //   });
+    // },
+
+
+    _selectItem: function(event){
+         var target = event.target;
+         while (!target.hasAttribute('index')) {
+            target = target.parentNode;
+        }
+        this.selectedIndex = target.getAttribute('index');
+        var location = target.parentNode.childNodes;
+        location.forEach(function(element){
+          element.className = "single animated style-scope list-view";
+        })
+         var target = event.target;
+         while (!target.hasAttribute('index')) {
+            target = target.parentNode;
+        }
+        var item = this.$.locationList.itemForElement(target);
+        this.$.selector.select(item);
+        while (target !== this && !target._templateInstance) {
+          target = target.parentNode;
+        }
+        // configure the page animation
+        this.sharedElements = {
+          'hero': target,
+        };
+        this.fire('item-click', {
+          item: target,
+          index:this.selectedIndex
+        });
+         
+    },
+
+
+    backToSearch: function(){
+      this.fire('backtosearch');
+    },
+
+    // _computeIndex:function(index){
+    //   return Number(index)+1;
+    // },
+
+    _animating:function(){
+      var location = Polymer.dom(this.root).querySelectorAll("#location");
+      location.forEach(function(element){
+        element.className = "single animating style-scope list-view";
+      })
+    },
+
+    _onDomChanged:function(){
+      this._animating();
+      this.fire('domchanged');
+    },
+
+    _countlessthan:function(data){
+      if (this.count < 4){
+        return true;
+      }
+    }
+
+  });
+
+</script>

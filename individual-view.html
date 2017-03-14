@@ -1,0 +1,224 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-styles/shadow.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="./css/modules/individual-view.html">
+
+<dom-module id="individual-view" >
+  <template strip-whitespace>
+    <style include="module:individual-view"/>
+
+
+    <div id="nav-bar">
+      <a id="backToSearch" on-tap="backToSearch"><i class="icon-edit"></i>Edit Search</a> <a id="backToList" on-click="_onClearButtonClick"><i class="icon-arrow-circle-left"></i>Back To List</a>
+    </div>
+    
+    <div id="main" class="main">
+      <div id="individual-info">
+        <h2>[[selected.mark]]. [[selected.label]]</h2>
+        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if={{selected.distance}}><span><i class="icon-map-marker"></i>[[selected.distance]]km</span></template></h3>
+        <p>[[day]] at [[time]]</p>
+        <p>Type: [[selected.type]]</p>
+        <p>[[selected.address.address]]</p>
+        <p>[[selected.address.city]], [[selected.address.state]]</p>
+        <p>[[selected.address.postalcode]]</p>
+        <p>Email: <a href="mailto:[[selected.email]]">[[selected.email]]</a></p>
+        <br>
+        <p>For more information, please contact the organizer.</p>
+        <a href="mailto:[[selected.email]]"><paper-button raised id="Contact" class="red" >Contact</paper-button></a>
+        <paper-button raised id="ical" on-tap="_onICal" class="white">Download iCal</paper-button>
+      </div>
+    </div>
+
+  </template>
+
+</dom-module>
+
+<script type="text/javascript" src="./lib/ics.js"></script>
+<script type="text/javascript" src="./lib/filesaver.js"></script>
+<script>
+    
+ 
+Polymer({
+    is: 'individual-view',
+    behaviors: [
+      Polymer.NeonAnimatableBehavior
+    ],
+    properties: {
+      sharedElements: {
+        type: Object,
+        value: function() {
+          return {
+            'hero': this.$.main
+          };
+        }
+      },
+      animationConfig: {
+        type: Object,
+        value: function() {
+          return {
+            'entry': [{
+              name: 'fade-in-animation',
+              node: this.$.backToList
+            }, {
+              name: 'hero-animation',
+              id: 'hero',
+              toPage: this
+            }],
+            'exit': [{
+              name: 'fade-out-animation',
+              node: this.$.backToList
+            }, {
+              name: 'scale-down-animation',
+              node: this.$.main,
+              transformOrigin: '50% 50%',
+              axis: 'y'
+            }]
+          }
+        }
+      },
+      date:{
+        type:String,
+        computed:'_formatDate(selected.start)'
+      },
+      time:{
+        type:String,
+        computed:'_formatTime(selected.start)'
+      },
+      day:{
+        type:String,
+        computed:'_formatDay(selected.start)'
+      },
+      selected:{
+        type:Object
+      }
+    },
+       ready: function(){
+        // if(this.sharedElements == undefined){
+        //     this.sharedElements =  { 'hero': this.$.main};
+        // }
+        // if(this.animationConfig == undefined){
+        //     this.animationConfig = {
+        //     'entry': [{
+        //       name: 'fade-in-animation',
+        //       node: this.$.backToList
+        //     }, {
+        //       name: 'hero-animation',
+        //       id: 'hero',
+        //       toPage: this
+        //     }],
+        //     'exit': [{
+        //       name: 'fade-out-animation',
+        //       node: this.$.backToList
+        //     }, {
+        //       name: 'scale-down-animation',
+        //       node: this.$.main,
+        //       transformOrigin: '50% 50%',
+        //       axis: 'y'
+        //     }]
+        //   }
+        // };
+
+    },
+    _onClearButtonClick: function() {
+      this.fire('close');
+    },
+
+    // _testValue:function(){
+    //     console.log("selected", this.selected);
+    //   },
+
+    backToSearch: function(){
+      this.fire('backtosearch');
+    },
+
+    _formatDate: function(raw){
+      var date = new Date(raw);
+
+      var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+      ];
+
+      var weekdayNames = [
+        "Sunday", "Monday", "Tuesday", 
+        "Wednesday", "Thursday", "Friday",
+        "Saturday", "Sunday"
+      ];
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+      var weekdayIndex = date.getDay();
+
+      return weekdayNames[weekdayIndex] + ", " + monthNames[monthIndex] + ' ' + day + ', ' + year;
+    },
+
+    _formatDay:function(raw){
+      var date = new Date(raw);
+
+      var weekdayNames = [
+        "Sunday", "Monday", "Tuesday", 
+        "Wednesday", "Thursday", "Friday",
+        "Saturday", "Sunday"
+      ];
+
+      var weekdayIndex = date.getDay();
+
+      return weekdayNames[weekdayIndex];
+    },
+
+    _formatTime:function(raw){
+      var date = new Date(raw);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      return hours + ':' + minutes + ' ' + ampm;
+    },
+
+    _onICal: function(){
+      var cal_single = ics();
+      cal_single.addEvent('Alpha Canada', 'Attend an alpha.', this.selected.label, this.selected.start, this.selected.start);
+      cal_single.download('alpha-event');
+
+//        var start = new Date();
+//       var end = start;
+//       var todayDate	= new Date();
+//       var msgData	= todayDate.toISOString();
+//       var startDate	= start.toISOString();
+//       var endDate	= end.toISOString();
+//       var title="find an alpha"
+
+//       var icsMSG1 = "BEGIN:VCALENDAR\nVERSION:2.0\r\nPRODID:https://www.google.com/\r\nBEGIN:VEVENT\r\nUID:https://www.google.com/\r\nDTSTAMP:" + msgData + "Z\r\nDTSTART:" + startDate + "\r\n";
+
+//       var icsMSG2 = '';
+//       if(endDate != '') {
+//           icsMSG2 = "DTEND:" + endDate +"\r\n";
+//       }
+
+//       icsMSG3 = "SUMMARY:" + title + "\r\nEND:VEVENT\r\nEND:VCALENDAR";
+// s
+//       icsMSG = icsMSG1 + icsMSG2 + icsMSG3;
+
+     // window.open( "data:text/calendar;charset=utf8," +icsMSG);
+
+    },
+
+
+  });
+
+</script>
+Contact GitHub API Training Shop Blog About

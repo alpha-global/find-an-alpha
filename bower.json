@@ -1,0 +1,22 @@
+{
+  "name": "alpha-map",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer",
+    "iron-selector": "",
+    "iron-resizable-behavior": "",
+    "iron-jsonp-library": "",
+    "iron-pages": "",
+    "iron-form": "PolymerElements/iron-form",
+    "iron-ajax": "PolymerElements/iron-ajax",
+    "paper-button": "PolymerElements/paper-button",
+    "neon-animation": "PolymerElements/neon-animation",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout",
+    "paper-item": "PolymerElements/paper-item",
+    "paper-styles": "PolymerElements/paper-styles",
+    "web-animations-js": "web-animations/web-animations-js#^2.2.2",
+    "google-map": "GoogleWebComponents/google-map#^1.2.0",
+    "geo-location": "^1.0.6",
+    "google-map-markerclusterer": "^1.0.2"
+  }
+}
