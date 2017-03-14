@@ -191,7 +191,32 @@ Polymer({
       if (this.count < 4){
         return true;
       }
-    }
+    },
+
+    _formatDate: function(raw){
+      var date = new Date(raw);
+
+      var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+      ];
+
+      var weekdayNames = [
+        "Sunday", "Monday", "Tuesday", 
+        "Wednesday", "Thursday", "Friday",
+        "Saturday", "Sunday"
+      ];
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+      var weekdayIndex = date.getDay();
+
+      return weekdayNames[weekdayIndex] + ", " + monthNames[monthIndex] + ' ' + day + ', ' + year;
+    },
+
 
   });
 
