@@ -1,7 +1,6 @@
 
 @import "../imports/variables.less";
 @import "../imports/mixins.less";
-@import "../imports/fonts.less";
 
 :host {
     @apply(--layout-vertical);
@@ -74,7 +73,8 @@ div.single{
     margin-bottom:10px;
     h2{
         color:@theme-color;
-        font-family: @theme-font-bold;
+        font-family: @theme-font;
+		font-weight:800;
         font-size:1.2rem;
     }
     p{

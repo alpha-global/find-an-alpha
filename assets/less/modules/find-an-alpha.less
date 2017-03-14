@@ -1,6 +1,5 @@
 @import "../imports/variables.less";
 @import "../imports/mixins.less";
-@import "../imports/fonts.less";
 
 :host {
   display: block;
@@ -14,7 +13,8 @@
 }
 :host ::content > h1{
   color:@theme-color;
-  font-family: @theme-font-bold;
+  font-family: @theme-font;
+  font-weight:800;
   line-height:1.3em;
 }
 :host ::content{
@@ -37,7 +37,8 @@ paper-button{
   border-radius:0;
   padding-left:4em;
   padding-right:4em;
-  font-family:@theme-font-bold;
+  font-family:@theme-font;
+  font-weight:800;
 }
 #find-my-location{  
   color:@theme-color;
