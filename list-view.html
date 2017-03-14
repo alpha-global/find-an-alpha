@@ -27,7 +27,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>     
             <template is="dom-repeat" items="{{data}}" id="locationList">
                 <div index$="{{index}}"  id="location" on-tap="_selectItem" class="single animating">
-                    <h2>[[item.mark]]. [[item.label]]</h2>
+                    <div>
+                      <h2>[[item.mark]]. [[item.label]]</h2>
+                      <span><i class="icon-clock-o"></i>[[_formatDate(item.start)]]</span>
+                    </div>
                     <template is="dom-if" if={{item.distance}}>
                       <p>[[item.distance]]km</p>
                     </template>
