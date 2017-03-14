@@ -24,9 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script src="bower_components/web-animations-js/web-animations.min.js"></script>
 <link rel="import" href="./css/modules/find-an-alpha.html">
 
-
-
-
+<link rel="stylesheet" href="./css/fonts.min.css"/>
 
 <dom-module id="find-an-alpha">
   <template strip-whitespace>
@@ -43,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="form-layout">
                     <label for="cityorpostalcode">City/Postal Code</label>
                     <input name="cityorpostalcode" id="cityorpostalcode" required>
-                    <span id="errorCity"></span>	
+                    <span id="errorCity"></span>
                   </div>
                   <div class="form-layout">
                     <label for="Province">Province</label>
@@ -65,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <option value="YT">Yukon</option>
                       </select>
                     </div>
-                    <span id="errorProvince"></span>		
+                    <span id="errorProvince"></span>
                   </div>
                   <div class="form-layout">
                     <label for="starting-in">Starting in</label>
@@ -82,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </div>
                   <div class="form-layout">
                     <label for="language">Language</label>
-                    <div class="selectdiv">                                        
+                    <div class="selectdiv">
                       <select name="language">
                         <option value="" selected>Any</option>
                         <option value="English">English</option>
@@ -94,20 +92,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </div>
                   <div class="form-layout">
                     <label for="radius">Radius</label>
-                    <div class="selectdiv">                                                                                                   
+                    <div class="selectdiv">
                       <select name="radius">
                         <option value="10km">10km</option>
                         <option value="20km">20km</option>
                         <option value="30km">30km</option>
                         <option value="40km">40km</option>
                         <option value="50km" selected>50km</option>
-                        <option value="60km">60km</option>                   
+                        <option value="60km">60km</option>
                       </select>
                     </div>
                   </div>
                   <div class="form-layout">
                     <paper-button raised on-click="submitForm">Search</paper-button>
-                  </div>                 
+                  </div>
               </form>
               <div id="searchError"><p></p></div>
         </div>
@@ -120,15 +118,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-pages>
     <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
     <google-map map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"  api-key="AIzaSyCliv-zsZo4mT5elv3DNAnSmjO404plV50" zoom=3>
-       
+
     </google-map>
 
 
     </template>
-  
+
     <script src="./scripts/find-an-alpha.js">
 
-   
+
   </script>
 
 </dom-module>
