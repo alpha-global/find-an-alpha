@@ -54,8 +54,24 @@
       listeners:{
         'domchanged':'_adjustHeight',
       },
-
+	  setLabels : function(){
+			var country = document.location.host.substring(0, document.location.host.indexOf("."));
+			if(country === 'usa'){
+				this.localityLabel = "State";
+				this.postalZipLabel = "Zip";
+			}else if(country === 'malaysia'){
+				this.localityLabel = "State";
+				this.postalZipLabel = "Zip";
+			}else{
+				this.localityLabel = "Province";
+				this.postalZipLabel = "Postal Code";
+			}
+			
+			
+	  },
       ready: function() {
+		  
+		this.setLabels();
         var self = this;
         this.querySelector('#province').onchange = function(){
           self.querySelector("#errorProvince").innerHTML="";
@@ -138,7 +154,7 @@
        var isPostalCode = this._isPostalCode(cityorpostalcode.value);
        var hasProvince = this.querySelector('#province').value !== "";
        if (!isPostalCode && !hasProvince && hasCityorpostalcode ){
-         self.querySelector("#errorProvince").innerHTML="Please select a province!"; 
+         self.querySelector("#errorProvince").innerHTML="Please enter a "+this.localityLabel+"!"; 
          return;  
        }
        if (isPostalCode){

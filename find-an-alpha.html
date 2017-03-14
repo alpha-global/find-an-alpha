@@ -39,30 +39,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-ajax id="geo-search" url="[[api]]" method="GET"></iron-ajax>
               <form is="iron-form"method="get" action="[[api]]" class="clearfix">
                   <div class="form-layout">
-                    <label for="cityorpostalcode">City/Postal Code</label>
+                    <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
                     <input name="cityorpostalcode" id="cityorpostalcode" required>
                     <span id="errorCity"></span>
                   </div>
                   <div class="form-layout">
-                    <label for="Province">Province</label>
-                    <div class="selectdiv">
-                      <select name="province" id="province">
-                        <option value="" selected>Select</option>
-                        <option value="AB">Alberta</option>
-                        <option value="BC">British Columbia</option>
-                        <option value="MB">Manitoba</option>
-                        <option value="NB">New Brunswick</option>
-                        <option value="NL">Newfoundland and Labrador</option>
-                        <option value="NS">Nova Scotia</option>
-                        <option value="ON">Ontario</option>
-                        <option value="PE">Prince Edward Island</option>
-                        <option value="QC">Quebec</option>
-                        <option value="SK">Saskatchewan</option>
-                        <option value="NT">Northwest Territories</option>
-                        <option value="NU">Nunavut</option>
-                        <option value="YT">Yukon</option>
-                      </select>
-                    </div>
+                    <label for="province">[[localityLabel]]</label>
+                    <input type="text" name="province" id="province"/>
+
+
                     <span id="errorProvince"></span>
                   </div>
                   <div class="form-layout">
