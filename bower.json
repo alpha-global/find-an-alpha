@@ -1,5 +1,5 @@
 {
-  "name": "alpha-map",
+  "name": "find-an-alpha",
   "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer",

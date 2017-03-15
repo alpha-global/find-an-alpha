@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- Styles MUST be inside templatitudee -->
     <style include="module:find-an-alpha"></style>
-    <content></content>
+	<content></content>
     <!--<geo-location idle=true latitude="{{latitude}}" longitude="{{longitude}}" ></geo-location>-->
       <iron-pages id="iron-pages" selected="0">
         <div id="search">
@@ -43,10 +43,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <input name="cityorpostalcode" id="cityorpostalcode" required>
                     <span id="errorCity"></span>
                   </div>
-                  <div class="form-layout">
-                    <label for="province">[[localityLabel]]</label>
-                    <input type="text" name="province" id="province"/>
+                  <div class="form-layout" data-province-field>
 
+                    <label for="province">[[localitiesLabel]]</label>
 
                     <span id="errorProvince"></span>
                   </div>

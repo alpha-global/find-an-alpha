@@ -37,7 +37,19 @@
         submitting:{
           type:Boolean,
           value:false
-        }
+        },
+		localities : {
+			type : Array,
+			value : null
+		},
+		localitiesLabel : {
+			type : String,
+			value : "Province"
+		},
+		postalZipLabel : {
+			type : String,
+			value : "Postal Code"
+		}
        
         // animationConfig:{
         //   value:function(){
@@ -54,25 +66,19 @@
       listeners:{
         'domchanged':'_adjustHeight',
       },
-	  setLabels : function(){
-			var country = document.location.host.substring(0, document.location.host.indexOf("."));
-			if(country === 'usa'){
-				this.localityLabel = "State";
-				this.postalZipLabel = "Zip";
-			}else if(country === 'malaysia'){
-				this.localityLabel = "State";
-				this.postalZipLabel = "Zip";
-			}else{
-				this.localityLabel = "Province";
-				this.postalZipLabel = "Postal Code";
-			}
-			
-			
-	  },
+	 
       ready: function() {
 		  
-		this.setLabels();
         var self = this;
+		
+		
+		if(this.localities){
+			this.buildLocalitiesInput(this.localities);
+		}else{
+			this.buildLocalitiesInput();
+		}
+		 
+		
         this.querySelector('#province').onchange = function(){
           self.querySelector("#errorProvince").innerHTML="";
           self.querySelector("#errorCity").innerHTML=""; 
@@ -98,6 +104,34 @@
         //   };
         // }       
       },
+	  
+	buildLocalitiesInput : function(options){
+		var elem,
+			container = this.querySelector('[data-province-field]');
+
+		if(!options){
+			elem = document.createElement('input');
+			elem.type = 'text';
+			elem.name = 'province';
+			elem.id = 'province';
+		}else{
+			elem = document.createElement('select');
+			elem.name = 'province';
+			elem.id = 'province';
+			
+			options.forEach(function(item){
+				var opt = document.createElement('option');
+				opt.value = item.value;
+				opt.innerHTML = item.label;
+				elem.appendChild(opt);
+			});
+		}
+		
+		elem.classList.add('find-an-alpha');
+		
+		container.appendChild(elem);
+		
+	},
 
       shareLocation:function(){
         var self = this;
@@ -154,7 +188,7 @@
        var isPostalCode = this._isPostalCode(cityorpostalcode.value);
        var hasProvince = this.querySelector('#province').value !== "";
        if (!isPostalCode && !hasProvince && hasCityorpostalcode ){
-         self.querySelector("#errorProvince").innerHTML="Please enter a "+this.localityLabel+"!"; 
+         self.querySelector("#errorProvince").innerHTML="Please enter a "+this.localitiesLabel+"!"; 
          return;  
        }
        if (isPostalCode){
