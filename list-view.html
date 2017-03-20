@@ -17,14 +17,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="nav-bar">
       <a id="backToSearch" on-tap='backToSearch'><i class="icon-edit"></i>Edit Search</a>
     </div>
+    <template is="dom-if" if="{{islessthan}}">
+    <div id="alerts">
+        <p>Only [[count]] result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.<p>
+    </div>
+    </template>
 
     <div class="main">
-            <template is="dom-if" if="{{islessthan}}">
-              <div id="alerts">
-                <p>Only [[count]] results were found with your search criteria.</p>
-                <p>Please broaden your search radius to find more Alphas.<p>
-              </div>
-            </template>
             <template is="dom-repeat" items="{{data}}" id="locationList">
                 <div index$="{{index}}"  id="location" on-tap="_selectItem" class="single animating">
                     <div>
