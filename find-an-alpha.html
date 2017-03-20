@@ -41,11 +41,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="form-layout">
                     <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
                     <input name="cityorpostalcode" id="cityorpostalcode" required>
-                    <span id="errorCity"></span>
                   </div>
                   <div class="form-layout" data-province-field>
                     	<label for="province">[[localitiesLabel]]</label>
-                    <span id="errorProvince"></span>
                   </div>
                   <div class="form-layout">
                     <label for="starting-in">Starting in</label>
@@ -83,6 +81,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </div>
                   </div>
                   <div class="form-layout">
+                  	<span id="errorCity"></span>
+                  	<span id="errorProvince"></span>
                     <paper-button raised on-click="submitForm">Search</paper-button>
                   </div>
               </form>

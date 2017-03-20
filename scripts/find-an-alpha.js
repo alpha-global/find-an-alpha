@@ -188,7 +188,7 @@
        var isPostalCode = this._isPostalCode(cityorpostalcode.value);
        var hasProvince = this.querySelector('#province').value !== "";
        if (!isPostalCode && !hasProvince && hasCityorpostalcode ){
-         self.querySelector("#errorProvince").innerHTML="Please enter a "+this.localitiesLabel+"!"; 
+         self.querySelector("#errorProvince").innerHTML="Please enter a "+this.localitiesLabel+" to continue."; 
          return;  
        }
        if (isPostalCode){
@@ -311,7 +311,7 @@
           })
           //bounds.extend(newmarker.getPosition());
          //map.map.fitBounds(bounds);
-         map.map.setZoom(17);
+         map.map.setZoom(14);
          map.setAttribute('latitude',element.lat);
          map.setAttribute('longitude',element.lng);
           cluster.map = map.map;
@@ -417,7 +417,7 @@
      },
 
      _onError: function(){
-       this.querySelector("#errorCity").innerHTML="Not valid!"; 
+       this.querySelector("#errorCity").innerHTML="Hmm... we can't find that location. Please try again."; 
      },
      _getAddress:function(results){
        var self = this;
