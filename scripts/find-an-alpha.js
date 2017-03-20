@@ -211,7 +211,7 @@
       this.count = event.detail.response.count;
       if (this.count === 0){
         //console.log( this.$.searchError);
-        this.$.searchError.innerHTML = "<p>Broaden your search radius to find more Alphas.</p>";
+        this.$.searchError.innerHTML = "<p>We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.</p>";
         return;
       }
       var self = this;
