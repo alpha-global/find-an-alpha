@@ -1,0 +1,72 @@
+<dom-module id="option-select">
+
+	<template strip-whitespace>
+
+    <!-- Styles MUST be inside templatitudee -->
+
+
+
+    </template>
+
+    <script>Polymer  ({
+
+		is: 'option-select',
+
+		properties: {
+
+			options : {
+				type : Array,
+				value : null
+			},
+			label : {
+				type : String,
+				value : "Label"
+			},
+			property : {
+				type : String,
+				value : null
+			}
+
+		},
+
+		listeners:{
+
+		},
+
+		ready: function() {
+			if(this.options){
+				this.buildSelectInput(this.property, this.options);
+			}
+		},
+
+		buildSelectInput : function(id, options){
+
+			var label = document.createElement('label');
+			label.for = this.property;
+			label.innerHTML = this.label;
+
+			var elem = document.createElement('select');
+
+			options.forEach(function(item){
+				var opt = document.createElement('option');
+				opt.value = item.value;
+				opt.innerHTML = item.label;
+				if(item.selected){
+					opt.selected = true;
+				}
+				elem.appendChild(opt);
+			});
+
+			elem.name = id;
+			elem.id = id;
+
+			elem.classList.add('find-an-alpha');
+
+			this.appendChild(label);
+			this.appendChild(elem);
+		}
+	});
+
+	</script>
+
+</dom-module>

@@ -17,6 +17,12 @@
           notify: true,
           reflectToAttribute: true
         },
+		zoom: {
+          type: Number,
+          value: 3, 
+          notify: true,
+          reflectToAttribute: true
+        },
         resultList: {
           type: Array,
           notify: true,
@@ -49,18 +55,16 @@
 		postalZipLabel : {
 			type : String,
 			value : "Postal Code"
+		},
+		languages : {
+			type : Array,
+			value : null
+		},
+		radiuses : {
+			type : Array,
+			value : null
 		}
        
-        // animationConfig:{
-        //   value:function(){
-        //     return{
-        //       'entry':{
-        //         name:"scale-up-animation",
-        //         node:this.$.result
-        //       }
-        //     }
-        //   }
-        // }
       },
 
       listeners:{
@@ -71,67 +75,23 @@
 		  
         var self = this;
 		
-		
-		if(this.localities){
-			this.buildLocalitiesInput(this.localities);
-		}else{
-			this.buildLocalitiesInput();
+		var provField = this.querySelector('#province');
+		if(provField){
+			provField.onchange = function(){
+			  self.querySelector("#errorProvince").innerHTML="";
+			  self.querySelector("#errorCity").innerHTML=""; 
+			};
 		}
-		 
 		
-        this.querySelector('#province').onchange = function(){
-          self.querySelector("#errorProvince").innerHTML="";
-          self.querySelector("#errorCity").innerHTML=""; 
-        }
-        this.querySelector('#cityorpostalcode').oninput = function(){
-          self.querySelector("#errorCity").innerHTML=""; 
-           self.querySelector("#errorProvince").innerHTML="";
-        }
-        // var map = this.querySelector('google-map');
-        // map.setAttribute('fit-to-markers',true);
-        // var pages = this.querySelector('iron-pages');
-        // document.addEventListener('click', function(e) {
-        //   pages.selectNext();
-        // });
-        // if(this.animationConfig == undefined){
-        //   this.animationConfig = {
-        //     'enter':{
-        //       name:"scale-down-animation",
-        //       node:this.$.result,
-        //       transformOrigin: '50% 50%',
-        //       axis: 'y',
-        //     }
-        //   };
-        // }       
+		var cityField = this.querySelector('#cityorpostalcode');
+		if(cityField){
+			cityField.oninput = function(){
+			  self.querySelector("#errorCity").innerHTML=""; 
+			   self.querySelector("#errorProvince").innerHTML="";
+			};
+		}
+       
       },
-	  
-	buildLocalitiesInput : function(options){
-		var elem,
-			container = this.querySelector('[data-province-field]');
-
-		if(!options){
-			elem = document.createElement('input');
-			elem.type = 'text';
-			elem.name = 'province';
-			elem.id = 'province';
-		}else{
-			elem = document.createElement('select');
-			elem.name = 'province';
-			elem.id = 'province';
-			
-			options.forEach(function(item){
-				var opt = document.createElement('option');
-				opt.value = item.value;
-				opt.innerHTML = item.label;
-				elem.appendChild(opt);
-			});
-		}
-		
-		elem.classList.add('find-an-alpha');
-		
-		container.appendChild(elem);
-		
-	},
 
       shareLocation:function(){
         var self = this;
@@ -164,17 +124,8 @@
               request.addEventListener('response', self.onResult.bind(self));
               request.generateRequest();
               self.foundGeo = true;
-        }
+        };
         this.$.search.addEventListener('geo-response', self.geoHandler);
-
-
-       
-
-        // latitudeChanged: function(newLat, newLng){
-        //   if (this.$.geo){
-        //     this.$.geo
-        //   }
-        // }
 
       },
 
@@ -209,6 +160,7 @@
       }
       this.$.search.removeEventListener('geo-response', this.geoHandler);
       this.count = event.detail.response.count;
+	  this.measurementUnits = event.detail.response.radius.units;
       if (this.count === 0){
         //console.log( this.$.searchError);
         this.$.searchError.innerHTML = "<p>We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.</p>";

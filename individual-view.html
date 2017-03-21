@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="main" class="main">
       <div id="individual-info">
         <h2>[[selected.mark]]. [[selected.label]]</h2>
-        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if={{selected.distance}}><span><i class="icon-map-marker"></i>[[selected.distance]]km</span></template></h3>
+        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if={{selected.distance}}><span><i class="icon-map-marker"></i>[[selected.distance]][[units]]</span></template></h3>
         <p>[[day]]s at [[time]]</p>
         <p>Type: [[selected.type]]</p>
         <p>[[selected.address.address]]</p>
@@ -97,6 +97,10 @@ Polymer({
         type:String,
         computed:'_formatDay(selected.start)'
       },
+	  units : {
+		type : String,
+		value : "km"
+	  },
       selected:{
         type:Object
       }
@@ -221,4 +225,3 @@ Polymer({
   });
 
 </script>
-Contact GitHub API Training Shop Blog About

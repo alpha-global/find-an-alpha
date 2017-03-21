@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span><i class="icon-clock-o"></i>[[_formatDate(item.start)]]</span>
                     </div>
                     <template is="dom-if" if={{item.distance}}>
-                      <p>[[item.distance]]km</p>
+                      <p>[[item.distance]][[units]]</p>
                     </template>
                 </div>
             </template>
@@ -61,6 +61,10 @@ Polymer({
       },
       count:{
         type: Number,
+      },
+	  units:{
+        type: String,
+		value : "km"
       },
       selected:{
         type:Object,
