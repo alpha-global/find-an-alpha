@@ -17,6 +17,7 @@
     "web-animations-js": "web-animations/web-animations-js#^2.2.2",
     "google-map": "^1.2.0",
     "geo-location": "^1.0.6",
-    "google-map-markerclusterer": "^1.0.2"
+    "google-map-markerclusterer": "^1.0.2",
+    "moment": "momentjs#^2.18.1"
   }
 }
