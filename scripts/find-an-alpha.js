@@ -63,7 +63,8 @@
 		radiuses : {
 			type : Array,
 			value : null
-		}
+		},
+		city : String
        
       },
 
@@ -90,8 +91,16 @@
 			   self.querySelector("#errorProvince").innerHTML="";
 			};
 		}
-       
+		
       },
+	  attached : function(){
+		var provField = this.querySelector('#province');
+		
+		if(this.city || (provField && provField.value)){
+			this.submitForm();
+		}
+			
+	  },
 
       shareLocation:function(){
         var self = this;

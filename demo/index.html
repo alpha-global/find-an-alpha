@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>find-an-alpha demo</title>
+
+    <link rel="import" href="../find-an-alpha.html">
+	<style type="text/css">
+		html, body {
+			height:100%; padding:0; margin:0;
+		}
+	</style>
+
+  </head>
+  <body>
+
+        <find-an-alpha
+			api='https://run.alphacanada.org/wp-json/wp/v2/alpha/search'
+			localities-label='Provinces'
+			city="V5V 1G7"
+			postal-zip-label='Postal Code'
+			localities='[{"value":"","label":"Select"},{"value":"Alberta","label":"Alberta"},{"value":"British Columbia","label":"British Columbia"},{"value":"Manitoba","label":"Manitoba"},{"value":"New Brunswick","label":"New Brunswick"},{"value":"Newfoundland and Labrador","label":"Newfoundland and Labrador"},{"value":"Northwest Territories","label":"Northwest Territories"},{"value":"Nova Scotia","label":"Nova Scotia"},{"value":"Nunavut","label":"Nunavut"},{"value":"Ontario","label":"Ontario"},{"value":"Prince Edward Island","label":"Prince Edward Island"},{"value":"Quebec","label":"Quebec"},{"value":"Saskatchewan","label":"Saskatchewan"},{"value":"Yukon Territory","label":"Yukon Territory"}]'
+			languages='[{"value":"","label":"Select"},{"value":"English","label":"English"},{"value":"French","label":"French"},{"value":"Cantonese","label":"Cantonese"},{"value":"Mandarin","label":"Mandarin"}]'
+			latitude='56.6584707'
+			longitude='-97.1359332'
+			zoom='4'
+			radiuses='[{"label":"10km","value":"10km"},{"label":"25km","value":"25km"},{"label":"50km","value":"50km","selected":true}]'
+		></find-an-alpha>
+
+
+  </body>
+</html>

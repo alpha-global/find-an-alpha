@@ -30,7 +30,7 @@
               <form is="iron-form"method="get" action="[[api]]" class="clearfix">
                   <div class="form-layout">
                     <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
-                    <input name="cityorpostalcode" id="cityorpostalcode" required>
+                    <input name="cityorpostalcode" id="cityorpostalcode" required value="[[city]]">
                   </div>
 
 				  <template is="dom-if" if="[[localities.length]]">
