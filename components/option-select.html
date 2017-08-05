@@ -45,6 +45,9 @@
 			label.for = this.property;
 			label.innerHTML = this.label;
 
+			var wrapper = document.createElement('div');
+			wrapper.classList.add('selectdiv');
+
 			var elem = document.createElement('select');
 
 			options.forEach(function(item){
@@ -56,6 +59,8 @@
 				}
 				elem.appendChild(opt);
 			});
+
+			wrapper.appendChild(elem);
 
 			elem.name = id;
 			elem.id = id;
