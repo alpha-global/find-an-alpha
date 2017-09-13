@@ -25,12 +25,22 @@
 			property : {
 				type : String,
 				value : null
+			},
+			selected : {
+				type : String,
+				value : null,
+				observer : "_onSelectChange"
 			}
 
 		},
 
 		listeners:{
 
+		},
+
+		_onSelectChange : function(newVal, oldVal){
+
+			this._selectValue(newVal);
 		},
 
 		ready: function() {
@@ -70,6 +80,17 @@
 
 			this.appendChild(label);
 			this.appendChild(wrapper);
+		},
+
+		_selectValue : function(value){
+			var opts = this.querySelectorAll('option');
+			opts.forEach(function(opt){
+				if(opt.value === value || opt.label === value){
+					opt.selected = true;
+				}else{
+					opt.selected = false;
+				}
+			});
 		}
 	});
 

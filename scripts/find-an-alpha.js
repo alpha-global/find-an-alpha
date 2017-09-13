@@ -61,7 +61,15 @@ FindAnAlpha = Polymer  ({
 			type : String,
 			value : "Postal Code"
 		},
+		agesLabel : {
+			type : String,
+			value : "Audience"
+		},
 		languages : {
+			type : Array,
+			value : null
+		},
+		ages : {
 			type : Array,
 			value : null
 		},
@@ -172,22 +180,21 @@ FindAnAlpha = Polymer  ({
 		this.$.search.removeEventListener('geo-response', this.geoHandler);
 		this.count = event.detail.response.count;
 		this.measurementUnits = event.detail.response.radius.units;
+		
+		if(this.foundGeo){
+			this._getAddress(event.detail.response.locations[0]);
+		}
+		
 		if (this.count === 0){
 
 			this.$.searchError.innerHTML = "<p>We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.</p>";
 			return;
 		}
-		var self = this;
+		
 		var pages = this.querySelector('iron-pages');
 		pages.select(1);
 		this.resultList = event.detail.response.items;
-		if (event.detail.response.count === 0){
-			return;
-		}
-
-		if(self.foundGeo){
-			self._getAddress(event.detail.response.locations[0]);
-		}
+				
 		var map = this.querySelector('google-map');
 		var selector = this.querySelector('google-map iron-selector');
 		var markers = this.querySelector('google-map-marker');
@@ -207,17 +214,10 @@ FindAnAlpha = Polymer  ({
 		var pages = this.querySelector('iron-pages');
 		pages.select(0);
 		this.$.searchError.innerHTML = "";
-		this._setDefaultMarker();
-		var self = this;
+		this._setDefaultMarker();	
 		resultPage = this.querySelector('neon-animated-pages').select(0);
 		if (this.foundGeo && this.city){
-			this.querySelector("#cityorpostalcode").value = this.city;
-			var selectObj = this.querySelector("#province");
-			for (var i = 0; i < selectObj.options.length; i++) {
-				if (selectObj.options[i].text== self.province) {
-					selectObj.options[i].selected = true;
-				}
-			}
+			this.querySelector("#cityorpostalcode").value = this.city;			
 		}
 	},
 

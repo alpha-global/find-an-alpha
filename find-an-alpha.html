@@ -34,7 +34,7 @@
                   </div>
 
 				  <template is="dom-if" if="[[localities.length]]">
-					<option-select class="form-layout" property="province" label="[[localitiesLabel]]" options="[[localities]]"></option-select>
+					<option-select class="form-layout" property="province" selected="[[province]]" label="[[localitiesLabel]]" options="[[localities]]"></option-select>
 				  </template>
 
                   <div class="form-layout">
@@ -59,7 +59,11 @@
 					<option-select class="form-layout" property="radius" label="Radius" options="[[radiuses]]"></option-select>
 				  </template>
 
-                  <div class="form-layout">
+				  <template is="dom-if" if="[[ages.length]]">
+					<option-select class="form-layout" property="age" label="[[agesLabel]]" options="[[ages]]"></option-select>
+				  </template>
+
+                  <div class="form-layout button-area">
                   	<span id="errorCity"></span>
                   	<span id="errorProvince"></span>
                     <paper-button raised on-click="submitForm">Search</paper-button>
