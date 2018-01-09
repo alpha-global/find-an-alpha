@@ -1,92 +1,149 @@
-<link rel="import" href="../google-map/google-map.html">
-<link rel="import" href="../geo-location/geo-location.html">
-<link rel="import" href="../iron-pages/iron-pages.html">
-<link rel="import" href="../iron-form/iron-form.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../neon-animation/neon-animated-pages.html">
-<link rel="import" href="../neon-animation/neon-animations.html">
-<link rel="import" href="../google-map-markerclusterer/google-map-markerclusterer.html">
-<link rel="import" href="./components/option-select.html">
-<link rel="import" href="./list-view.html">
-<link rel="import" href="./individual-view.html">
+<link rel="import"
+      href="../google-map/google-map.html">
+<link rel="import"
+      href="../geo-location/geo-location.html">
+<link rel="import"
+      href="../iron-pages/iron-pages.html">
+<link rel="import"
+      href="../iron-form/iron-form.html">
+<link rel="import"
+      href="../iron-ajax/iron-ajax.html">
+<link rel="import"
+      href="../paper-button/paper-button.html">
+<link rel="import"
+      href="../neon-animation/neon-animated-pages.html">
+<link rel="import"
+      href="../neon-animation/neon-animations.html">
+<link rel="import"
+      href="../google-map-markerclusterer/google-map-markerclusterer.html">
+<link rel="import"
+      href="./components/option-select.html">
+<link rel="import"
+      href="./list-view.html">
+<link rel="import"
+      href="./individual-view.html">
 <script src="../web-animations-js/web-animations.min.js"></script>
 <script src="../moment/min/moment.min.js"></script>
-<link rel="import" href="./css/modules/find-an-alpha.html">
+<link rel="import"
+      href="./css/modules/find-an-alpha.html">
 
-<link rel="stylesheet" href="./css/fonts.min.css"/>
+<link rel="stylesheet"
+      href="./css/fonts.min.css" />
 
 <dom-module id="find-an-alpha">
   <template strip-whitespace>
 
     <!-- Styles MUST be inside templatitudee -->
     <style include="module:find-an-alpha"></style>
-	<content></content>
+    <content></content>
     <!--<geo-location idle=true latitude="{{latitude}}" longitude="{{longitude}}" ></geo-location>-->
-      <iron-pages id="iron-pages" selected="0">
-        <div id="search">
-            <paper-button raised id="find-my-location" on-tap="shareLocation">Find My Location</paper-button>
-            <iron-ajax id="geo-search" url="[[api]]" method="GET"></iron-ajax>
-              <form is="iron-form"method="get" action="[[api]]" class="clearfix">
-                  <div class="form-layout">
-                    <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
-                    <input name="cityorpostalcode" id="cityorpostalcode" required value="[[city]]">
-                  </div>
+    <iron-pages id="iron-pages"
+                selected="0">
+      <div id="search">
+        <paper-button raised
+                      id="find-my-location"
+                      on-tap="shareLocation">Find My Location</paper-button>
+        <iron-ajax id="geo-search"
+                   url="[[api]]"
+                   method="GET"></iron-ajax>
+        <form is="iron-form"
+              method="get"
+              action="[[api]]"
+              class="clearfix">
+          <div class="form-layout">
+            <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
+            <input name="cityorpostalcode"
+                   id="cityorpostalcode"
+                   required
+                   value="[[city]]"
+                   on-keyup="onCityKeyUp">
+          </div>
 
-				  <template is="dom-if" if="[[localities.length]]">
-					<option-select class="form-layout" property="province" selected="[[province]]" label="[[localitiesLabel]]" options="[[localities]]"></option-select>
-				  </template>
+          <template is="dom-if"
+                    if="[[localities.length]]">
+            <option-select class="form-layout"
+                           property="province"
+                           selected="[[province]]"
+                           label="[[localitiesLabel]]"
+                           options="[[localities]]"></option-select>
+          </template>
 
-                  <div class="form-layout">
-                    <label for="starting-in">Starting in</label>
-                    <div class="selectdiv">
-                      <select name="starting-in">
-                        <option value="1-day">1 Day</option>
-                        <option value="1-week">1 Week</option>
-                        <option value="1-month" selected>1 Month</option>
-                        <option value="3-months">3 Months</option>
-                        <option value="6-months">6 Months</option>
-                        <option value="any">Any</option>
-                      </select>
-                    </div>
-                  </div>
+          <div class="form-layout">
+            <label for="starting-in">Starting in</label>
+            <div class="selectdiv">
+              <select name="starting-in">
+                <option value="1-day">1 Day</option>
+                <option value="1-week">1 Week</option>
+                <option value="1-month"
+                        selected>1 Month</option>
+                <option value="3-months">3 Months</option>
+                <option value="6-months">6 Months</option>
+                <option value="any">Any</option>
+              </select>
+            </div>
+          </div>
 
-				  <template is="dom-if" if="[[languages.length]]">
-					<option-select class="form-layout" property="language" label="Language" options="[[languages]]"></option-select>
-				  </template>
+          <template is="dom-if"
+                    if="[[languages.length]]">
+            <option-select class="form-layout"
+                           property="language"
+                           label="Language"
+                           options="[[languages]]"></option-select>
+          </template>
 
-				  <template is="dom-if" if="[[radiuses.length]]">
-					<option-select class="form-layout" property="radius" label="Radius" options="[[radiuses]]"></option-select>
-				  </template>
+          <template is="dom-if"
+                    if="[[radiuses.length]]">
+            <option-select class="form-layout"
+                           property="radius"
+                           label="Radius"
+                           options="[[radiuses]]"></option-select>
+          </template>
 
-				  <template is="dom-if" if="[[ages.length]]">
-					<option-select class="form-layout" property="age" label="[[agesLabel]]" options="[[ages]]"></option-select>
-				  </template>
+          <template is="dom-if"
+                    if="[[ages.length]]">
+            <option-select class="form-layout"
+                           property="age"
+                           label="[[agesLabel]]"
+                           options="[[ages]]"></option-select>
+          </template>
 
-                  <div class="form-layout button-area">
-                  	<span id="errorCity"></span>
-                  	<span id="errorProvince"></span>
-                    <paper-button raised on-click="submitForm">Search</paper-button>
-                  </div>
-              </form>
-              <div id="searchError"><p></p></div>
-        </div>
-        <div id="result">
-          <neon-animated-pages id="list" selected="0">
-            <list-view id="listView" data="[[resultList]]" units="[[measurementUnits]]" count="[[count]]" on-backtosearch="backToSearch" on-item-click="_onItemClick" selected="{{selected}}"></list-view>
-            <individual-view selected="[[selected]]" units="[[measurementUnits]]" on-backtosearch="backToSearch"  on-close="_onClose"></individual-view>
-          </neon-animated-pages>
-        </div>
+          <div class="form-layout button-area">
+            <paper-button raised
+                          on-click="submitForm">Search</paper-button>
+          </div>
+          <div id="errorMessage"></div>
+        </form>
+      </div>
+      <div id="result">
+        <neon-animated-pages id="list"
+                             selected="0">
+          <list-view id="listView"
+                     data="[[resultList]]"
+                     units="[[measurementUnits]]"
+                     count="[[count]]"
+                     on-backtosearch="backToSearch"
+                     on-item-click="_onItemClick"
+                     selected="{{selected}}"></list-view>
+          <individual-view selected="[[selected]]"
+                           units="[[measurementUnits]]"
+                           on-backtosearch="backToSearch"
+                           on-close="_onClose"></individual-view>
+        </neon-animated-pages>
+      </div>
     </iron-pages>
     <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
-    <google-map map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"  api-key="AIzaSyCliv-zsZo4mT5elv3DNAnSmjO404plV50" zoom="[[zoom]]">
+    <google-map map="{{map}}"
+                latitude="[[latitude]]"
+                longitude="[[longitude]]"
+                api-key="AIzaSyCliv-zsZo4mT5elv3DNAnSmjO404plV50"
+                zoom="[[zoom]]">
 
     </google-map>
 
 
-    </template>
+  </template>
 
-    <script src="./scripts/find-an-alpha.js">
+  <script src="./scripts/find-an-alpha.js">
 
 
   </script>
