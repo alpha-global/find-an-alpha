@@ -1,31 +1,60 @@
-<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../paper-styles/shadow.html">
-<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="./css/modules/individual-view.html">
+<link rel="import"
+      href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import"
+      href="../paper-styles/shadow.html">
+<link rel="import"
+      href="../neon-animation/neon-animatable-behavior.html">
+<link rel="import"
+      href="./css/modules/individual-view.html">
 
-<dom-module id="individual-view" >
+<dom-module id="individual-view">
   <template strip-whitespace>
     <style include="module:individual-view"></style>
 
 
     <div id="nav-bar">
-      <a id="backToSearch" on-tap="backToSearch"><i class="icon-edit"></i>Edit Search</a> <a id="backToList" on-click="_onClearButtonClick"><i class="icon-arrow-circle-left"></i>Back To List</a>
+      <a id="backToSearch"
+         on-tap="backToSearch">
+        <i class="icon-edit"></i>Edit Search</a>
+      <a id="backToList"
+         on-click="_onClearButtonClick">
+        <i class="icon-arrow-circle-left"></i>Back To List</a>
     </div>
 
-    <div id="main" class="main">
+    <div id="main"
+         class="main">
       <div id="individual-info">
         <h2>[[selected.mark]]. [[selected.label]]</h2>
-        <h3><span><i class="icon-clock-o"></i>[[date]]</span><template is="dom-if" if={{selected.distance}}><span><i class="icon-map-marker"></i>[[selected.distance]][[units]]</span></template></h3>
+        <h3>
+          <span>
+            <i class="icon-clock-o"></i>[[date]]</span>
+          <template is="dom-if"
+                    if={{selected.distance}}>
+            <span>
+              <i class="icon-map-marker"></i>[[selected.distance]][[units]]</span>
+          </template>
+        </h3>
         <p>[[day]]s at [[time]]</p>
         <p>Type: [[selected.type]]</p>
         <p>[[selected.address.address]]</p>
         <p>[[selected.address.city]], [[selected.address.state]]</p>
         <p>[[selected.address.postalcode]]</p>
-        <p>Email: <a href="mailto:[[selected.email]]">[[selected.email]]</a></p>
+        <p>Email:
+          <a href="mailto:[[selected.email]]">[[selected.email]]</a>
+        </p>
+        <p>Phone:
+          <span>[[selected.phone]]</p>
         <br>
         <p>For more information about this Alpha, please contact the organizer below.</p>
-        <a href="mailto:[[selected.email]]"><paper-button raised id="Contact" class="red" >Contact</paper-button></a>
-        <paper-button raised id="ical" on-tap="_onICal" class="white">Download iCal</paper-button>
+        <a href="mailto:[[selected.email]]">
+          <paper-button raised
+                        id="Contact"
+                        class="red">Contact</paper-button>
+        </a>
+        <paper-button raised
+                      id="ical"
+                      on-tap="_onICal"
+                      class="white">Download iCal</paper-button>
       </div>
     </div>
 
@@ -33,12 +62,14 @@
 
 </dom-module>
 
-<script type="text/javascript" src="./lib/ics.js"></script>
-<script type="text/javascript" src="./lib/filesaver.js"></script>
+<script type="text/javascript"
+        src="./lib/ics.js"></script>
+<script type="text/javascript"
+        src="./lib/filesaver.js"></script>
 <script>
 
 
-Polymer({
+  Polymer({
     is: 'individual-view',
     behaviors: [
       Polymer.NeonAnimatableBehavior
@@ -46,7 +77,7 @@ Polymer({
     properties: {
       sharedElements: {
         type: Object,
-        value: function() {
+        value: function () {
           return {
             'hero': this.$.main
           };
@@ -54,7 +85,7 @@ Polymer({
       },
       animationConfig: {
         type: Object,
-        value: function() {
+        value: function () {
           return {
             'entry': [{
               name: 'fade-in-animation',
@@ -76,36 +107,36 @@ Polymer({
           }
         }
       },
-      date:{
-        type:String,
-        computed:'_formatDate(selected.start)'
+      date: {
+        type: String,
+        computed: '_formatDate(selected.start)'
       },
-      time:{
-        type:String,
-        computed:'_formatTime(selected.start)'
+      time: {
+        type: String,
+        computed: '_formatTime(selected.start)'
       },
-      day:{
-        type:String,
-        computed:'_formatDay(selected.start)'
+      day: {
+        type: String,
+        computed: '_formatDay(selected.start)'
       },
-	  units : {
-		type : String,
-		value : "km"
-	  },
-      selected:{
-        type:Object
+      units: {
+        type: String,
+        value: "km"
+      },
+      selected: {
+        type: Object
       }
     },
 
-    _onClearButtonClick: function() {
+    _onClearButtonClick: function () {
       this.fire('close');
     },
 
-	backToSearch: function(){
+    backToSearch: function () {
       this.fire('backtosearch');
     },
 
-    _formatDate: function(raw){
+    _formatDate: function (raw) {
       var date = moment(raw).toDate();
 
       var monthNames = [
@@ -129,7 +160,7 @@ Polymer({
       return weekdayNames[weekdayIndex] + ", " + monthNames[monthIndex] + ' ' + day + ', ' + year;
     },
 
-    _formatDay:function(raw){
+    _formatDay: function (raw) {
       var date = moment(raw).toDate();
 
       var weekdayNames = [
@@ -143,18 +174,18 @@ Polymer({
       return weekdayNames[weekdayIndex];
     },
 
-    _formatTime:function(raw){
+    _formatTime: function (raw) {
       var date = moment(raw).toDate();
       var hours = date.getHours();
       var minutes = date.getMinutes();
       var ampm = hours >= 12 ? 'pm' : 'am';
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0'+minutes : minutes;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
       return hours + ':' + minutes + ' ' + ampm;
     },
 
-    _onICal: function(){
+    _onICal: function () {
       var cal_single = ics();
       cal_single.addEvent('Alpha Canada', 'Attend an alpha.', this.selected.label, this.selected.start, this.selected.start);
       cal_single.download('alpha-event');
