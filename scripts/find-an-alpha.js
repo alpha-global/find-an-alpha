@@ -5,6 +5,10 @@ FindAnAlpha = Polymer({
 	is: 'find-an-alpha',
 
 	properties: {
+		apiKey: {
+			type: String,
+			value : 'AIzaSyCliv-zsZo4mT5elv3DNAnSmjO404plV50'
+		},
 		latitude: {
 			type: Number,
 			value: 62.522530,
