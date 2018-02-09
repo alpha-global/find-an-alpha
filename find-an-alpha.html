@@ -19,6 +19,8 @@
 <link rel="import"
       href="./components/option-select.html">
 <link rel="import"
+      href="./components/ajax-loader.html">
+<link rel="import"
       href="./list-view.html">
 <link rel="import"
       href="./individual-view.html">
@@ -31,121 +33,140 @@
       href="./css/fonts.min.css" />
 
 <dom-module id="find-an-alpha">
-  <template strip-whitespace>
+      <template strip-whitespace>
 
-    <!-- Styles MUST be inside templatitudee -->
-    <style include="module:find-an-alpha"></style>
-    <content></content>
-    <!--<geo-location idle=true latitude="{{latitude}}" longitude="{{longitude}}" ></geo-location>-->
-    <iron-pages id="iron-pages"
-                selected="0">
-      <div id="search">
-        <paper-button raised
-                      id="find-my-location"
-                      on-tap="shareLocation">Find My Location</paper-button>
-        <iron-ajax id="geo-search"
-                   url="[[api]]"
-                   method="GET"></iron-ajax>
-        <form is="iron-form"
-              method="get"
-              action="[[api]]"
-              class="clearfix">
-          <div class="form-layout">
-            <label for="cityorpostalcode">City/[[postalZipLabel]]</label>
-            <input name="cityorpostalcode"
-                   id="cityorpostalcode"
-                   required
-                   value="[[city]]"
-                   on-keyup="onCityKeyUp">
-          </div>
+            <!-- Styles MUST be inside templatitudee -->
+            <style include="module:find-an-alpha"></style>
+            <content></content>
 
-          <template is="dom-if"
-                    if="[[localities.length]]">
-            <option-select class="form-layout"
-                           property="province"
-                           selected="[[province]]"
-                           label="[[localitiesLabel]]"
-                           options="[[localities]]"></option-select>
-          </template>
+            <iron-ajax id="searchRequest"
+                       url="[[api]]"
+                       handle-as="json"
+                       on-response="onResult"
+                       on-error="onError"
+                       debounce-duration="300">
 
-          <div class="form-layout">
-            <label for="starting-in">Starting in</label>
-            <div class="selectdiv">
-              <select name="starting-in">
-                <option value="1-day">1 Day</option>
-                <option value="1-week">1 Week</option>
-                <option value="1-month"
-                        selected>1 Month</option>
-                <option value="3-months">3 Months</option>
-                <option value="6-months">6 Months</option>
-                <option value="any">Any</option>
-              </select>
+            </iron-ajax>
+
+            <geo-location id="geoLocation"
+                          on-geo-response="onGeoLocate"
+                          on-geo-error="onGeoError"
+                          idle="true"></geo-location>
+
+            <google-map-markerclusterer id="markerClusterer"
+                                        map="{{map}}"></google-map-markerclusterer>
+            <div id="viewPanel">
+                  <iron-pages id="ironPages"
+                              selected="0">
+                        <div id="search">
+                              <paper-button raised
+                                            id="find-my-location"
+                                            on-tap="shareLocation">Find My Location</paper-button>
+
+                              <form is="iron-form"
+                                    id="searchForm"
+                                    method="get"
+                                    action="[[api]]"
+                                    on-iron-form-response="onResult"
+                                    on-iron-form-error="_onError">
+
+                                    <input type="hidden"
+                                           name="latitude"
+                                           value="[[search_latitude]]" />
+                                    <input type="hidden"
+                                           name="longitude"
+                                           value="[[search_longitude]]" />
+                                    <input type="hidden"
+                                           name="place_id"
+                                           value="[[place_id]]" />
+                                    <input type="hidden"
+                                           name="radius"
+                                           value="[[radius]]" />
+
+                                    <fieldset>
+                                          <input id="placesSearch"
+                                                 type="search" />
+
+
+                                          <div class="form-layout">
+                                                <label for="starting-in">Starting in</label>
+                                                <div class="selectdiv">
+                                                      <select name="starting-in"
+                                                              on-change="submitForm">
+                                                            <option value="1-day">1 Day</option>
+                                                            <option value="1-week">1 Week</option>
+                                                            <option value="1-month"
+                                                                    selected>1 Month</option>
+                                                            <option value="3-months">3 Months</option>
+                                                            <option value="6-months">6 Months</option>
+                                                            <option value="any">Any</option>
+                                                      </select>
+                                                </div>
+                                          </div>
+
+                                          <template is="dom-if"
+                                                    if="[[languages.length]]">
+                                                <option-select class="form-layout"
+                                                               on-change="submitForm"
+                                                               property="language"
+                                                               label="Language"
+                                                               options="[[languages]]"></option-select>
+                                          </template>
+
+                                          <template is="dom-if"
+                                                    if="[[ages.length]]">
+                                                <option-select class="form-layout"
+                                                               on-change="submitForm"
+                                                               property="age"
+                                                               label="[[agesLabel]]"
+                                                               options="[[ages]]"></option-select>
+                                          </template>
+                                    </fieldset>
+
+
+
+                                    <div id="errorMessage"></div>
+                              </form>
+                        </div>
+
+                        <neon-animated-pages id="list"
+                                             selected="0">
+                              <list-view id="listView"
+                                         data="[[resultList]]"
+                                         units="[[measurementUnits]]"
+                                         count="[[count]]"
+                                         on-backtosearch="backToSearch"
+                                         on-item-click="_onItemClick"
+                                         selected="{{selected}}"></list-view>
+                              <individual-view selected="[[selected]]"
+                                               units="[[measurementUnits]]"
+                                               on-backtosearch="backToSearch"
+                                               on-close="_onClose"></individual-view>
+                        </neon-animated-pages>
+
+                  </iron-pages>
+
+                  <google-map id="googleMap"
+                              map="{{map}}"
+                              latitude="[[latitude]]"
+                              longitude="[[longitude]]"
+                              api-key="[[apiKey]]"
+                              on-google-map-ready="_mapsReady"
+                              zoom="[[zoom]]">
+                        <template is="dom-if"
+                                  if="[[isLoading]]">
+                              <div id='mapsOverlay'>
+                                    <ajax-loader active="true"></ajax-loader>
+                              </div>
+                        </template>
+                  </google-map>
             </div>
-          </div>
 
-          <template is="dom-if"
-                    if="[[languages.length]]">
-            <option-select class="form-layout"
-                           property="language"
-                           label="Language"
-                           options="[[languages]]"></option-select>
-          </template>
+      </template>
 
-          <template is="dom-if"
-                    if="[[radiuses.length]]">
-            <option-select class="form-layout"
-                           property="radius"
-                           label="Radius"
-                           options="[[radiuses]]"></option-select>
-          </template>
-
-          <template is="dom-if"
-                    if="[[ages.length]]">
-            <option-select class="form-layout"
-                           property="age"
-                           label="[[agesLabel]]"
-                           options="[[ages]]"></option-select>
-          </template>
-
-          <div class="form-layout button-area">
-            <paper-button raised
-                          on-click="submitForm">Search</paper-button>
-          </div>
-          <div id="errorMessage"></div>
-        </form>
-      </div>
-      <div id="result">
-        <neon-animated-pages id="list"
-                             selected="0">
-          <list-view id="listView"
-                     data="[[resultList]]"
-                     units="[[measurementUnits]]"
-                     count="[[count]]"
-                     on-backtosearch="backToSearch"
-                     on-item-click="_onItemClick"
-                     selected="{{selected}}"></list-view>
-          <individual-view selected="[[selected]]"
-                           units="[[measurementUnits]]"
-                           on-backtosearch="backToSearch"
-                           on-close="_onClose"></individual-view>
-        </neon-animated-pages>
-      </div>
-    </iron-pages>
-    <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
-    <google-map map="{{map}}"
-                latitude="[[latitude]]"
-                longitude="[[longitude]]"
-                api-key="[[apiKey]]"
-                zoom="[[zoom]]">
-
-    </google-map>
+      <script src="./scripts/find-an-alpha.js">
 
 
-  </template>
-
-  <script src="./scripts/find-an-alpha.js">
-
-
-  </script>
+      </script>
 
 </dom-module>

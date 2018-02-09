@@ -10,27 +10,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <meta name="viewport"
+        content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
   <title> find-an-alpha demo</title>
   <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 
 
-  <link rel="import" href="./find-an-alpha.html">
+  <link rel="import"
+        href="./find-an-alpha.html">
 </head>
 
 <body>
-  <link rel="stylesheet" href="./css/index.min.css" />
+  <link rel="stylesheet"
+        href="./css/index.min.css" />
   <div class="wrap">
 
-  <find-an-alpha api="https://run.alphacanada.org/wp-json/wp/v2/alpha/search">
-    <h1>Find an Alpha to attend</h1>
-    <p>Alpha is running across Canada. Search below for an Alpha being hosted in your neighbourhood. There’s no cost, no pressure, and no follow-up if you decide after the first session not to come back. Have questions? Contact each Alpha below for more information. We can’t wait to see you at Alpha!</p>
-  </find-an-alpha>
-  <p></p>
+    <find-an-alpha api='https://canada.alphabuilder.com/wp-json/wp/v2/alpha/search'
+                   api-key='AIzaSyCDg-fW9cJEOCEPq7pmcugfKO8lT6Ow-CI'
+                   ages-label='Age'
+                   ages='[{"value":"","label":"Any"},{"value":"adults","label":"Adults"},{"value":"students","label":"College\/University"},{"value":"seniors","label":"Seniors"},{"value":"youth","label":"Youth"}]'
+  
+                   places-options='{ "componentRestrictions" : { "country" : "CA" } }'
+                   languages='[{"value":"","label":"Select"},{"value":"Cantonese","label":"Cantonese"},{"value":"English","label":"English"},{"value":"French","label":"French"},{"value":"Mandarin","label":"Mandarin"}]'
+  
+                   latitude='56.6584707'
+                   longitude='-97.1359332'
+                   max-zoom='18'
+                   zoom='4'></find-an-alpha>
   </div>
 
 </body>
+
 </html>

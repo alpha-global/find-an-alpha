@@ -26,14 +26,8 @@ input[type=text],
 select,
 textarea,
 option,
-input#cityorpostalcode {
+{
     font-family: @theme-font;
-}
-
-.clearfix:after {
-    content: "";
-    display: table;
-    clear: both;
 }
 
 #search {
@@ -47,36 +41,55 @@ paper-button {
     padding-right: 4em;
     font-family: 'ITCAvantGardeStd', sans-serif;
     font-weight: 800;
+    margin: 0;
 }
 
 #find-my-location {
-    color: @theme-color;
+    background: @theme-color;
+    color: #fff;
     border: 1px solid @theme-color;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     display: block;
     text-align: center;
     transition: all 0.15s ease-out;
-    &:hover {
-        background: @theme-color;
-        color: #fff;
-    }
+}
+
+#mapsOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#googleMap {
+    width: 100%;
+    height: 500px;
 }
 
 form {
-    border-top: 1px solid @line-color;
     width: auto;
-    padding: 20px 0;
-    .form-layout {
-        box-sizing: border-box;
-        width: 100%;
-        text-align: left;
-        position: relative;
-        overflow: visible;
-        float: left;
-        padding: 10px 10px 0;
-        &.button-area {
-            padding-top: 0;
-            padding-bottom: 0;
+    fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+        >* {
+            box-sizing: border-box;
+            width: 100%;
+            display: block;
+            text-align: left;
+            position: relative;
+            overflow: visible;
+            margin-bottom: 12px;
+            &.button-area {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
         }
     }
     input,
@@ -90,8 +103,7 @@ form {
         display: block;
         width: 100%;
         height: 50px;
-        float: right;
-        margin: 12px 0px;
+        margin: 0;
         padding: 0px 24px;
         font-size: 16px;
         line-height: 1.75;
@@ -114,8 +126,7 @@ form {
         right: 11px;
         /*Adjust for position however you want*/
         color: #ccc;
-        top: 25px;
-        padding: 0 0 2px;
+        top: 13px;
         /*left line */
         position: absolute;
         pointer-events: none;
@@ -134,35 +145,11 @@ form {
         word-break: normal;
         border-radius:0;
     }
-    paper-button {
-        box-sizing: border-box;
-        -ms-transition: all 0.30s ease-in-out;
-        transition: all 0.30s ease-in-out;
-        outline: none;
-        color: white;
-        display: block;
-        width: 100%;
-        height: 50px;
-        float: right;
-        margin: 5px 0px;
-        padding: 0px 24px;
-        font-size: 16px;
-        font-family: 'ITCAvantGardeStd', sans-serif;
-        background-color: @theme-color;
-        line-height: 3em;
-        text-align: center;
-    }
 }
 
-google-map {
-    width: 100%;
-    height: 500px;
-    border: 1px solid @line-color;
-}
-
+// <neon-animated-pages>
 #list {
-    overflow: visible;
-    height: 600px !important;
+    height: 100%;
 }
 
 #errorMessage {
@@ -178,39 +165,38 @@ google-map {
     }
 }
 
-@media screen and (min-width:415px) {
-    form .form-layout {
-        width: 50%;
-    }
-    iron-form input,
-    iron-form select,
-    iron-form paper-button {
-        max-width: 320px;
-    }
-     ::slotted(*) {
-        text-align: left;
+@media screen and (min-width:768px) {
+    #viewPanel {
+        display: flex;
+        flex-flow: row-reverse nowrap; //justify-content: space-between;
+        google-map {
+            width: 50%;
+            min-width: 50%;
+            margin-right: 15px;
+        }
+        #ironPages {
+            flex-grow: 1;
+        }
     }
 }
 
-@media screen and (min-width:768px) {
-    #list {
-        height: 500px;
+@media screen and (min-width:1024px) {
+    #viewPanel {
+        google-map {
+            margin-right: 25px;
+        }
     }
-    #iron-pages {
-        float: right;
-        overflow: hidden;
+}
+
+@media (min-height:600px) and (max-width:767px) {
+    #viewPanel {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
     }
-    google-map {
-        width: 50%;
-    }
-    iron-pages {
-        box-sizing: border-box;
-        width: 50%;
-        padding: 10px;
-        padding-top: 0;
-    }
-    #search {
-        text-align: left;
-        padding-bottom: 20px;
+    #googleMap {
+        flex-grow: 1;
+        width: 100%;
+        height: auto;
     }
 }
