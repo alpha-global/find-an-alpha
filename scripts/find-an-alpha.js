@@ -69,6 +69,10 @@ FindAnAlpha = Polymer({
 			type: Object,
 			value: {}
 		},
+		placesQuery: {
+			type: String,
+			value: null,
+		},
 		isLoading: {
 			type: Boolean,
 			value: false
@@ -84,6 +88,11 @@ FindAnAlpha = Polymer({
 		var mql = window.matchMedia('(max-width: 767px)');
 		mql.addListener(this.onMediaQuery.bind(this));
 
+		// if there's a places query, go to that view first to avoid a flash of search form
+		if (this.placesQuery) {
+			this.$.ironPages.select(1);
+		}
+
 	},
 	attached: function () { },
 	_mapsReady: function () {
@@ -93,6 +102,34 @@ FindAnAlpha = Polymer({
 		this.autoComplete.bindTo('bounds', this.map);
 
 		this.autoComplete.addListener('place_changed', this._onPlaceSelected.bind(this));
+
+		/**
+		 * If an initial query was passed in, do it
+		 */
+		if (this.placesQuery) {
+
+			var geoCoder = new google.maps.Geocoder();
+
+			geoCoder.geocode({
+				address: this.placesQuery
+			}, this._onInitialGeoCode.bind(this));
+		}
+	},
+	_onInitialGeoCode: function (results, status) {
+
+		if (status == google.maps.GeocoderStatus.OK) {
+
+			if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+				var result = results[0];
+				this.search_latitude = result.geometry.location.lat();
+				this.search_longitude = result.geometry.location.lng();
+
+				this.placesQueryResult = result;
+
+				this.submitForm();
+
+			}
+		}
 	},
 
 	_onPlaceSelected: function () {
@@ -123,7 +160,6 @@ FindAnAlpha = Polymer({
 			// user said no
 			this.$.errorMessage.innerHTML = "We can't find Alphas near you without your location. You can enable browser location by clicking on the info icon to left of your address bar.";
 		}
-		console.info(event.detail);
 	},
 	submitForm: function () {
 
@@ -146,6 +182,14 @@ FindAnAlpha = Polymer({
 		this.$.markerClusterer.markers = [];
 
 		if (this.count === 0) {
+
+			// if there were no results from the initial places query, set an empty flag on the list view to display the error
+			if (this.placesQueryResult) {
+				this.$.listView.showEmptyPlaceQuery(this.placesQuery, this.placesQueryResult);
+				this.placesQueryResult = null;
+				this.search_latitude = null;
+				this.search_longitude = null;
+			}
 
 			this.$.errorMessage.innerHTML = "We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.";
 			return;
