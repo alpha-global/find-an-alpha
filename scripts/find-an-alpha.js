@@ -69,7 +69,7 @@ FindAnAlpha = Polymer({
 			type: Object,
 			value: {}
 		},
-		placesQuery: {
+		geocodeQuery: {
 			type: String,
 			value: null,
 		},
@@ -89,7 +89,7 @@ FindAnAlpha = Polymer({
 		mql.addListener(this.onMediaQuery.bind(this));
 
 		// if there's a places query, go to that view first to avoid a flash of search form
-		if (this.placesQuery) {
+		if (this.geocodeQuery) {
 			this.$.ironPages.select(1);
 		}
 
@@ -106,12 +106,12 @@ FindAnAlpha = Polymer({
 		/**
 		 * If an initial query was passed in, do it
 		 */
-		if (this.placesQuery) {
+		if (this.geocodeQuery) {
 
 			var geoCoder = new google.maps.Geocoder();
 
 			geoCoder.geocode({
-				address: this.placesQuery
+				address: this.geocodeQuery
 			}, this._onInitialGeoCode.bind(this));
 		}
 	},
@@ -124,7 +124,7 @@ FindAnAlpha = Polymer({
 				this.search_latitude = result.geometry.location.lat();
 				this.search_longitude = result.geometry.location.lng();
 
-				this.placesQueryResult = result;
+				this.geocodeQueryResult = result;
 
 				this.submitForm();
 
@@ -183,10 +183,10 @@ FindAnAlpha = Polymer({
 
 		if (this.count === 0) {
 
-			// if there were no results from the initial places query, set an empty flag on the list view to display the error
-			if (this.placesQueryResult) {
-				this.$.listView.showEmptyPlaceQuery(this.placesQuery, this.placesQueryResult);
-				this.placesQueryResult = null;
+			// if there were no results from the initial geo query, set an empty flag on the list view to display the error
+			if (this.geocodeQueryResult) {
+				this.$.listView.showEmptyGeoQuery(this.geocodeQuery, this.geocodeQueryResult);
+				this.geocodeQueryResult = null;
 				this.search_latitude = null;
 				this.search_longitude = null;
 			}
