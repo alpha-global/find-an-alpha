@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "polymer serve | npm run watch",
-    "watch": "browser-sync start --proxy 127.0.0.1:8080 --files \"**/*\" --browser \"google chrome\""
+    "start": "polymer serve",
+    "build": "polymer build && gulp production:post-build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "del": "^3.0.0",
     "gulp": "*",
     "gulp-concat": "*",
     "gulp-concat-util": "^0.5.5",
@@ -21,7 +22,6 @@
     "gulp-minify-css": "*",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "*",
-    "gulp-vulcanize": "^6.1.0",
     "multipipe": "*"
   }
 }

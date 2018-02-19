@@ -145,11 +145,17 @@ FindAnAlpha = Polymer({
 
 	shareLocation: function () {
 		this.$.placesSearch.value = '';
+
+		if (this.geoEvent) {
+			this.onGeoLocate(this.geoEvent);
+		}
+
 		this.$.geoLocation.idle = false;
-		this.$.geoLocation.fetch();
 
 	},
 	onGeoLocate: function (event) {
+		this.geoEvent = event;
+
 		this.search_latitude = event.detail.latitude;
 		this.search_longitude = event.detail.longitude;
 
@@ -199,9 +205,9 @@ FindAnAlpha = Polymer({
 
 		this.$.ironPages.select(1);
 
-		this.$.googleMap.removeAttribute('zoom');
-		this.$.googleMap.setAttribute('fit-to-markers', true);
 		this._setAllMarkers();
+
+
 	},
 
 	backToSearch: function () {
@@ -296,7 +302,18 @@ FindAnAlpha = Polymer({
 		}
 
 		this.$.markerClusterer.map = gmap.map;
-		this.$.markerClusterer.markers = markers;
+		this._refreshMarkCluster(markers);
+
+	},
+	_refreshMarkCluster: function (markers) {
+		// set the markers once the map is idle, ensures proper clustering
+		var _this = this,
+			func = function () {
+
+				_this.$.markerClusterer.markers = markers;
+				google.maps.event.removeListener(listener);
+			},
+			listener = this.map.addListener('idle', func);
 	},
 
 

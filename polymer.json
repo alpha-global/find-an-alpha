@@ -1,4 +1,26 @@
 {
+  "entrypoint": "index.html",
+  "shell": "src/find-an-alpha.html",
+  "builds": [
+    {
+      "name": "production",
+      "js": {
+        "minify": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": {
+        "sourcemaps": false,
+        "stripComments": true,
+        "inlineCss": true,
+        "inlineScripts": true
+      }
+    }
+  ],
   "lint": {
     "rules": [
       "polymer-2-hybrid"

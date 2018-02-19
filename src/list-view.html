@@ -1,0 +1,56 @@
+<link rel="import"
+      href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import"
+      href="/bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import"
+      href="../css/modules/list-view.html">
+
+<dom-module id="list-view">
+  <template strip-whitespace>
+    <style include="module:list-view"></style>
+    <div id="nav-bar">
+      <a id="backToSearch"
+         on-tap='backToSearch'>
+        <i class="icon-edit"></i>Edit Search</a>
+    </div>
+    <template is="dom-if"
+              if="{{islessthan}}">
+      <div id="alerts">
+        <p>Only [[count]] result(s) were found with your search criteria.
+          <br />Try broadening your search radius to find more Alphas.
+        </p>
+      </div>
+    </template>
+
+    <div id="placesError">
+    </div>
+
+
+    <div class="main">
+      <template is="dom-repeat"
+                items="{{data}}"
+                id="locationList">
+        <div index$="{{index}}"
+             id="location"
+             on-tap="_selectItem"
+             class="single animating">
+          <div>
+            <h2>[[item.mark]]. [[item.label]]</h2>
+            <span>
+              <i class="icon-clock-o"></i>[[_formatDate(item.start)]]</span>
+          </div>
+          <template is="dom-if"
+                    if={{item.distance}}>
+            <p>[[item.distance]][[units]]</p>
+          </template>
+        </div>
+      </template>
+      <array-selector id="selector"
+                      items="{{data}}"
+                      selected="{{selected}}"></array-selector>
+    </div>
+  </template>
+
+  <script src="./list-view.js"></script>
+
+</dom-module>

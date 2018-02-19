@@ -1,0 +1,163 @@
+<link rel="import"
+      href="/bower_components/google-map/google-map.html">
+<link rel="import"
+      href="/bower_components/geo-location/geo-location.html">
+<link rel="import"
+      href="/bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+      href="/bower_components/iron-form/iron-form.html">
+<link rel="import"
+      href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import"
+      href="/bower_components/paper-button/paper-button.html">
+<link rel="import"
+      href="/bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import"
+      href="/bower_components/neon-animation/neon-animations.html">
+<link rel="import"
+      href="/bower_components/google-map-markerclusterer/google-map-markerclusterer.html">
+<link rel="import"
+      href="./components/option-select.html">
+<link rel="import"
+      href="./components/ajax-loader.html">
+<link rel="import"
+      href="./list-view.html">
+<link rel="import"
+      href="./individual-view.html">
+
+<script src="./lib/forEach.js"></script>
+<script src="/bower_components/web-animations-js/web-animations.min.js"></script>
+<script src="/bower_components/moment/min/moment.min.js"></script>
+
+<link rel="import"
+      href="../css/modules/find-an-alpha.html">
+
+<link rel="stylesheet"
+      href="../css/fonts.min.css" />
+
+<dom-module id="find-an-alpha">
+      <template strip-whitespace>
+
+            <style include="module:find-an-alpha"></style>
+            <content></content>
+
+            <geo-location id="geoLocation"
+                          on-geo-response="onGeoLocate"
+                          on-geo-error="onGeoError"
+                          idle="true"></geo-location>
+
+            <google-map-markerclusterer id="markerClusterer"
+                                        map="{{map}}"></google-map-markerclusterer>
+            <div id="viewPanel">
+                  <iron-pages id="ironPages"
+                              selected="0">
+                        <div id="search">
+                              <paper-button raised
+                                            id="find-my-location"
+                                            on-tap="shareLocation">Find My Location</paper-button>
+
+                              <form is="iron-form"
+                                    id="searchForm"
+                                    method="get"
+                                    action="[[api]]"
+                                    on-iron-form-response="onResult"
+                                    on-iron-form-error="_onError">
+
+                                    <input type="hidden"
+                                           name="latitude"
+                                           value="[[search_latitude]]" />
+                                    <input type="hidden"
+                                           name="longitude"
+                                           value="[[search_longitude]]" />
+                                    <input type="hidden"
+                                           name="place_id"
+                                           value="[[place_id]]" />
+                                    <input type="hidden"
+                                           name="radius"
+                                           value="[[radius]]" />
+
+                                    <fieldset>
+                                          <input id="placesSearch"
+                                                 placeholder="Enter a city or address to search nearby"
+                                                 type="search" />
+
+
+                                          <div class="form-layout">
+                                                <label for="starting-in">Starting in</label>
+                                                <div class="selectdiv">
+                                                      <select name="starting-in"
+                                                              on-change="submitForm">
+                                                            <option value="1-day">1 Day</option>
+                                                            <option value="1-week">1 Week</option>
+                                                            <option value="1-month"
+                                                                    selected>1 Month</option>
+                                                            <option value="3-months">3 Months</option>
+                                                            <option value="6-months">6 Months</option>
+                                                            <option value="any">Any</option>
+                                                      </select>
+                                                </div>
+                                          </div>
+
+                                          <template is="dom-if"
+                                                    if="[[languages.length]]">
+                                                <option-select class="form-layout"
+                                                               on-change="submitForm"
+                                                               property="language"
+                                                               label="Language"
+                                                               options="[[languages]]"></option-select>
+                                          </template>
+
+                                          <template is="dom-if"
+                                                    if="[[ages.length]]">
+                                                <option-select class="form-layout"
+                                                               on-change="submitForm"
+                                                               property="age"
+                                                               label="[[agesLabel]]"
+                                                               options="[[ages]]"></option-select>
+                                          </template>
+                                    </fieldset>
+
+
+
+                                    <div id="errorMessage"></div>
+                              </form>
+                        </div>
+
+                        <neon-animated-pages id="list"
+                                             selected="0">
+                              <list-view id="listView"
+                                         data="[[resultList]]"
+                                         units="[[measurementUnits]]"
+                                         count="[[count]]"
+                                         on-backtosearch="backToSearch"
+                                         on-item-click="_onItemClick"
+                                         selected="{{selected}}"></list-view>
+                              <individual-view selected="[[selected]]"
+                                               units="[[measurementUnits]]"
+                                               on-backtosearch="backToSearch"
+                                               on-close="_onClose"></individual-view>
+                        </neon-animated-pages>
+
+                  </iron-pages>
+
+                  <google-map id="googleMap"
+                              map="{{map}}"
+                              latitude="[[latitude]]"
+                              longitude="[[longitude]]"
+                              api-key="[[apiKey]]"
+                              on-google-map-ready="_mapsReady"
+                              zoom="[[zoom]]">
+                        <template is="dom-if"
+                                  if="[[isLoading]]">
+                              <div id='mapsOverlay'>
+                                    <ajax-loader active="true"></ajax-loader>
+                              </div>
+                        </template>
+                  </google-map>
+            </div>
+
+      </template>
+
+      <script src="./find-an-alpha.js"></script>
+
+</dom-module>

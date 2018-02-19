@@ -1,7 +1,20 @@
 {
   "name": "find-an-alpha",
   "private": true,
-  "dependencies": {
+  "ignore": [
+    ".vscode/",
+    "assets/",
+    "css/",
+    "node_modules/",
+    "bower_components/",
+    "src/",
+    ".gitignore",
+    "gulpfile.js",
+    "index.html",
+    "package-lock.json",
+    "polymer.json"
+  ],
+  "devDependencies": {
     "polymer": "Polymer/polymer",
     "iron-selector": "",
     "iron-resizable-behavior": "",
@@ -19,5 +32,8 @@
     "geo-location": "^1.0.6",
     "google-map-markerclusterer": "^1.0.2",
     "moment": "momentjs#^2.18.1"
+  },
+  "dependencies": {
+    "webcomponentsjs": "^0.7.24"
   }
 }

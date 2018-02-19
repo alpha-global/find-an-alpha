@@ -1,0 +1,72 @@
+<link rel="import"
+      href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import"
+      href="/bower_components/paper-styles/shadow.html">
+<link rel="import"
+      href="/bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import"
+      href="../css/modules/individual-view.html">
+
+
+<script type="text/javascript"
+        src="./lib/ics.js"></script>
+<script type="text/javascript"
+        src="./lib/filesaver.js"></script>
+
+
+<dom-module id="individual-view">
+  <template strip-whitespace>
+    <style include="module:individual-view"></style>
+
+
+    <div id="nav-bar">
+      <a id="backToSearch"
+         on-tap="backToSearch">
+        <i class="icon-edit"></i>Edit Search</a>
+      <a id="backToList"
+         on-click="_onClearButtonClick">
+        <i class="icon-arrow-circle-left"></i>Back To List</a>
+    </div>
+
+    <div id="main"
+         class="main">
+      <div id="individual-info">
+        <h2>[[selected.mark]]. [[selected.label]]</h2>
+        <h3>
+          <span>
+            <i class="icon-clock-o"></i>[[date]]</span>
+          <template is="dom-if"
+                    if={{selected.distance}}>
+            <span>
+              <i class="icon-map-marker"></i>[[selected.distance]][[units]]</span>
+          </template>
+        </h3>
+        <p>[[day]]s at [[time]]</p>
+        <p>Type: [[selected.type]]</p>
+
+        <p>Location: [[selected.location]]</p>
+
+        <p>Email:
+          <a href="mailto:[[selected.email]]">[[selected.email]]</a>
+        </p>
+        <p>Phone:
+          <span>[[selected.phone]]</p>
+        <br>
+        <p>For more information about this Alpha, please contact the organizer below.</p>
+        <a href="mailto:[[selected.email]]">
+          <paper-button raised
+                        id="Contact"
+                        class="red">Contact</paper-button>
+        </a>
+        <paper-button raised
+                      id="ical"
+                      on-tap="_onICal"
+                      class="white">Download iCal</paper-button>
+      </div>
+    </div>
+
+  </template>
+
+  <script src="./individual-view.js"></script>
+
+</dom-module>
