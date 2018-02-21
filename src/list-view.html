@@ -8,25 +8,11 @@
 <dom-module id="list-view">
   <template strip-whitespace>
     <style include="module:list-view"></style>
-    <div id="nav-bar">
-      <a id="backToSearch"
-         on-tap='backToSearch'>
-        <i class="icon-edit"></i>Edit Search</a>
-    </div>
-    <template is="dom-if"
-              if="{{islessthan}}">
-      <div id="alerts">
-        <p>Only [[count]] result(s) were found with your search criteria.
-          <br />Try broadening your search radius to find more Alphas.
-        </p>
-      </div>
-    </template>
 
-    <div id="placesError">
-    </div>
+    <div id="alerts"></div>
 
-
-    <div class="main">
+    <div id="alphasList"
+         class="main">
       <template is="dom-repeat"
                 items="{{data}}"
                 id="locationList">

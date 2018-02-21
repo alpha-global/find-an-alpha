@@ -35,7 +35,8 @@ FindAnAlpha = Polymer({
 		},
 		resultList: {
 			type: Array,
-			notify: true
+			notify: true,
+			value: []
 		},
 		selected: {
 			type: Object,
@@ -61,9 +62,9 @@ FindAnAlpha = Polymer({
 			type: Array,
 			value: null
 		},
-		radius: {
-			type: String,
-			value: '100km'
+		radiuses: {
+			type: Array,
+			value: null
 		},
 		placesOptions: {
 			type: Object,
@@ -76,25 +77,75 @@ FindAnAlpha = Polymer({
 		isLoading: {
 			type: Boolean,
 			value: false
-		}
+		},
+		siteTitle: {
+			type: String,
+			value: 'Alpha'
+		},
 
 	},
 
-	listeners: {
-		'domchanged': '_adjustHeight'
+	triggerResize: function () {
+
+		var viewHeight = screen.availHeight;
+
+		this.style.height = viewHeight + 'px';
+
+		//console.info(this.$.viewPanel.clientHeight, this.clientHeight);
+
+		var resizeEvent = {
+			height: this.$.viewPanel.clientHeight
+		};
+		parent.postMessage(resizeEvent, '*');
 	},
 
 	ready: function () {
-		var mql = window.matchMedia('(max-width: 767px)');
-		mql.addListener(this.onMediaQuery.bind(this));
 
 		// if there's a places query, go to that view first to avoid a flash of search form
 		if (this.geocodeQuery) {
 			this.$.ironPages.select(1);
 		}
 
+
+		window.addEventListener('message', this.onRecieveMessage.bind(this));
+
+		// store the _onIronSelect behavior so we can cancel it in our mobile view
+		this._neonIronSelect = this.$.list._onIronSelect;
+
+		// media query listener 
+		var mql = window.matchMedia('(max-width: 767px)');
+		mql.addListener(this.onMediaQuery.bind(this));
+		this.onMediaQuery(mql);
+
 	},
-	attached: function () { },
+
+	onRecieveMessage: function (event) {
+		//console.info(event);
+		if (event.data.action === 'resize') {
+			var winW = event.data.windowWidth,
+				winH = event.data.windowHeight;
+
+			this.isLandscape = winW > winH;
+			if (this.isLandscape && winW < 500) {
+				this.$.googleMap.style.maxHeight = winH + 'px';
+			} else {
+				this.$.googleMap.style.maxHeight = '';
+			}
+
+			this.triggerResize();
+		}
+
+	},
+	onMediaQuery: function (event) {
+		if (event.matches) {
+			this.$.list._onIronSelect = function () {
+				this._completeSelectedChanged();
+			}
+		} else {
+			this.$.list._onIronSelect = this._neonIronSelect;
+		}
+	},
+
 	_mapsReady: function () {
 
 		this.autoComplete = new google.maps.places.Autocomplete(this.$.placesSearch, this.placesOptions);
@@ -165,6 +216,7 @@ FindAnAlpha = Polymer({
 		if (event.detail.code === 1) {
 			// user said no
 			this.$.errorMessage.innerHTML = "We can't find Alphas near you without your location. You can enable browser location by clicking on the info icon to left of your address bar.";
+			this.$.errorMessage.hidden = false;
 		}
 	},
 	submitForm: function () {
@@ -198,6 +250,8 @@ FindAnAlpha = Polymer({
 			}
 
 			this.$.errorMessage.innerHTML = "We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.";
+			this.$.errorMessage.hidden = false;
+			this.triggerResize();
 			return;
 		}
 
@@ -206,7 +260,6 @@ FindAnAlpha = Polymer({
 		this.$.ironPages.select(1);
 
 		this._setAllMarkers();
-
 
 	},
 
@@ -218,10 +271,14 @@ FindAnAlpha = Polymer({
 		this.$.ironPages.select(0);
 		// clear message
 		this.$.errorMessage.innerHTML = "";
+		this.$.errorMessage.hidden = true;
+
+		this._onClose();
 
 	},
 
 	_onMarkerClick: function (marker) {
+
 		var mark = marker.label;
 		var index = Number(mark - 1);
 		this.selected = this.resultList[index];
@@ -233,18 +290,21 @@ FindAnAlpha = Polymer({
 	},
 
 	_onItemClick: function (event, argument) {
+
 		this.$.list.selected = 1;
 		this._markerSelected(argument.index);
 
 	},
 
 	_onClose: function () {
+
 		this.$.list.selected = 0;
 		this._setAllMarkers();
 		var locations = this.querySelectorAll("#location");
 		for (i = 0; i < locations.length; i++) {
 			locations[i].style.visibility = "visible";
 		}
+		this.$.backToList.hidden = true;
 
 	},
 
@@ -267,9 +327,15 @@ FindAnAlpha = Polymer({
 		map.setAttribute('longitude', element.lng);
 		cluster.map = map.map;
 		cluster.markers = [newmarker];
+
+		this.$.backToList.hidden = false;
 	},
 
 	_setAllMarkers: function () {
+
+		if (!this.resultList.length) {
+			return;
+		}
 		var self = this;
 
 		var markers = [];
@@ -285,10 +351,9 @@ FindAnAlpha = Polymer({
 				label: String(mark)
 			});
 			newmarker.addListener('click', function () {
-				var index = Number(mark - 1);
-				self.selected = self.resultList[index];
-				self.$.list.selected = 1;
+
 				self._onMarkerClick(this);
+
 			});
 			markers[index] = newmarker;
 			bounds.extend(newmarker.getPosition());
@@ -316,57 +381,11 @@ FindAnAlpha = Polymer({
 			listener = this.map.addListener('idle', func);
 	},
 
-
-	onMediaQuery: function (event) {
-		this._adjustHeight();
-	},
-
-	_adjustHeight: function () {
-
-		var el = this.$.listView,// event.target,
-			polyEl = Polymer.dom(el);
-
-		if (screen.width < 768) {
-
-			var biggestHeight = 0;
-			// Loop through elements children to find & set the biggest height
-
-			var navBar = this.querySelector('#nav-bar'),
-				alerts = this.querySelector('#alerts'),
-				listItems = el.querySelectorAll('#location');
-
-			biggestHeight += navBar.offsetHeight;
-			biggestHeight += alerts ? alerts.offsetHeight : 0;
-
-			if (this.$.list.selected === 1) {
-
-				biggestHeight += 300;
-
-			} else {
-
-				if (listItems.length) {
-					biggestHeight += 12;
-				}
-
-				listItems.forEach(function (element) {
-
-					biggestHeight = biggestHeight + element.offsetHeight;
-
-				});
-			}
-
-			var height = biggestHeight > 300 ? 300 : biggestHeight;
-
-			// Set the container height
-			polyEl.parentNode.style.height = height + "px";
-		} else {
-			polyEl.parentNode.style.height = '';
-		}
-	},
-
 	_onError: function () {
 		this.isLoading = false;
 		this.$.errorMessage.innerHTML = "Hmm... we can't find that location. Please try again.";
+		this.$.errorMessage.hidden = false;
+		this.triggerResize();
 	},
 
 });

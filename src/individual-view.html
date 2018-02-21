@@ -18,16 +18,6 @@
   <template strip-whitespace>
     <style include="module:individual-view"></style>
 
-
-    <div id="nav-bar">
-      <a id="backToSearch"
-         on-tap="backToSearch">
-        <i class="icon-edit"></i>Edit Search</a>
-      <a id="backToList"
-         on-click="_onClearButtonClick">
-        <i class="icon-arrow-circle-left"></i>Back To List</a>
-    </div>
-
     <div id="main"
          class="main">
       <div id="individual-info">
@@ -36,7 +26,7 @@
           <span>
             <i class="icon-clock-o"></i>[[date]]</span>
           <template is="dom-if"
-                    if={{selected.distance}}>
+                    if=[[selected.distance]]>
             <span>
               <i class="icon-map-marker"></i>[[selected.distance]][[units]]</span>
           </template>
@@ -46,22 +36,32 @@
 
         <p>Location: [[selected.location]]</p>
 
-        <p>Email:
-          <a href="mailto:[[selected.email]]">[[selected.email]]</a>
-        </p>
-        <p>Phone:
-          <span>[[selected.phone]]</p>
-        <br>
+        <template is="dom-if"
+                  if="[[selected.email]]">
+          <p>Email:
+            <a href="mailto:[[selected.email]]">[[selected.email]]</a>
+          </p>
+        </template>
+        <template is="dom-if"
+                  if="[[selected.phone]]">
+          <p>Phone: [[selected.phone]]</p>
+        </template>
+
+        <br/>
         <p>For more information about this Alpha, please contact the organizer below.</p>
-        <a href="mailto:[[selected.email]]">
+
+        <p class="alpha-buttons">
+          <a href="mailto:[[selected.email]]">
+            <paper-button raised
+                          id="Contact"
+                          class="red">Contact</paper-button>
+          </a>
           <paper-button raised
-                        id="Contact"
-                        class="red">Contact</paper-button>
-        </a>
-        <paper-button raised
-                      id="ical"
-                      on-tap="_onICal"
-                      class="white">Download iCal</paper-button>
+                        id="ical"
+                        on-tap="_onICal"
+                        class="white">Download iCal</paper-button>
+        </p>
+
       </div>
     </div>
 

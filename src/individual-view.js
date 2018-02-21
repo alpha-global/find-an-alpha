@@ -17,17 +17,11 @@ Polymer({
             value: function () {
                 return {
                     'entry': [{
-                        name: 'fade-in-animation',
-                        node: this.$.backToList
-                    }, {
                         name: 'hero-animation',
                         id: 'hero',
                         toPage: this
                     }],
                     'exit': [{
-                        name: 'fade-out-animation',
-                        node: this.$.backToList
-                    }, {
                         name: 'scale-down-animation',
                         node: this.$.main,
                         transformOrigin: '50% 50%',
@@ -54,15 +48,11 @@ Polymer({
         },
         selected: {
             type: Object
+        },
+        siteTitle: {
+            type: String,
+            value: 'Alpha'
         }
-    },
-
-    _onClearButtonClick: function () {
-        this.fire('close');
-    },
-
-    backToSearch: function () {
-        this.fire('backtosearch');
     },
 
     _formatDate: function (raw) {
@@ -116,7 +106,7 @@ Polymer({
 
     _onICal: function () {
         var cal_single = ics();
-        cal_single.addEvent('Alpha Canada', 'Attend an alpha.', this.selected.label, this.selected.start, this.selected.start);
+        cal_single.addEvent(this.siteTitle, 'Alpha: ' + this.selected.label, this.selected.location, this.selected.start, this.selected.start);
         cal_single.download('alpha-event');
 
     }

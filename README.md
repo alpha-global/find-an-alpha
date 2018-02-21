@@ -9,3 +9,6 @@ Find an Alpha Geo Map
 ## v1.0.1
 * Patched map reset zoom, center
 * Cleaned up code comments, implemented standard code formatting
+
+## v1.1.0
+* Added iframe widget js

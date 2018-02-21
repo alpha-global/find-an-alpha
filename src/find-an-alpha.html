@@ -50,7 +50,8 @@
                                         map="{{map}}"></google-map-markerclusterer>
             <div id="viewPanel">
                   <iron-pages id="ironPages"
-                              selected="0">
+                              selected="0"
+                              on-iron-resize="triggerResize">
                         <div id="search">
                               <paper-button raised
                                             id="find-my-location"
@@ -72,11 +73,8 @@
                                     <input type="hidden"
                                            name="place_id"
                                            value="[[place_id]]" />
-                                    <input type="hidden"
-                                           name="radius"
-                                           value="[[radius]]" />
 
-                                    <fieldset>
+                                    <div id="fieldset">
                                           <input id="placesSearch"
                                                  placeholder="Enter a city or address to search nearby"
                                                  type="search" />
@@ -115,28 +113,51 @@
                                                                label="[[agesLabel]]"
                                                                options="[[ages]]"></option-select>
                                           </template>
-                                    </fieldset>
+
+                                          <template is="dom-if"
+                                                    if="[[radiuses.length]]">
+                                                <option-select class="form-layout"
+                                                               on-change="submitForm"
+                                                               property="radius"
+                                                               label="Radius"
+                                                               options="[[radiuses]]"></option-select>
+                                          </template>
+                                    </div>
 
 
 
-                                    <div id="errorMessage"></div>
+                                    <div id="errorMessage"
+                                         hidden></div>
                               </form>
                         </div>
 
-                        <neon-animated-pages id="list"
-                                             selected="0">
-                              <list-view id="listView"
-                                         data="[[resultList]]"
-                                         units="[[measurementUnits]]"
-                                         count="[[count]]"
-                                         on-backtosearch="backToSearch"
-                                         on-item-click="_onItemClick"
-                                         selected="{{selected}}"></list-view>
-                              <individual-view selected="[[selected]]"
+                        <div id="resultsView">
+                              <div id="nav-bar">
+                                    <a id="backToSearch"
+                                       on-tap="backToSearch"
+                                       class="icon-edit">
+                                          Edit Search</a>
+                                    <a id="backToList"
+                                       hidden
+                                       on-click="_onClose"
+                                       class="icon-arrow-circle-left">
+                                          Back To List</a>
+                              </div>
+                              <neon-animated-pages id="list"
+                                                   selected="0">
+                                    <list-view id="listView"
+                                               data="[[resultList]]"
                                                units="[[measurementUnits]]"
-                                               on-backtosearch="backToSearch"
-                                               on-close="_onClose"></individual-view>
-                        </neon-animated-pages>
+                                               count="[[count]]"
+                                               on-item-click="_onItemClick"
+                                               selected="{{selected}}"></list-view>
+                                    <individual-view id="individualView"
+                                                     selected="[[selected]]"
+                                                     site-title="[[siteTitle]]"
+                                                     units="[[measurementUnits]]"></individual-view>
+                              </neon-animated-pages>
+                        </div>
+
 
                   </iron-pages>
 

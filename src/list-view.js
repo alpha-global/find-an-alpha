@@ -11,7 +11,8 @@ Polymer({
             type: Array,
             value: function () {
                 return [];
-            }
+            },
+            observer: '_dataChanged'
         },
         count: {
             type: Number,
@@ -23,25 +24,12 @@ Polymer({
         selected: {
             type: Object,
             notify: true,
-            // reflectToAttribute:true
-        },
-        islessthan: {
-            type: Boolean,
-            value: false,
-            computed: '_countlessthan(data)'
         },
         animationConfig: {
             type: Object,
             value: function () {
                 return {
-                    'entry': [{
-                        name: 'fade-in-animation',
-                        node: this.$.backToSearch
-                    }],
                     'exit': [{
-                        name: 'fade-out-animation',
-                        node: this.$.backToSearch
-                    }, {
                         name: 'hero-animation',
                         id: 'hero',
                         fromPage: this
@@ -52,9 +40,16 @@ Polymer({
     },
     showEmptyGeoQuery: function (geoQuery, geoResult) {
 
-        this.$.placesError.innerHTML = "<p>Sorry, we couldn't find any Alphas in: " + geoQuery + "</p>";
+        this.$.alerts.innerHTML = "<p>Sorry, we couldn't find any Alphas in: " + geoQuery + "</p>";
 
     },
+    _dataChanged: function (newItems, oldItems) {
+        this.$.alerts.innerHTML = '';
+        if (newItems && newItems.length > 0 && newItems.length < 4) {
+            this.$.alerts.innerHTML = '<p>Only ' + newItems.length + ' result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.</p>';
+        }
+    },
+
     _selectItem: function (event) {
         var target = event.target;
         while (!target.hasAttribute('index')) {
@@ -87,12 +82,6 @@ Polymer({
 
     },
 
-
-    backToSearch: function () {
-        this.$.placesError.innerHTML = "";
-        this.fire('backtosearch');
-    },
-
     _animating: function () {
         var location = Polymer.dom(this.root).querySelectorAll("#location");
         for (var i = 0; i < location.length; i++) {
@@ -105,12 +94,6 @@ Polymer({
     _onDomChanged: function () {
         this._animating();
         this.fire('domchanged');
-    },
-
-    _countlessthan: function (data) {
-        if (this.count < 4) {
-            return true;
-        }
     },
 
     _formatDate: function (raw) {

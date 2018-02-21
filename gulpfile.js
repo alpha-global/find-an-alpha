@@ -1,8 +1,13 @@
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var path = require('path');
-var del = require('del');
-var paths = {
+const gulp = require('gulp');
+const less = require('gulp-less');
+const LessPluginAutoprefix = require('less-plugin-autoprefix');
+const plugins = require('gulp-load-plugins')();
+const path = require('path');
+const del = require('del');
+
+const lessAutoprefix = new LessPluginAutoprefix({ browsers: ['last 2 versions'] });
+
+const paths = {
 	less: {
 		styles: ["./assets/less/styles/**/*.less"],
 		modules: ["./assets/less/modules/**/*.less"],
@@ -25,8 +30,9 @@ var paths = {
  */
 gulp.task("theme:styles", function () {
 	return gulp.src(paths.less.styles)
-
-		.pipe(plugins.less())
+		.pipe(less({
+			plugins: [lessAutoprefix]
+		}))
 		.pipe(plugins.minifyCss())
 		.pipe(plugins.rename({
 			extname: ".min.css"
@@ -40,7 +46,9 @@ gulp.task("theme:styles", function () {
  */
 gulp.task("theme:module-styles", function () {
 	return gulp.src(paths.less.modules)
-		.pipe(plugins.less())
+		.pipe(less({
+			plugins: [lessAutoprefix]
+		}))
 		.pipe(plugins.minifyCss())
 		.pipe(plugins.concatUtil.header('<dom-module id="module:<%= moduleId(file) %>"><template><style>', {
 			moduleId: function (file) {
@@ -54,12 +62,18 @@ gulp.task("theme:module-styles", function () {
 		.pipe(gulp.dest(paths.dist.css.modules));
 });
 
+/**
+ * Copy find-an-alpha.html from build to root
+ */
 gulp.task("production:post-build-copy", function () {
 	return gulp.src(
 		paths.dist.entry
 	).pipe(gulp.dest('./'))
 });
 
+/**
+ * Delete build folder
+ */
 gulp.task("production:post-build-cleanup", function () {
 	return del([
 		'build/**'
@@ -74,6 +88,7 @@ gulp.task("production:post-build", ["production:post-build-copy", "production:po
  */
 gulp.task("theme", ["theme:styles", "theme:module-styles"]);
 
+gulp.task('default', ['theme']);
 
 gulp.task("watch", function () {
 	gulp.watch(paths.watch, ["theme:styles"])

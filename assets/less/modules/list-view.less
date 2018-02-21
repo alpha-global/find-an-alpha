@@ -1,5 +1,4 @@
 @import "../imports/variables.less";
-@import "../imports/mixins.less";
 :host {
     @apply(--layout-vertical);
 }
@@ -43,18 +42,6 @@ a {
     }
 }
 
-#nav-bar {
-    text-align: center;
-    padding: 10px; // border-bottom: 1px solid @line-color;
-    a {
-        color: @theme-content-color;
-    }
-    i {
-        padding-right: 5px;
-        color: @theme-content-color;
-    }
-}
-
 :host {
     // position:relative!important;
     text-align: center;
@@ -93,7 +80,7 @@ div.single {
     }
 }
 
-#alerts>p {
+#alerts {
     color: @theme-color;
 }
 
@@ -108,11 +95,8 @@ div.single {
 @media screen and (min-width:415px) {
     div.single {
         text-align: left;
-        .flex-display;
-        .justify-content(space-between);
+        display: flex;
+        justify-content: space-between;
         padding: 10px;
-    }
-    #nav-bar {
-        text-align: left;
     }
 }
