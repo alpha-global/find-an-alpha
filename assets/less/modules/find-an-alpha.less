@@ -65,7 +65,10 @@ paper-button {
     width: 100%;
     height: 100vw;
     max-height: 500px;
-    margin-top: 18px;
+}
+
+#search {
+    margin-bottom: 18px;
 }
 
 form {
@@ -182,6 +185,7 @@ form {
     padding: 10px;
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid #f1f1f1;
     a {
         cursor: pointer;
         display: flex;
@@ -211,6 +215,9 @@ form {
     #individualView {
         position: absolute;
     }
+    #search {
+        margin-bottom: 0;
+    }
     #viewPanel {
         display: flex;
         flex-flow: row-reverse nowrap; //justify-content: space-between;
@@ -218,7 +225,6 @@ form {
             width: 50%;
             min-width: 50%;
             margin-right: 15px;
-            margin-top: 0;
         }
         #ironPages {
             flex-grow: 1;

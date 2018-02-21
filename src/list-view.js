@@ -40,13 +40,17 @@ Polymer({
     },
     showEmptyGeoQuery: function (geoQuery, geoResult) {
 
-        this.$.alerts.innerHTML = "<p>Sorry, we couldn't find any Alphas in: " + geoQuery + "</p>";
+        this.$.alerts.innerHTML = "Sorry, we couldn't find any Alphas in: " + geoQuery;
+        this.$.alerts.hidden = false;
 
     },
     _dataChanged: function (newItems, oldItems) {
         this.$.alerts.innerHTML = '';
         if (newItems && newItems.length > 0 && newItems.length < 4) {
-            this.$.alerts.innerHTML = '<p>Only ' + newItems.length + ' result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.</p>';
+            this.$.alerts.innerHTML = 'Only ' + newItems.length + ' result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.';
+            this.$.alerts.hidden = false;
+        } else {
+            this.$.alerts.hidden = true;
         }
     },
 
