@@ -66,6 +66,10 @@ FindAnAlpha = Polymer({
 			type: Array,
 			value: null
 		},
+		dates: {
+			type: Array,
+			value: null
+		},
 		placesOptions: {
 			type: Object,
 			value: {}
