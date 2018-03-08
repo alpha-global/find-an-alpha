@@ -106,12 +106,11 @@ Polymer({
 
     _onICal: function () {
         var cal_single = ics();
-        var address = this.selected.address.address + ', ' + this.selected.address.city  + ', ' + this.selected.address.state  + ' ' + this.selected.address.postal;
         var end = new Date(this.selected.start);
         end.setHours(end.getHours() + 1);
         var endTime = end.toLocaleString();
         var description = window.location.href;
-        cal_single.addEvent(this.selected.label, description,  address, this.selected.start, endTime);
+        cal_single.addEvent(this.selected.label, description,  this.selected.location, this.selected.start, endTime);
         cal_single.download('alpha-event');
 
     }
