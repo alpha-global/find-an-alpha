@@ -109,7 +109,7 @@ Polymer({
         var end = new Date(this.selected.start);
         end.setHours(end.getHours() + 1);
         var endTime = end.toLocaleString();
-        var description = window.location.href;
+        var description = window.location.href.split("?")[0];
         cal_single.addEvent(this.selected.label, description,  this.selected.location, this.selected.start, endTime);
         cal_single.download('alpha-event');
 
