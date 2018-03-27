@@ -30,8 +30,7 @@
     "web-animations-js": "web-animations/web-animations-js#^2.2.2",
     "google-map": "^2.0.0",
     "geo-location": "^1.0.6",
-    "google-map-markerclusterer": "^1.0.2",
-    "moment": "momentjs#^2.18.1"
+    "google-map-markerclusterer": "^1.0.2"
   },
   "dependencies": {
     "webcomponentsjs": "^0.7.24"

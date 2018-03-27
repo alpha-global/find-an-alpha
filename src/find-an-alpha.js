@@ -1,6 +1,6 @@
 
 // Extend Polymer.Element base class
-FindAnAlpha = Polymer({
+FindAnAlpha = Polymer( {
 
 	is: 'find-an-alpha',
 
@@ -86,7 +86,31 @@ FindAnAlpha = Polymer({
 			type: String,
 			value: 'Alpha'
 		},
-
+		i18nLocale: {
+			type: String,
+			value: 'en'
+		},
+		i18n: {
+			type: Object,
+			value: function ( inputs ) {
+				var defaults = {
+					findAddressPlaceholder: 'Enter a city or address to search nearby',
+					findLocationButton: 'Find My Location',
+					findLabelStartingIn: 'Starting in',
+					findLabelLanguage: 'Language',
+					findLabelAge: 'Age',
+					findLabelRadius: 'Radius',
+					findEditSearchButton: 'Edit Search',
+					findBackButton: 'Back',
+					errorGeoLocation: "We can't find Alphas near you without your location. You can enable browser location by clicking on the info icon to left of your address bar.",
+					errorNoResults: "We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again."
+				};
+				for ( var id in defaults ) {
+					inputs.i18n[ id ] = inputs.i18n[ id ] || defaults[ id ];
+				}
+				return defaults;
+			}
+		},
 	},
 
 	triggerResize: function () {
@@ -95,42 +119,44 @@ FindAnAlpha = Polymer({
 
 		this.style.height = viewHeight + 'px';
 
-		//console.info(this.$.viewPanel.clientHeight, this.clientHeight);
-
 		var resizeEvent = {
 			height: this.$.viewPanel.clientHeight
 		};
-		parent.postMessage(resizeEvent, '*');
+		parent.postMessage( resizeEvent, '*' );
 	},
 
 	ready: function () {
 
+		if ( this.i18nLocale ) {
+			dateSetLocale( this.i18nLocale );
+		}
+
 		// if there's a places query, go to that view first to avoid a flash of search form
-		if (this.geocodeQuery) {
-			this.$.ironPages.select(1);
+		if ( this.geocodeQuery ) {
+			this.$.ironPages.select( 1 );
 		}
 
 
-		window.addEventListener('message', this.onRecieveMessage.bind(this));
+		window.addEventListener( 'message', this.onRecieveMessage.bind( this ) );
 
 		// store the _onIronSelect behavior so we can cancel it in our mobile view
 		this._neonIronSelect = this.$.list._onIronSelect;
 
 		// media query listener 
-		var mql = window.matchMedia('(max-width: 767px)');
-		mql.addListener(this.onMediaQuery.bind(this));
-		this.onMediaQuery(mql);
+		var mql = window.matchMedia( '(max-width: 767px)' );
+		mql.addListener( this.onMediaQuery.bind( this ) );
+		this.onMediaQuery( mql );
 
 	},
 
-	onRecieveMessage: function (event) {
+	onRecieveMessage: function ( event ) {
 		//console.info(event);
-		if (event.data.action === 'resize') {
+		if ( event.data.action === 'resize' ) {
 			var winW = event.data.windowWidth,
 				winH = event.data.windowHeight;
 
 			this.isLandscape = winW > winH;
-			if (this.isLandscape && winW < 500) {
+			if ( this.isLandscape && winW < 500 ) {
 				this.$.googleMap.style.maxHeight = winH + 'px';
 			} else {
 				this.$.googleMap.style.maxHeight = '';
@@ -140,8 +166,8 @@ FindAnAlpha = Polymer({
 		}
 
 	},
-	onMediaQuery: function (event) {
-		if (event.matches) {
+	onMediaQuery: function ( event ) {
+		if ( event.matches ) {
 			this.$.list._onIronSelect = function () {
 				this._completeSelectedChanged();
 			}
@@ -152,30 +178,30 @@ FindAnAlpha = Polymer({
 
 	_mapsReady: function () {
 
-		this.autoComplete = new google.maps.places.Autocomplete(this.$.placesSearch, this.placesOptions);
+		this.autoComplete = new google.maps.places.Autocomplete( this.$.placesSearch, this.placesOptions );
 
-		this.autoComplete.bindTo('bounds', this.map);
+		this.autoComplete.bindTo( 'bounds', this.map );
 
-		this.autoComplete.addListener('place_changed', this._onPlaceSelected.bind(this));
+		this.autoComplete.addListener( 'place_changed', this._onPlaceSelected.bind( this ) );
 
 		/**
 		 * If an initial query was passed in, do it
 		 */
-		if (this.geocodeQuery) {
+		if ( this.geocodeQuery ) {
 
 			var geoCoder = new google.maps.Geocoder();
 
-			geoCoder.geocode({
+			geoCoder.geocode( {
 				address: this.geocodeQuery
-			}, this._onInitialGeoCode.bind(this));
+			}, this._onInitialGeoCode.bind( this ) );
 		}
 	},
-	_onInitialGeoCode: function (results, status) {
+	_onInitialGeoCode: function ( results, status ) {
 
-		if (status == google.maps.GeocoderStatus.OK) {
+		if ( status == google.maps.GeocoderStatus.OK ) {
 
-			if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-				var result = results[0];
+			if ( status != google.maps.GeocoderStatus.ZERO_RESULTS ) {
+				var result = results[ 0 ];
 				this.search_latitude = result.geometry.location.lat();
 				this.search_longitude = result.geometry.location.lng();
 
@@ -183,7 +209,11 @@ FindAnAlpha = Polymer({
 
 				this.submitForm();
 
+			} else {
+				this.$.listView.showEmptyGeoQuery( this.geocodeQuery );
 			}
+		} else if ( status === google.maps.GeocoderStatus.ZERO_RESULTS ) {
+			this.$.listView.showEmptyGeoQuery( this.geocodeQuery );
 		}
 	},
 
@@ -201,14 +231,14 @@ FindAnAlpha = Polymer({
 	shareLocation: function () {
 		this.$.placesSearch.value = '';
 
-		if (this.geoEvent) {
-			this.onGeoLocate(this.geoEvent);
+		if ( this.geoEvent ) {
+			this.onGeoLocate( this.geoEvent );
 		}
 
 		this.$.geoLocation.idle = false;
 
 	},
-	onGeoLocate: function (event) {
+	onGeoLocate: function ( event ) {
 		this.geoEvent = event;
 
 		this.search_latitude = event.detail.latitude;
@@ -216,16 +246,16 @@ FindAnAlpha = Polymer({
 
 		this.submitForm();
 	},
-	onGeoError: function (event) {
-		if (event.detail.code === 1) {
+	onGeoError: function ( event ) {
+		if ( event.detail.code === 1 ) {
 			// user said no
-			this.$.errorMessage.innerHTML = "We can't find Alphas near you without your location. You can enable browser location by clicking on the info icon to left of your address bar.";
+			this.$.errorMessage.innerHTML = this.i18n.errorGeoLocation;
 			this.$.errorMessage.hidden = false;
 		}
 	},
 	submitForm: function () {
 
-		if (!this.search_latitude) {
+		if ( !this.search_latitude ) {
 			return;
 		}
 
@@ -234,7 +264,7 @@ FindAnAlpha = Polymer({
 
 	},
 
-	onResult: function (event) {
+	onResult: function ( event ) {
 		this.isLoading = false;
 		this.loadedOnce = true;
 
@@ -243,17 +273,17 @@ FindAnAlpha = Polymer({
 
 		this.$.markerClusterer.markers = [];
 
-		if (this.count === 0) {
+		if ( this.count === 0 ) {
 
 			// if there were no results from the initial geo query, set an empty flag on the list view to display the error
-			if (this.geocodeQueryResult) {
-				this.$.listView.showEmptyGeoQuery(this.geocodeQuery, this.geocodeQueryResult);
+			if ( this.geocodeQueryResult ) {
+				this.$.listView.showEmptyGeoQuery( this.geocodeQuery );
 				this.geocodeQueryResult = null;
 				this.search_latitude = null;
 				this.search_longitude = null;
 			}
 
-			this.$.errorMessage.innerHTML = "We couldn't find any Alphas matching your search criteria. Please broaden your search radius and try again.";
+			this.$.errorMessage.innerHTML = this.i18n.errorNoResults;
 			this.$.errorMessage.hidden = false;
 			this.triggerResize();
 			return;
@@ -261,7 +291,7 @@ FindAnAlpha = Polymer({
 
 		this.resultList = event.detail.response.items;
 
-		this.$.ironPages.select(1);
+		this.$.ironPages.select( 1 );
 
 		this._setAllMarkers();
 
@@ -270,9 +300,9 @@ FindAnAlpha = Polymer({
 	backToSearch: function () {
 
 		// reset list view
-		this.$.list.select(0);
+		this.$.list.select( 0 );
 		// go to search form
-		this.$.ironPages.select(0);
+		this.$.ironPages.select( 0 );
 		// clear message
 		this.$.errorMessage.innerHTML = "";
 		this.$.errorMessage.hidden = true;
@@ -281,22 +311,22 @@ FindAnAlpha = Polymer({
 
 	},
 
-	_onMarkerClick: function (marker) {
+	_onMarkerClick: function ( marker ) {
 
 		var mark = marker.label;
-		var index = Number(mark - 1);
-		this.selected = this.resultList[index];
+		var index = Number( mark - 1 );
+		this.selected = this.resultList[ index ];
 
-		this.$.ironPages.select(1);
+		this.$.ironPages.select( 1 );
 		this.$.list.selected = 1;
-		this._markerSelected(index);
+		this._markerSelected( index );
 
 	},
 
-	_onItemClick: function (event, argument) {
+	_onItemClick: function ( event, argument ) {
 
 		this.$.list.selected = 1;
-		this._markerSelected(argument.index);
+		this._markerSelected( argument.index );
 
 	},
 
@@ -304,93 +334,93 @@ FindAnAlpha = Polymer({
 
 		this.$.list.selected = 0;
 		this._setAllMarkers();
-		var locations = this.querySelectorAll("#location");
-		for (i = 0; i < locations.length; i++) {
-			locations[i].style.visibility = "visible";
+		var locations = this.querySelectorAll( "#location" );
+		for ( i = 0; i < locations.length; i++ ) {
+			locations[ i ].style.visibility = "visible";
 		}
 		this.$.backToList.hidden = true;
 
 	},
 
-	_markerSelected: function (index) {
+	_markerSelected: function ( index ) {
 
 		var map = this.$.googleMap;
 		var cluster = this.$.markerClusterer;
 		cluster.markers = [];
 
-		var mark = Number(index) + 1;
-		var element = this.resultList[index];
-		var myLatLng = new google.maps.LatLng(element.lat, element.lng)
-		var newmarker = new google.maps.Marker({
+		var mark = Number( index ) + 1;
+		var element = this.resultList[ index ];
+		var myLatLng = new google.maps.LatLng( element.lat, element.lng )
+		var newmarker = new google.maps.Marker( {
 			position: myLatLng,
-			label: String(mark)
-		});
+			label: String( mark )
+		} );
 
-		map.map.setZoom(14);
-		map.setAttribute('latitude', element.lat);
-		map.setAttribute('longitude', element.lng);
+		map.map.setZoom( 14 );
+		map.setAttribute( 'latitude', element.lat );
+		map.setAttribute( 'longitude', element.lng );
 		cluster.map = map.map;
-		cluster.markers = [newmarker];
+		cluster.markers = [ newmarker ];
 
 		this.$.backToList.hidden = false;
 	},
 
 	_setAllMarkers: function () {
 
-		if (!this.resultList.length) {
+		if ( !this.resultList.length ) {
 			return;
 		}
 		var self = this;
 
 		var markers = [];
 		var bounds = new google.maps.LatLngBounds();
-		this.resultList.forEach(function (element, index) {
+		this.resultList.forEach( function ( element, index ) {
 
-			var mark = Number(index) + 1;
-			self.resultList[index].mark = mark;
+			var mark = Number( index ) + 1;
+			self.resultList[ index ].mark = mark;
 
-			var myLatLng = new google.maps.LatLng(element.lat, element.lng);
-			var newmarker = new google.maps.Marker({
+			var myLatLng = new google.maps.LatLng( element.lat, element.lng );
+			var newmarker = new google.maps.Marker( {
 				position: myLatLng,
-				label: String(mark)
-			});
-			newmarker.addListener('click', function () {
+				label: String( mark )
+			} );
+			newmarker.addListener( 'click', function () {
 
-				self._onMarkerClick(this);
+				self._onMarkerClick( this );
 
-			});
-			markers[index] = newmarker;
-			bounds.extend(newmarker.getPosition());
-		});
+			} );
+			markers[ index ] = newmarker;
+			bounds.extend( newmarker.getPosition() );
+		} );
 		var gmap = this.$.googleMap;
-		gmap.map.fitBounds(bounds);
+		gmap.map.fitBounds( bounds );
 
 		var curZoom = gmap.map.getZoom();
-		if (this.maxZoom && curZoom > this.maxZoom) {
-			gmap.map.setZoom(this.maxZoom);
+		if ( this.maxZoom && curZoom > this.maxZoom ) {
+			gmap.map.setZoom( this.maxZoom );
 		}
 
 		this.$.markerClusterer.map = gmap.map;
-		this._refreshMarkCluster(markers);
+		this._refreshMarkCluster( markers );
 
 	},
-	_refreshMarkCluster: function (markers) {
+	_refreshMarkCluster: function ( markers ) {
 		// set the markers once the map is idle, ensures proper clustering
 		var _this = this,
 			func = function () {
 
 				_this.$.markerClusterer.markers = markers;
-				google.maps.event.removeListener(listener);
+				google.maps.event.removeListener( listener );
 			},
-			listener = this.map.addListener('idle', func);
+			listener = this.map.addListener( 'idle', func );
 	},
 
-	_onError: function () {
+	_onError: function ( error ) {
 		this.isLoading = false;
-		this.$.errorMessage.innerHTML = "Hmm... we can't find that location. Please try again.";
+		this.$.errorMessage.innerHTML = error.message || 'There was an error.';
 		this.$.errorMessage.hidden = false;
 		this.triggerResize();
 	},
 
-});
+} );
 

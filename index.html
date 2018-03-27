@@ -8,7 +8,7 @@
 
       <title> find-an-alpha demo</title>
       <script>
-            (function () { if ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')) { } else { var e = document.createElement('script'); e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js'; document.head.appendChild(e); } })();
+            ( function () { if ( 'registerElement' in document && 'import' in document.createElement( 'link' ) && 'content' in document.createElement( 'template' ) ) { } else { var e = document.createElement( 'script' ); e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js'; document.head.appendChild( e ); } } )();
       </script>
 
 
@@ -23,7 +23,8 @@
 
             <find-an-alpha api='https://canada.alphabuilder.com/wp-json/wp/v2/alpha/search'
                            api-key='AIzaSyCDg-fW9cJEOCEPq7pmcugfKO8lT6Ow-CI'
-                           ages-label='Age'
+                           i18n-locale="fr-CA"
+                           i18n='{"findDetailEmail":"Email","findBackButton":"arri\u00e8re"}'
                            ages='[{"value":"","label":"Any"},{"value":"adults","label":"Adults"},{"value":"students","label":"College\/University"},{"value":"seniors","label":"Seniors"},{"value":"youth","label":"Youth"}]'
       
                            site-title="Alpha Canada"

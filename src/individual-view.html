@@ -31,35 +31,35 @@
               <i class="icon-map-marker"></i>[[selected.distance]][[units]]</span>
           </template>
         </h3>
-        <p>[[day]]s at [[time]]</p>
-        <p>Type: [[selected.type]]</p>
+        <p>[[day]] @ [[time]]</p>
+        <p>[[i18n.findDetailType]]: [[selected.type]]</p>
 
-        <p>Location: [[selected.location]]</p>
+        <p>[[i18n.findDetailLocation]]: [[selected.location]]</p>
 
         <template is="dom-if"
                   if="[[selected.email]]">
-          <p>Email:
+          <p>[[i18n.findDetailEmail]]:
             <a href="mailto:[[selected.email]]">[[selected.email]]</a>
           </p>
         </template>
         <template is="dom-if"
                   if="[[selected.phone]]">
-          <p>Phone: [[selected.phone]]</p>
+          <p>[[i18n.findDetailPhone]]: [[selected.phone]]</p>
         </template>
 
         <br/>
-        <p>For more information about this Alpha, please contact the organizer below.</p>
+        <p>[[i18n.findMoreInfo]]</p>
 
         <p class="alpha-buttons">
           <a href="mailto:[[selected.email]]">
             <paper-button raised
                           id="Contact"
-                          class="red">Contact</paper-button>
+                          class="red">[[i18n.findContactButton]]</paper-button>
           </a>
           <paper-button raised
                         id="ical"
                         on-tap="_onICal"
-                        class="white">Download iCal</paper-button>
+                        class="white">[[i18n.findICalButton]]</paper-button>
         </p>
 
       </div>

@@ -1,4 +1,4 @@
-Polymer({
+Polymer( {
     is: 'individual-view',
     behaviors: [
         Polymer.NeonAnimatableBehavior
@@ -16,17 +16,17 @@ Polymer({
             type: Object,
             value: function () {
                 return {
-                    'entry': [{
+                    'entry': [ {
                         name: 'hero-animation',
                         id: 'hero',
                         toPage: this
-                    }],
-                    'exit': [{
+                    } ],
+                    'exit': [ {
                         name: 'scale-down-animation',
                         node: this.$.main,
                         transformOrigin: '50% 50%',
                         axis: 'y'
-                    }]
+                    } ]
                 }
             }
         },
@@ -52,69 +52,83 @@ Polymer({
         siteTitle: {
             type: String,
             value: 'Alpha'
+        },
+        i18n: {
+            type: Object,
+            value: function ( inputs ) {
+                var defaults = {
+                    findDetailType: 'Type',
+                    findDetailLocation: 'Location',
+                    findDetailEmail: 'Email',
+                    findDetailPhone: 'Phone',
+                    findMoreInfo: 'For more information about this Alpha, please contact the organizer below.',
+                    findContactButton: 'Contact',
+                    findICalButton: 'Download iCal'
+                };
+                for ( var id in defaults ) {
+                    inputs.i18n[ id ] = inputs.i18n[ id ] || defaults[ id ];
+                }
+                return defaults;
+            }
+        },
+
+    },
+
+    _formatDate: function ( raw ) {
+
+        if ( !raw ) {
+            return '';
         }
+        var time = Date.parse( raw );
+        if ( isNaN( time ) ) {
+            return '';
+        }
+
+        return dateFormat( new Date( time ), 'JJ MMMM Do, YYYY' );
+
     },
 
-    _formatDate: function (raw) {
-        var date = moment(raw).toDate();
+    _formatDay: function ( raw ) {
+        if ( !raw ) {
+            return '';
+        }
+        var time = Date.parse( raw );
+        if ( isNaN( time ) ) {
+            return '';
+        }
 
-        var monthNames = [
-            "January", "February", "March",
-            "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"
-        ];
+        var date = new Date( time );
 
-        var weekdayNames = [
-            "Sunday", "Monday", "Tuesday",
-            "Wednesday", "Thursday", "Friday",
-            "Saturday", "Sunday"
-        ];
-
-        var day = date.getDate();
-        var monthIndex = date.getMonth();
-        var year = date.getFullYear();
-        var weekdayIndex = date.getDay();
-
-        return weekdayNames[weekdayIndex] + ", " + monthNames[monthIndex] + ' ' + day + ', ' + year;
+        var dow = dateFormat( date, 'JJ' );
+        return dow;
     },
 
-    _formatDay: function (raw) {
-        var date = moment(raw).toDate();
+    _formatTime: function ( raw ) {
+        if ( !raw ) {
+            return '';
+        }
+        var time = Date.parse( raw );
+        if ( isNaN( time ) ) {
+            return '';
+        }
 
-        var weekdayNames = [
-            "Sunday", "Monday", "Tuesday",
-            "Wednesday", "Thursday", "Friday",
-            "Saturday", "Sunday"
-        ];
+        var date = new Date( time );
 
-        var weekdayIndex = date.getDay();
-
-        return weekdayNames[weekdayIndex];
-    },
-
-    _formatTime: function (raw) {
-        var date = moment(raw).toDate();
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        return hours + ':' + minutes + ' ' + ampm;
+        var t = dateFormat( date, 'H i a' );
+        return t;
     },
 
     _onICal: function () {
         var cal_single = ics();
-        var end = new Date(this.selected.start);
-        end.setHours(end.getHours() + 1);
+        var end = new Date( this.selected.start );
+        end.setHours( end.getHours() + 1 );
         var endTime = end.toLocaleString();
-        var description = window.location.href.split("?")[0];
-        cal_single.addEvent(this.selected.label, description,  this.selected.location, this.selected.start, endTime);
-        cal_single.download('alpha-event');
+        var description = window.location.href.split( "?" )[ 0 ];
+        cal_single.addEvent( this.selected.label, description, this.selected.location, this.selected.start, endTime );
+        cal_single.download( 'alpha-event' );
 
     }
 
 
 
-});
+} );

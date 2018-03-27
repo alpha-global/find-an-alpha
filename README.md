@@ -12,3 +12,7 @@ Find an Alpha Geo Map
 
 ## v1.1.0
 * Added iframe widget js
+
+## v1.2.0
+* Added i18n support
+* Removed momentjs dependency

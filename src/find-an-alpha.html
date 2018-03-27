@@ -27,7 +27,8 @@
 
 <script src="./lib/forEach.js"></script>
 <script src="/bower_components/web-animations-js/web-animations.min.js"></script>
-<script src="/bower_components/moment/min/moment.min.js"></script>
+<script src="./lib/date-utils.js"></script>
+<script src="./lib/str_replace.js"></script>
 
 <link rel="import"
       href="../css/modules/find-an-alpha.html">
@@ -55,7 +56,7 @@
                         <div id="search">
                               <paper-button raised
                                             id="find-my-location"
-                                            on-tap="shareLocation">Find My Location</paper-button>
+                                            on-tap="shareLocation">[[i18n.findLocationButton]]</paper-button>
 
                               <form is="iron-form"
                                     id="searchForm"
@@ -76,7 +77,7 @@
 
                                     <div id="fieldset">
                                           <input id="placesSearch"
-                                                 placeholder="Enter a city or address to search nearby"
+                                                 placeholder="[[i18n.findAddressPlaceholder]]"
                                                  type="search" />
 
 
@@ -85,7 +86,7 @@
                                                 <option-select class="form-layout"
                                                                on-change="submitForm"
                                                                property="starting-in"
-                                                               label="Starting in"
+                                                               label="[[i18n.findLabelStartingIn]]"
                                                                options="[[dates]]"></option-select>
                                           </template>
 
@@ -94,7 +95,7 @@
                                                 <option-select class="form-layout"
                                                                on-change="submitForm"
                                                                property="language"
-                                                               label="Language"
+                                                               label="[[i18n.findLabelLanguage]]"
                                                                options="[[languages]]"></option-select>
                                           </template>
 
@@ -103,7 +104,7 @@
                                                 <option-select class="form-layout"
                                                                on-change="submitForm"
                                                                property="age"
-                                                               label="[[agesLabel]]"
+                                                               label="[[i18n.findLabelAge]]"
                                                                options="[[ages]]"></option-select>
                                           </template>
 
@@ -112,7 +113,7 @@
                                                 <option-select class="form-layout"
                                                                on-change="submitForm"
                                                                property="radius"
-                                                               label="Radius"
+                                                               label="[[i18n.findLabelRadius]]"
                                                                options="[[radiuses]]"></option-select>
                                           </template>
                                     </div>
@@ -129,22 +130,24 @@
                                     <a id="backToSearch"
                                        on-tap="backToSearch"
                                        class="icon-edit">
-                                          Edit Search</a>
+                                          [[i18n.findEditSearchButton]]</a>
                                     <a id="backToList"
                                        hidden
                                        on-click="_onClose"
                                        class="icon-arrow-circle-left">
-                                          Back</a>
+                                          [[i18n.findBackButton]]</a>
                               </div>
                               <neon-animated-pages id="list"
                                                    selected="0">
                                     <list-view id="listView"
+                                               i18n="[[i18n]]"
                                                data="[[resultList]]"
                                                units="[[measurementUnits]]"
                                                count="[[count]]"
                                                on-item-click="_onItemClick"
                                                selected="{{selected}}"></list-view>
                                     <individual-view id="individualView"
+                                                     i18n="[[i18n]]"
                                                      selected="[[selected]]"
                                                      site-title="[[siteTitle]]"
                                                      units="[[measurementUnits]]"></individual-view>
