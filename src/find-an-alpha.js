@@ -111,6 +111,10 @@ FindAnAlpha = Polymer( {
 				return defaults;
 			}
 		},
+		gaOptions: {
+			type: Object,
+			value: {}
+		}
 	},
 
 	triggerResize: function () {
@@ -224,6 +228,9 @@ FindAnAlpha = Polymer( {
 		this.search_latitude = place.geometry.location.lat();
 		this.search_longitude = place.geometry.location.lng();
 
+
+		this.fire('iron-signal', {name: 'track-event', data:{event:"search", place: place.formatted_address}});
+
 		this.submitForm();
 
 	},
@@ -244,6 +251,7 @@ FindAnAlpha = Polymer( {
 		this.search_latitude = event.detail.latitude;
 		this.search_longitude = event.detail.longitude;
 
+		this.fire('iron-signal', {name: 'track-event', data:{event:"search", place: 'Find My Location'}});
 		this.submitForm();
 	},
 	onGeoError: function ( event ) {
@@ -307,6 +315,8 @@ FindAnAlpha = Polymer( {
 		this.$.errorMessage.innerHTML = "";
 		this.$.errorMessage.hidden = true;
 
+		this.fire('iron-signal', {name: 'track-event', data:{event:"edit"}});
+
 		this._onClose();
 
 	},
@@ -320,6 +330,8 @@ FindAnAlpha = Polymer( {
 		this.$.ironPages.select( 1 );
 		this.$.list.selected = 1;
 		this._markerSelected( index );
+
+		 this.fire('iron-signal', {name: 'track-event', data:{event:"marker", alpha: this.resultList[ index ]}});
 
 	},
 

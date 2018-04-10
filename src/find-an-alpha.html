@@ -24,11 +24,14 @@
       href="./list-view.html">
 <link rel="import"
       href="./individual-view.html">
+<link rel="import"
+      href="./google-analytics.html">
 
 <script src="./lib/forEach.js"></script>
 <script src="/bower_components/web-animations-js/web-animations.min.js"></script>
 <script src="./lib/date-utils.js"></script>
 <script src="./lib/str_replace.js"></script>
+
 
 <link rel="import"
       href="../css/modules/find-an-alpha.html">
@@ -172,6 +175,8 @@
                         </template>
                   </google-map>
             </div>
+
+            <google-analytics options="[[gaOptions]]"></google-analytics>
 
       </template>
 

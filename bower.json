@@ -33,6 +33,7 @@
     "google-map-markerclusterer": "^1.0.2"
   },
   "dependencies": {
-    "webcomponentsjs": "^0.7.24"
+    "webcomponentsjs": "^0.7.24",
+    "iron-signals": "^1.0.3"
   }
 }

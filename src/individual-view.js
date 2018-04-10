@@ -127,6 +127,11 @@ Polymer( {
         cal_single.addEvent( this.selected.label, description, this.selected.location, this.selected.start, endTime );
         cal_single.download( 'alpha-event' );
 
+        this.fire('iron-signal', {name: 'track-event', data:{event:"calendar", alpha: this.selected}});
+    },
+
+    _onContact: function(e) {
+        this.fire('iron-signal', {name: 'track-event', data:{event:"contact", email: this.selected.email}});
     }
 
 
