@@ -74,11 +74,14 @@ Polymer( {
 
     },
 
-    _formatDate: function ( raw ) {
+    _formatDate: function ( raw ) {       
 
         if ( !raw ) {
             return '';
         }
+         //quick fix for Safari not support date format "YYYY-MM-DD"
+        raw = raw.replace(/-/g, "/");
+
         var time = Date.parse( raw );
         if ( isNaN( time ) ) {
             return '';
@@ -92,6 +95,9 @@ Polymer( {
         if ( !raw ) {
             return '';
         }
+         //quick fix for Safari not support date format "YYYY-MM-DD"
+        raw = raw.replace(/-/g, "/");
+
         var time = Date.parse( raw );
         if ( isNaN( time ) ) {
             return '';
@@ -107,6 +113,9 @@ Polymer( {
         if ( !raw ) {
             return '';
         }
+         //quick fix for Safari not support date format "YYYY-MM-DD"
+        raw = raw.replace(/-/g, "/");
+
         var time = Date.parse( raw );
         if ( isNaN( time ) ) {
             return '';
@@ -120,7 +129,7 @@ Polymer( {
 
     _onICal: function () {
         var cal_single = ics();
-        var end = new Date( this.selected.start );
+        var end = new Date( this.selected.start.replace(/-/g, "/"));
         end.setHours( end.getHours() + 1 );
         var endTime = end.toLocaleString();
         var description = window.location.href.split( "?" )[ 0 ];
