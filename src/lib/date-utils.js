@@ -39,8 +39,9 @@
         if ( format.indexOf( 'i' ) >= 0 ) {
             fmtObj.minute = 'numeric';
         }
-        if ( format.indexOf( 'a' ) >= 0 ) {
-            fmtObj.hour12 = true;
+        //default is true
+        if ( format.indexOf( 'a' ) < 0 ) {
+            fmtObj.hour12 = false;
         }
 
         for ( var prop in fmtObj ) {

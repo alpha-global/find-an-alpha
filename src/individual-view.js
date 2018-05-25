@@ -42,6 +42,9 @@ Polymer( {
             type: String,
             computed: '_formatDay(selected.start)'
         },
+        hour24: {
+            type: Boolean
+        },
         units: {
             type: String,
             value: "km"
@@ -123,7 +126,13 @@ Polymer( {
 
         var date = new Date( time );
 
-        var t = dateFormat( date, 'H i a' );
+        if (this.hour24){
+            var format = "H i";
+        }else{
+            var format = "H i a";
+        }
+
+        var t = dateFormat( date, format );
         return t;
     },
 

@@ -111,6 +111,10 @@ FindAnAlpha = Polymer( {
 				return defaults;
 			}
 		},
+		hour24: {
+			type: Boolean,
+			value: false
+		},
 		gaOptions: {
 			type: Object,
 			value: {}
