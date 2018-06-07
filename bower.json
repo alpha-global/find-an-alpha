@@ -30,10 +30,10 @@
     "web-animations-js": "web-animations/web-animations-js#^2.2.2",
     "google-map": "^2.0.0",
     "geo-location": "^1.0.6",
-    "google-map-markerclusterer": "^1.0.2"
+    "google-map-markerclusterer": "^1.0.2",
+    "iron-signals": "^1.0.3"
   },
   "dependencies": {
-    "webcomponentsjs": "^0.7.24",
-    "iron-signals": "^1.0.3"
+    "webcomponentsjs": "^0.7.24"
   }
 }
