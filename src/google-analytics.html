@@ -1,4 +1,4 @@
-<link rel="import" 
+<link rel="import"
       href="/bower_components/iron-signals/iron-signals.html">
 
 <dom-module id="google-analytics">
@@ -8,26 +8,29 @@
 </dom-module>
 <script>
 
-    Polymer({
-        is:"google-analytics",
-        ready: function(){
-            if (!window.ga){
-                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    Polymer( {
+        is: "google-analytics",
+        ready: function () {
+            if ( this.options.key === undefined || this.options.key == '' ) {
+                //console.error('Google Analytics Key is not defined.');
+                return;
             }
-            if (this.options.key === undefined || this.options.key == ''){
-                console.error('Google Analytics Key is not defined.')
-            }else{
-                ga('create', this.options['key'], 'auto', 'findAnAlpha');
+            if ( !window.ga ) {
+                ( function ( i, s, o, g, r, a, m ) {
+                i[ 'GoogleAnalyticsObject' ] = r; i[ r ] = i[ r ] || function () {
+                    ( i[ r ].q = i[ r ].q || [] ).push( arguments )
+                }, i[ r ].l = 1 * new Date(); a = s.createElement( o ),
+                    m = s.getElementsByTagName( o )[ 0 ]; a.async = 1; a.src = g; m.parentNode.insertBefore( a, m )
+                } )( window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga' );
             }
-            
+
+            ga( 'create', this.options[ 'key' ], 'auto', 'findAnAlpha' );
+
         },
         properties: {
-            options : {
+            options: {
                 type: Object,
-			    value: function ( inputs ) {
+                value: function ( inputs ) {
                     var defaults = {
                         search: {
                             Category: "Page Engagement",
@@ -62,41 +65,41 @@
                         key: 'UA-XXXXX-Y'
                     };
                     for ( var id in inputs.options ) {
-                        for (var property in defaults[id]){
+                        for ( var property in defaults[ id ] ) {
                             inputs.options[ id ][ property ] = inputs.options[ id ][ property ] || defaults[ id ][ property ];
                         }
-                         
+
                     }
                     return inputs.options;
                 }
             }
         },
 
-        trackEvent: function(e){
+        trackEvent: function ( e ) {
             let event = e.detail.event;
-            if (typeof this.options[event] !== "undefined"){
-                let label = this.getEventLabel(event, e.detail);
-                ga('findAnAlpha.send', 'event', this.options[event].Category, this.options[event].Action, label, this.options[event].Value);
+            if ( typeof this.options[ event ] !== "undefined" && typeof ga !== 'undefined' ) {
+                let label = this.getEventLabel( event, e.detail );
+                ga( 'findAnAlpha.send', 'event', this.options[ event ].Category, this.options[ event ].Action, label, this.options[ event ].Value );
             }
         },
-        getEventLabel: function(event, data){
-            let matches = this.options[event].Label.match(/{{\s*[\w\.]+\s*}}/g) ;
-            if (matches != null){
-                let find = matches[0].match(/[\w\.]+/)[0].toLowerCase();
+        getEventLabel: function ( event, data ) {
+            let matches = this.options[ event ].Label.match( /{{\s*[\w\.]+\s*}}/g );
+            if ( matches != null ) {
+                let find = matches[ 0 ].match( /[\w\.]+/ )[ 0 ].toLowerCase();
                 let label = "";
-                switch(event){
+                switch ( event ) {
                     case "search":
-                        switch (find){
+                        switch ( find ) {
                             case "placename":
                             default:
                                 label = data.place;
                         }
                         break;
                     case "calendar":
-                    case "marker" : 
-                        switch (find){
+                    case "marker":
+                        switch ( find ) {
                             case "name":
-                                label = data.alpha.label; 
+                                label = data.alpha.label;
                                 break;
                             case "id":
                             default:
@@ -104,7 +107,7 @@
                         }
                         break;
                     case "contact":
-                        switch (find){
+                        switch ( find ) {
                             case "email":
                             case "mail":
                             default:
@@ -116,8 +119,8 @@
                 }
                 return label;
             }
-            return this.options[event].Label;
+            return this.options[ event ].Label;
         }
-    })
+    } )
 
 </script>

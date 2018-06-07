@@ -34,7 +34,10 @@
         <p>[[day]] @ [[time]]</p>
         <p>[[i18n.findDetailType]]: [[selected.type]]</p>
 
-        <p>[[i18n.findDetailLocation]]: [[selected.location]]</p>
+        <template is="dom-if"
+                  if="[[selected.location]]">
+          <p>[[i18n.findDetailLocation]]: [[selected.location]]</p>
+        </template>
 
         <template is="dom-if"
                   if="[[selected.email]]">

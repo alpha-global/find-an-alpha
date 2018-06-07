@@ -16,3 +16,7 @@ Find an Alpha Geo Map
 ## v1.2.0
 * Added i18n support
 * Removed momentjs dependency
+
+## v1.3.0
+* Google analytics
+* Conditionally show address

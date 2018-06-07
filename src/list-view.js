@@ -42,7 +42,7 @@ Polymer( {
             value: function ( inputs ) {
                 var defaults = {
                     errorGeoNoResults: "Sorry, we couldn't find any Alphas in:",
-                    errorLimitedResults: 'Only {num} result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.'
+                    errorLimitedResults: 'Only {{num}} result(s) were found with your search criteria.<br />Try broadening your search radius to find more Alphas.'
                     // @todo if we moved to supported pluralization
                     //errorLimitedResults: 'Only {num, plural, =1 {one result was} other {{{num}} results were } found with your search criteria.<br />Try broadening your search radius to find more Alphas.'
                 };
@@ -122,7 +122,7 @@ Polymer( {
         }
 
         //quick fix for Safari not support date format "YYYY-MM-DD"
-        raw = raw.replace(/-/g, "/");
+        raw = raw.replace( /-/g, "/" );
         var time = Date.parse( raw );
         if ( isNaN( time ) ) {
             return '';
