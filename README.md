@@ -20,3 +20,6 @@ Find an Alpha Geo Map
 ## v1.3.0
 * Google analytics
 * Conditionally show address
+
+## v1.3.1
+* Add language to google api include to localize map

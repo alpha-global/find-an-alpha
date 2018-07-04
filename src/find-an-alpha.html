@@ -40,148 +40,149 @@
       href="../css/fonts.min.css" />
 
 <dom-module id="find-an-alpha">
-      <template strip-whitespace>
+	<template strip-whitespace>
 
-            <style include="module:find-an-alpha"></style>
-            <content></content>
+		<style include="module:find-an-alpha"></style>
+		<content></content>
 
-            <geo-location id="geoLocation"
-                          on-geo-response="onGeoLocate"
-                          on-geo-error="onGeoError"
-                          idle="true"></geo-location>
+		<geo-location id="geoLocation"
+		              on-geo-response="onGeoLocate"
+		              on-geo-error="onGeoError"
+		              idle="true"></geo-location>
 
-            <google-map-markerclusterer id="markerClusterer"
-                                        map="{{map}}"></google-map-markerclusterer>
-            <div id="viewPanel">
-                  <iron-pages id="ironPages"
-                              selected="0"
-                              on-iron-resize="triggerResize">
-                        <div id="search">
-                              <paper-button raised
-                                            id="find-my-location"
-                                            on-tap="shareLocation">[[i18n.findLocationButton]]</paper-button>
+		<google-map-markerclusterer id="markerClusterer"
+		                            map="{{map}}"></google-map-markerclusterer>
+		<div id="viewPanel">
+			<iron-pages id="ironPages"
+			            selected="0"
+			            on-iron-resize="triggerResize">
+				<div id="search">
+					<paper-button raised
+					              id="find-my-location"
+					              on-tap="shareLocation">[[i18n.findLocationButton]]</paper-button>
 
-                              <form is="iron-form"
-                                    id="searchForm"
-                                    method="get"
-                                    action="[[api]]"
-                                    on-keydown="onKeyDown"
-                                    on-iron-form-response="onResult"
-                                    on-iron-form-error="_onError">
+					<form is="iron-form"
+					      id="searchForm"
+					      method="get"
+					      action="[[api]]"
+					      on-keydown="onKeyDown"
+					      on-iron-form-response="onResult"
+					      on-iron-form-error="_onError">
 
-                                    <input type="hidden"
-                                           name="latitude"
-                                           value="[[search_latitude]]" />
-                                    <input type="hidden"
-                                           name="longitude"
-                                           value="[[search_longitude]]" />
-                                    <input type="hidden"
-                                           name="place_id"
-                                           value="[[place_id]]" />
+						<input type="hidden"
+						       name="latitude"
+						       value="[[search_latitude]]" />
+						<input type="hidden"
+						       name="longitude"
+						       value="[[search_longitude]]" />
+						<input type="hidden"
+						       name="place_id"
+						       value="[[place_id]]" />
 
-                                    <div id="fieldset">
-                                          <input id="placesSearch"
-                                                 placeholder="[[i18n.findAddressPlaceholder]]"
-                                                 type="search" />
-
-
-                                          <template is="dom-if"
-                                                    if="[[dates.length]]">
-                                                <option-select class="form-layout"
-                                                               on-change="submitForm"
-                                                               property="starting-in"
-                                                               label="[[i18n.findLabelStartingIn]]"
-                                                               options="[[dates]]"></option-select>
-                                          </template>
-
-                                          <template is="dom-if"
-                                                    if="[[languages.length]]">
-                                                <option-select class="form-layout"
-                                                               on-change="submitForm"
-                                                               property="language"
-                                                               label="[[i18n.findLabelLanguage]]"
-                                                               options="[[languages]]"></option-select>
-                                          </template>
-
-                                          <template is="dom-if"
-                                                    if="[[ages.length]]">
-                                                <option-select class="form-layout"
-                                                               on-change="submitForm"
-                                                               property="age"
-                                                               label="[[i18n.findLabelAge]]"
-                                                               options="[[ages]]"></option-select>
-                                          </template>
-
-                                          <template is="dom-if"
-                                                    if="[[radiuses.length]]">
-                                                <option-select class="form-layout"
-                                                               on-change="submitForm"
-                                                               property="radius"
-                                                               label="[[i18n.findLabelRadius]]"
-                                                               options="[[radiuses]]"></option-select>
-                                          </template>
-                                    </div>
+						<div id="fieldset">
+							<input id="placesSearch"
+							       placeholder="[[i18n.findAddressPlaceholder]]"
+							       type="search" />
 
 
+							<template is="dom-if"
+							          if="[[dates.length]]">
+								<option-select class="form-layout"
+								               on-change="submitForm"
+								               property="starting-in"
+								               label="[[i18n.findLabelStartingIn]]"
+								               options="[[dates]]"></option-select>
+							</template>
 
-                                    <div id="errorMessage"
-                                         hidden></div>
-                              </form>
-                        </div>
+							<template is="dom-if"
+							          if="[[languages.length]]">
+								<option-select class="form-layout"
+								               on-change="submitForm"
+								               property="language"
+								               label="[[i18n.findLabelLanguage]]"
+								               options="[[languages]]"></option-select>
+							</template>
 
-                        <div id="resultsView">
-                              <div id="nav-bar">
-                                    <a id="backToSearch"
-                                       on-tap="backToSearch"
-                                       class="icon-edit">
-                                          [[i18n.findEditSearchButton]]</a>
-                                    <a id="backToList"
-                                       hidden
-                                       on-click="_onClose"
-                                       class="icon-arrow-circle-left">
-                                          [[i18n.findBackButton]]</a>
-                              </div>
-                              <neon-animated-pages id="list"
-                                                   selected="0">
-                                    <list-view id="listView"
-                                               i18n="[[i18n]]"
-                                               data="[[resultList]]"
-                                               units="[[measurementUnits]]"
-                                               count="[[count]]"
-                                               on-item-click="_onItemClick"
-                                               selected="{{selected}}"></list-view>
-                                    <individual-view id="individualView"
-                                                     i18n="[[i18n]]"
-                                                     selected="[[selected]]"
-                                                     site-title="[[siteTitle]]"
-                                                     hour24="[[hour24]]"
-                                                     units="[[measurementUnits]]"></individual-view>
-                              </neon-animated-pages>
-                        </div>
+							<template is="dom-if"
+							          if="[[ages.length]]">
+								<option-select class="form-layout"
+								               on-change="submitForm"
+								               property="age"
+								               label="[[i18n.findLabelAge]]"
+								               options="[[ages]]"></option-select>
+							</template>
+
+							<template is="dom-if"
+							          if="[[radiuses.length]]">
+								<option-select class="form-layout"
+								               on-change="submitForm"
+								               property="radius"
+								               label="[[i18n.findLabelRadius]]"
+								               options="[[radiuses]]"></option-select>
+							</template>
+						</div>
 
 
-                  </iron-pages>
 
-                  <google-map id="googleMap"
-                              map="{{map}}"
-                              latitude="[[latitude]]"
-                              longitude="[[longitude]]"
-                              api-key="[[apiKey]]"
-                              on-google-map-ready="_mapsReady"
-                              zoom="[[zoom]]">
-                        <template is="dom-if"
-                                  if="[[isLoading]]">
-                              <div id='mapsOverlay'>
-                                    <ajax-loader active="true"></ajax-loader>
-                              </div>
-                        </template>
-                  </google-map>
-            </div>
+						<div id="errorMessage"
+						     hidden></div>
+					</form>
+				</div>
 
-            <google-analytics options="[[gaOptions]]"></google-analytics>
+				<div id="resultsView">
+					<div id="nav-bar">
+						<a id="backToSearch"
+						   on-tap="backToSearch"
+						   class="icon-edit">
+							[[i18n.findEditSearchButton]]</a>
+						<a id="backToList"
+						   hidden
+						   on-click="_onClose"
+						   class="icon-arrow-circle-left">
+							[[i18n.findBackButton]]</a>
+					</div>
+					<neon-animated-pages id="list"
+					                     selected="0">
+						<list-view id="listView"
+						           i18n="[[i18n]]"
+						           data="[[resultList]]"
+						           units="[[measurementUnits]]"
+						           count="[[count]]"
+						           on-item-click="_onItemClick"
+						           selected="{{selected}}"></list-view>
+						<individual-view id="individualView"
+						                 i18n="[[i18n]]"
+						                 selected="[[selected]]"
+						                 site-title="[[siteTitle]]"
+						                 hour24="[[hour24]]"
+						                 units="[[measurementUnits]]"></individual-view>
+					</neon-animated-pages>
+				</div>
 
-      </template>
 
-      <script src="./find-an-alpha.js"></script>
+			</iron-pages>
+
+			<google-map id="googleMap"
+			            map="{{map}}"
+			            latitude="[[latitude]]"
+			            longitude="[[longitude]]"
+			            language="[[i18nLocale]]"
+			            api-key="[[apiKey]]"
+			            on-google-map-ready="_mapsReady"
+			            zoom="[[zoom]]">
+				<template is="dom-if"
+				          if="[[isLoading]]">
+					<div id='mapsOverlay'>
+						<ajax-loader active="true"></ajax-loader>
+					</div>
+				</template>
+			</google-map>
+		</div>
+
+		<google-analytics options="[[gaOptions]]"></google-analytics>
+
+	</template>
+
+	<script src="./find-an-alpha.js"></script>
 
 </dom-module>

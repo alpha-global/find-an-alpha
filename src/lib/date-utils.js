@@ -39,6 +39,18 @@
 		if ( format.indexOf( 'i' ) >= 0 ) {
 			fmtObj.minute = 'numeric';
 		}
+
+		if ( format.indexOf( 'z' ) >= 0 ) {
+			fmtObj.timeZoneName = 'short';
+		}
+		if ( format.indexOf( 'Z' ) >= 0 ) {
+			fmtObj.timeZoneName = 'long';
+		}
+
+		if ( format.indexOf( 'UTC' ) >= 0 ) {
+			fmtObj.timeZone = 'UTC';
+		}
+
 		//default is true
 		if ( format.indexOf( 'a' ) < 0 ) {
 			fmtObj.hour12 = false;
