@@ -23,3 +23,7 @@ Find an Alpha Geo Map
 
 ## v1.3.1
 * Add language to google api include to localize map
+
+## v1.3.2
+* Added contact event on email address click
+* Added name,id label replacement for GA event
