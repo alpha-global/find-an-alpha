@@ -71,5 +71,38 @@
 	window.dateSetLocale = function ( locale ) {
 		CURRENT_LOCALE = locale;
 	}
+	window.getDateLocale = function () {
+		return CURRENT_LOCALE;
+	}
+
+	window.isLocaleEnglish = function () {
+		return CURRENT_LOCALE.indexOf( 'en' ) === 0;
+	}
+
+	window.isRTL = function ( locale ) {
+		var isrtl =
+			[
+				'ae',	/* Avestan */
+				'ar',   /* 'العربية', Arabic */
+				'arc',  /* Aramaic */
+				'bcc',  /* 'بلوچی مکرانی', Southern Balochi */
+				'bqi',  /* 'بختياري', Bakthiari */
+				'ckb',  /* 'Soranî / کوردی', Sorani */
+				'dv',   /* Dhivehi */
+				'fa',   /* 'فارسی', Persian */
+				'glk',  /* 'گیلکی', Gilaki */
+				'he',   /* 'עברית', Hebrew */
+				'ku',   /* 'Kurdî / كوردی', Kurdish */
+				'mzn',  /* 'مازِرونی', Mazanderani */
+				'nqo',  /* N'Ko */
+				'pnb',  /* 'پنجابی', Western Punjabi */
+				'ps',   /* 'پښتو', Pashto, */
+				'sd',   /* 'سنڌي', Sindhi */
+				'ug',   /* 'Uyghurche / ئۇيغۇرچە', Uyghur */
+				'ur',   /* 'اردو', Urdu */
+				'yi'    /* 'ייִדיש', Yiddish */
+			].indexOf( locale || CURRENT_LOCALE ) >= 0;
+		return isrtl;
+	}
 } )();
 

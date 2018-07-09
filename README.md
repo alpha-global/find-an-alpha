@@ -27,3 +27,6 @@ Find an Alpha Geo Map
 ## v1.3.2
 * Added contact event on email address click
 * Added name,id label replacement for GA event
+
+## v1.3.3
+* Update individual result view to show repeating style date

@@ -6,38 +6,38 @@
       href="../css/modules/list-view.html">
 
 <dom-module id="list-view">
-  <template strip-whitespace>
-    <style include="module:list-view"></style>
+	<template strip-whitespace>
+		<style include="module:list-view"></style>
 
-    <div id="alerts"
-         hidden></div>
+		<div id="alerts"
+		     hidden></div>
 
-    <div id="alphasList"
-         class="main">
-      <template is="dom-repeat"
-                items="{{data}}"
-                id="locationList">
-        <div index$="{{index}}"
-             id="location"
-             on-tap="_selectItem"
-             class="single animating">
-          <div>
-            <h2>[[item.mark]]. [[item.label]]</h2>
-            <span>
-              <i class="icon-clock-o"></i>[[_formatDate(item.start)]]</span>
-          </div>
-          <template is="dom-if"
-                    if={{item.distance}}>
-            <p>[[item.distance]][[units]]</p>
-          </template>
-        </div>
-      </template>
-      <array-selector id="selector"
-                      items="{{data}}"
-                      selected="{{selected}}"></array-selector>
-    </div>
-  </template>
+		<div id="alphasList"
+		     class="main">
+			<template is="dom-repeat"
+			          items="{{data}}"
+			          id="locationList">
+				<div index$="{{index}}"
+				     id="location"
+				     on-tap="_selectItem"
+				     class="single animating">
+					<div>
+						<h2>[[item.mark]]. [[item.label]]</h2>
+						<span>
+							<i class="icon-clock-o"></i>[[_formatDate(item.start)]]</span>
+					</div>
+					<template is="dom-if"
+					          if={{item.distance}}>
+						<p>[[_formatDistance(item.distance)]]</p>
+					</template>
+				</div>
+			</template>
+			<array-selector id="selector"
+			                items="{{data}}"
+			                selected="{{selected}}"></array-selector>
+		</div>
+	</template>
 
-  <script src="./list-view.js"></script>
+	<script src="./list-view.js"></script>
 
 </dom-module>

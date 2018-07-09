@@ -1,156 +1,167 @@
 Polymer( {
-    is: 'individual-view',
-    behaviors: [
-        Polymer.NeonAnimatableBehavior
-    ],
-    properties: {
-        sharedElements: {
-            type: Object,
-            value: function () {
-                return {
-                    'hero': this.$.main
-                };
-            }
-        },
-        animationConfig: {
-            type: Object,
-            value: function () {
-                return {
-                    'entry': [ {
-                        name: 'hero-animation',
-                        id: 'hero',
-                        toPage: this
-                    } ],
-                    'exit': [ {
-                        name: 'scale-down-animation',
-                        node: this.$.main,
-                        transformOrigin: '50% 50%',
-                        axis: 'y'
-                    } ]
-                }
-            }
-        },
-        date: {
-            type: String,
-            computed: '_formatDate(selected.start)'
-        },
-        time: {
-            type: String,
-            computed: '_formatTime(selected.start)'
-        },
-        day: {
-            type: String,
-            computed: '_formatDay(selected.start)'
-        },
-        hour24: {
-            type: Boolean
-        },
-        units: {
-            type: String,
-            value: "km"
-        },
-        selected: {
-            type: Object
-        },
-        siteTitle: {
-            type: String,
-            value: 'Alpha'
-        },
-        i18n: {
-            type: Object,
-            value: function ( inputs ) {
-                var defaults = {
-                    findDetailType: 'Type',
-                    findDetailLocation: 'Location',
-                    findDetailEmail: 'Email',
-                    findDetailPhone: 'Phone',
-                    findMoreInfo: 'For more information about this Alpha, please contact the organizer below.',
-                    findContactButton: 'Contact',
-                    findICalButton: 'Download iCal'
-                };
-                for ( var id in defaults ) {
-                    inputs.i18n[ id ] = inputs.i18n[ id ] || defaults[ id ];
-                }
-                return defaults;
-            }
-        },
+	is: 'individual-view',
+	behaviors: [
+		Polymer.NeonAnimatableBehavior
+	],
+	properties: {
+		sharedElements: {
+			type: Object,
+			value: function () {
+				return {
+					'hero': this.$.main
+				};
+			}
+		},
+		animationConfig: {
+			type: Object,
+			value: function () {
+				return {
+					'entry': [ {
+						name: 'hero-animation',
+						id: 'hero',
+						toPage: this
+					} ],
+					'exit': [ {
+						name: 'scale-down-animation',
+						node: this.$.main,
+						transformOrigin: '50% 50%',
+						axis: 'y'
+					} ]
+				}
+			}
+		},
+		timeDisplay: {
+			type: String,
+			computed: '_formatTimeDisplay(selected.start)'
+		},
+		date: {
+			type: String,
+			computed: '_formatDate(selected.start)'
+		},
+		distance: {
+			type: String,
+			computed: '_formatDistance( selected.distance )'
+		},
+		selected: {
+			type: Object
+		},
+		siteTitle: {
+			type: String,
+			value: 'Alpha'
+		},
+		i18n: {
+			type: Object,
+			value: function ( inputs ) {
+				var defaults = {
+					findDetailType: 'Type',
+					findDetailLocation: 'Location',
+					findDetailEmail: 'Email',
+					findDetailPhone: 'Phone',
+					findMoreInfo: 'For more information about this Alpha, please contact the organizer below.',
+					findContactButton: 'Contact',
+					findICalButton: 'Download iCal'
+				};
+				for ( var id in defaults ) {
+					inputs.i18n[ id ] = inputs.i18n[ id ] || defaults[ id ];
+				}
+				return defaults;
+			}
+		},
 
-    },
+	},
 
-    _formatDate: function ( raw ) {       
+	_formatDistance ( distance ) {
+		var fmtter = new Intl.NumberFormat( getDateLocale() );
+		var parts = [ fmtter.format( distance ), this.i18n.distanceUnit ];
+		if ( isRTL() ) {
+			parts = parts.reverse();
+		}
+		return parts.join( '' );
+	},
 
-        if ( !raw ) {
-            return '';
-        }
-         //quick fix for Safari not support date format "YYYY-MM-DD"
-        raw = raw.replace(/-/g, "/");
+	_formatTimeDisplay: function ( raw ) {
+		if ( !raw ) {
+			return '';
+		}
+		//quick fix for Safari not support date format "YYYY-MM-DD"
+		raw = raw.replace( /-/g, "/" );
 
-        var time = Date.parse( raw );
-        if ( isNaN( time ) ) {
-            return '';
-        }
+		var time = Date.parse( raw );
+		if ( isNaN( time ) ) {
+			return '';
+		}
+		var date = new Date( time );
+		var dow = this.i18n[ 'dow_' + date.getDay() ];
+		var text = '';
 
-        return dateFormat( new Date( time ), 'JJ MMMM Do, YYYY' );
+		// date time formatter
+		var fmtter = new Intl.DateTimeFormat( getDateLocale(), { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' } );
 
-    },
+		// if format to parts supported then goooood
+		if ( fmtter[ 'formatToParts' ] ) {
+			var parts = fmtter[ 'formatToParts' ]( date );
 
-    _formatDay: function ( raw ) {
-        if ( !raw ) {
-            return '';
-        }
-         //quick fix for Safari not support date format "YYYY-MM-DD"
-        raw = raw.replace(/-/g, "/");
+			// dont need timezone name
+			parts.pop();
 
-        var time = Date.parse( raw );
-        if ( isNaN( time ) ) {
-            return '';
-        }
+			if ( dow ) {
+				// replace weekday with our plural
+				parts[ 0 ].value = dow;
+			}
+			parts = parts.map( function ( item ) { return item.value } );
 
-        var date = new Date( time );
+		}
+		// if formatToParts not supported, build the string always using the @ symbol if english ( decent fallback )
+		else {
+			if ( !dow ) {
+				dow = new Intl.DateTimeFormat( getDateLocale(), { weekday: 'long' } ).format( date );
+			}
+			var dtime = new Intl.DateTimeFormat( getDateLocale(), { hour: 'numeric', minute: '2-digit' } ).format( date );
+			var parts = [ dow, ( isLocaleEnglish() ? ' @ ' : ' ' ), dtime ];
+		}
 
-        var dow = dateFormat( date, 'JJ' );
-        return dow;
-    },
+		if ( isRTL() ) {
+			parts = parts.reverse();
+		}
 
-    _formatTime: function ( raw ) {
-        if ( !raw ) {
-            return '';
-        }
-         //quick fix for Safari not support date format "YYYY-MM-DD"
-        raw = raw.replace(/-/g, "/");
+		text = parts.join( '' );
 
-        var time = Date.parse( raw );
-        if ( isNaN( time ) ) {
-            return '';
-        }
+		return text;
 
-        var date = new Date( time );
+	},
 
-        if (this.hour24){
-            var format = "H i";
-        }else{
-            var format = "H i a";
-        }
+	_formatDate: function ( raw ) {
 
-        var t = dateFormat( date, format );
-        return t;
-    },
+		if ( !raw ) {
+			return '';
+		}
+		//quick fix for Safari not support date format "YYYY-MM-DD"
+		raw = raw.replace( /-/g, "/" );
 
-    _onICal: function () {
-        var cal_single = ics();
-        var end = new Date( this.selected.start.replace(/-/g, "/"));
-        end.setHours( end.getHours() + 1 );
-        var endTime = end.toLocaleString();
-        var description = window.location.href.split( "?" )[ 0 ];
-        cal_single.addEvent( this.selected.label, description, this.selected.location, this.selected.start, endTime );
-        cal_single.download( 'alpha-event' );
+		var time = Date.parse( raw );
+		if ( isNaN( time ) ) {
+			return '';
+		}
 
-        this.fire('iron-signal', {name: 'track-event', data:{event:"calendar", alpha: this.selected}});
-    },
+		return dateFormat( new Date( time ), 'JJ MMMM Do, YYYY' );
 
-    _onContact: function(e) {
-        this.fire('iron-signal', {name: 'track-event', data:{event:"contact", email: this.selected.email}});
-    }
+	},
+
+	_onICal: function () {
+		var cal_single = ics();
+		var end = new Date( this.selected.start.replace( /-/g, "/" ) );
+		end.setHours( end.getHours() + 1 );
+		var endTime = end.toLocaleString();
+		var description = window.location.href.split( "?" )[ 0 ];
+		cal_single.addEvent( this.selected.label, description, this.selected.location, this.selected.start, endTime );
+		cal_single.download( 'alpha-event' );
+
+		this.fire( 'iron-signal', { name: 'track-event', data: { event: "calendar", alpha: this.selected } } );
+	},
+
+	_onContact: function ( e ) {
+		this.fire( 'iron-signal', { name: 'track-event', data: { event: "contact", email: this.selected.email } } );
+	}
 
 
 

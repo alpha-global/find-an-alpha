@@ -66,6 +66,10 @@ FindAnAlpha = Polymer( {
 			type: Array,
 			value: null
 		},
+		radiusSelectOptions: {
+			type: Array,
+			computed: '_translateRadiuses( radiuses, i18n, i18nLocale )'
+		},
 		dates: {
 			type: Array,
 			value: null
@@ -110,10 +114,6 @@ FindAnAlpha = Polymer( {
 				}
 				return defaults;
 			}
-		},
-		hour24: {
-			type: Boolean,
-			value: false
 		},
 		gaOptions: {
 			type: Object,
@@ -288,7 +288,6 @@ FindAnAlpha = Polymer( {
 		this.loadedOnce = true;
 
 		this.count = event.detail.response.count;
-		this.measurementUnits = event.detail.response.radius.units;
 
 		this.$.markerClusterer.markers = [];
 
@@ -444,6 +443,18 @@ FindAnAlpha = Polymer( {
 		this.$.errorMessage.hidden = false;
 		this.triggerResize();
 	},
+
+	_translateRadiuses: function ( radiuses, i18n, locale ) {
+
+		var units = i18n.distanceUnit || 'km';
+		var is_rtl = isRTL( locale );
+		for ( var i = 0; i < radiuses.length; i++ ) {
+			var num = new Intl.NumberFormat( locale ).format( radiuses[ i ].value );
+			radiuses[ i ].label = ( is_rtl ? [ units, num ] : [ num, units ] ).join( ' ' );
+
+		}
+		return radiuses;
+	}
 
 } );
 

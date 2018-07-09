@@ -2,48 +2,47 @@
 <html lang="en">
 
 <head>
-      <meta charset="utf-8">
-      <meta name="viewport"
-            content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+	<meta charset="utf-8">
+	<meta name="viewport"
+	      content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
-      <title> find-an-alpha demo</title>
-      <script>
-            ( function () { if ( 'registerElement' in document && 'import' in document.createElement( 'link' ) && 'content' in document.createElement( 'template' ) ) { } else { var e = document.createElement( 'script' ); e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js'; document.head.appendChild( e ); } } )();
-      </script>
+	<title> find-an-alpha demo</title>
+	<script>
+		( function () { if ( 'registerElement' in document && 'import' in document.createElement( 'link' ) && 'content' in document.createElement( 'template' ) ) { } else { var e = document.createElement( 'script' ); e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js'; document.head.appendChild( e ); } } )();
+	</script>
 
 
-      <link rel="import"
-            href="./src/find-an-alpha.html">
+	<link rel="import"
+	      href="./src/find-an-alpha.html">
 </head>
 
 <body>
-      <link rel="stylesheet"
-            href="./css/index.min.css" />
-      <div class="wrap">
+	<link rel="stylesheet"
+	      href="./css/index.min.css" />
+	<div class="wrap">
 
-            <find-an-alpha api='https://canada.alphabuilder.com/wp-json/wp/v2/alpha/search'
-                           api-key='AIzaSyCDg-fW9cJEOCEPq7pmcugfKO8lT6Ow-CI'
-                           i18n-locale="en-ZH"
-                           i18n='{"findDetailEmail":"Email","findBackButton":"arri\u00e8re"}'
-                           hour24
-                           ages='[{"value":"","label":"Any"},{"value":"adults","label":"Adults"},{"value":"students","label":"College\/University"},{"value":"seniors","label":"Seniors"},{"value":"youth","label":"Youth"}]'
-      
-                           site-title="Alpha Canada"
-                           radiuses='[{"label":"10km","value":"10km"},{"label":"25km","value":"25km","selected":true},{"label":"50km","value":"50km"},{"label":"100km","value":"100km"}]'
-      
-                           dates='[{"label":"1 Day","value":"1-day"},{"label":"1 Week","value":"1-week"},{"label":"1 Month","value":"1-month"},{"label":"3 Months","value":"3-months","selected":true},{"label":"6 Months","value":"6-months"},{"label":"Any","value":"any"}]'
-      
-                           geocode-query~="Vancouver, BC"
-                           places-options='{ "componentRestrictions" : { "country" : "CA" } }'
-                           languages='[{"value":"","label":"Select"},{"value":"Cantonese","label":"Cantonese"},{"value":"English","label":"English"},{"value":"French","label":"French"},{"value":"Mandarin","label":"Mandarin"}]'
-
-                           ga-options='{"search": {"Label" : "Search",  "Value": 0, "Action" : "Search"}, "edit":{}, "contact":{}, "key":"UA-XXXXX-Y" }'
-      
-                           latitude='56.6584707'
-                           longitude='-97.1359332'
-                           max-zoom='18'
-                           zoom='4'></find-an-alpha>
-      </div>
+		<find-an-alpha api='https://canada.alphabuilder.com/wp-json/wp/v2/alpha/search'
+		               api-key='AIzaSyCDg-fW9cJEOCEPq7pmcugfKO8lT6Ow-CI'
+		               i18n-locale="en"
+		               i18n='{"findDetailEmail":"Email","findBackButton":"arri\u00e8re", "dow_3" : "les mercredis", "distanceUnit" : "kms"}'
+		               ages='[{"value":"","label":"Any"},{"value":"adults","label":"Adults"},{"value":"students","label":"College\/University"},{"value":"seniors","label":"Seniors"},{"value":"youth","label":"Youth"}]'
+	
+		               site-title="Alpha Canada"
+		               radiuses='[{"label":"10","value":"10"},{"label":"25","value":"25","selected":true},{"label":"50","value":"50"},{"label":"100","value":"100"}]'
+	
+		               dates='[{"label":"1 Day","value":"1-day"},{"label":"1 Week","value":"1-week"},{"label":"1 Month","value":"1-month"},{"label":"3 Months","value":"3-months","selected":true},{"label":"6 Months","value":"6-months"},{"label":"Any","value":"any"}]'
+	
+		               geocode-query~="Vancouver, BC"
+		               places-options='{ "componentRestrictions" : { "country" : "CA" } }'
+		               languages='[{"value":"","label":"Select"},{"value":"Cantonese","label":"Cantonese"},{"value":"English","label":"English"},{"value":"French","label":"French"},{"value":"Mandarin","label":"Mandarin"}]'
+	
+		               ga-options='{"search": {"Label" : "Search",  "Value": 0, "Action" : "Search"}, "edit":{}, "contact":{}, "key":"UA-XXXXX-Y" }'
+	
+		               latitude='56.6584707'
+		               longitude='-97.1359332'
+		               max-zoom='18'
+		               zoom='4'></find-an-alpha>
+	</div>
 
 </body>
 
