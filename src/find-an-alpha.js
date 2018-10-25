@@ -396,12 +396,49 @@ FindAnAlpha = Polymer( {
 
 		var markers = [];
 		var bounds = new google.maps.LatLngBounds();
+
+		var lnghash = {};
+
+		/**
+		 * Create a lookup of lat,lngs to group duplicates to spread them out
+		 */
+		this.resultList.forEach( function ( element, index ) {
+
+			var myLatLng = new google.maps.LatLng( element.lat, element.lng );
+			var key = element.lat + ',' + element.lng;
+			if ( lnghash[ key ] ) {
+				lnghash[ key ].push( element );
+			} else {
+				lnghash[ key ] = [ element ]
+			}
+
+		} );
+
+		/**
+		 * Go through each marker
+		 */
 		this.resultList.forEach( function ( element, index ) {
 
 			var mark = Number( index ) + 1;
 			self.resultList[ index ].mark = mark;
 
-			var myLatLng = new google.maps.LatLng( element.lat, element.lng );
+			var key = element.lat + ',' + element.lng;
+			var myLatLng;
+
+			if ( lnghash[ key ].length === 1 ) {
+				myLatLng = new google.maps.LatLng( element.lat, element.lng );
+			} else {
+				// calculate the radius to spread them around by
+				var degPerItem = 360 / lnghash[ key ].length,
+					itemIndex = lnghash[ key ].indexOf( element ),
+					degs = degPerItem * itemIndex,
+					radius = 12000000,
+					distance = lnghash[ key ].length / 2;
+
+				myLatLng = google.maps.geometry.spherical.computeOffset( new google.maps.LatLng( element.lat, element.lng ), distance, degs, radius );
+			}
+
+
 			var newmarker = new google.maps.Marker( {
 				position: myLatLng,
 				label: String( mark )

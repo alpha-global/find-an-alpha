@@ -30,3 +30,6 @@ Find an Alpha Geo Map
 
 ## v1.3.3
 * Update individual result view to show repeating style date
+
+## v1.3.4
+ * Spread out duplicate lat/lngs
