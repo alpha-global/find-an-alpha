@@ -51,16 +51,16 @@
 					<p>[[i18n.findDetailPhone]]: [[selected.phone]]</p>
 				</template>
 
-				<br/>
-				<p>[[i18n.findMoreInfo]]</p>
+				<p id="findMoreInfoText">[[i18n.findMoreInfo]]</p>
 
 				<p class="alpha-buttons">
-					<a href="mailto:[[selected.email]]">
-						<paper-button raised
-						              id="Contact"
-						              on-tap="_onContact"
-						              class="red">[[i18n.findContactButton]]</paper-button>
-					</a>
+
+					<paper-button raised
+									id="Contact"
+									on-tap="_onContact"
+									
+									class="red"><a href="mailto:[[selected.email]]">[[i18n.findContactButton]]</a></paper-button>
+
 					<paper-button raised
 					              id="ical"
 					              on-tap="_onICal"

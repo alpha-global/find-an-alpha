@@ -33,3 +33,6 @@ Find an Alpha Geo Map
 
 ## v1.3.4
  * Spread out duplicate lat/lngs
+
+## v.1.3.5
+ * Fix line height on buttons that break to 2 lines
