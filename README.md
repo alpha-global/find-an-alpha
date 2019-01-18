@@ -36,3 +36,6 @@ Find an Alpha Geo Map
 
 ## v.1.3.5
  * Fix line height on buttons that break to 2 lines
+
+## v.1.3.6
+ * Only show distance if result is an establishment or user location

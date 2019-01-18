@@ -227,13 +227,13 @@ FindAnAlpha = Polymer( {
 
 	_onPlaceSelected: function () {
 
-		var place = this.autoComplete.getPlace();
+		this.currentPlace = this.autoComplete.getPlace();
 
-		this.search_latitude = place.geometry.location.lat();
-		this.search_longitude = place.geometry.location.lng();
+		this.search_latitude = this.currentPlace.geometry.location.lat();
+		this.search_longitude = this.currentPlace.geometry.location.lng();
 
 
-		this.fire( 'iron-signal', { name: 'track-event', data: { event: "search", place: place.formatted_address } } );
+		this.fire( 'iron-signal', { name: 'track-event', data: { event: "search", place: this.currentPlace.formatted_address } } );
 
 		this.submitForm();
 
@@ -254,6 +254,7 @@ FindAnAlpha = Polymer( {
 
 		this.search_latitude = event.detail.latitude;
 		this.search_longitude = event.detail.longitude;
+		this.currentPlace = null;
 
 		this.fire( 'iron-signal', { name: 'track-event', data: { event: "search", place: 'Find My Location' } } );
 		this.submitForm();
@@ -305,6 +306,18 @@ FindAnAlpha = Polymer( {
 			this.$.errorMessage.hidden = false;
 			this.triggerResize();
 			return;
+		}
+
+		var i = 0; len = event.detail.response.items.length;
+
+		for ( i; i < len; i++ ) {
+
+			var item = event.detail.response.items[ i ];
+
+			// only show distance if the current place is an establishment
+			if ( this.currentPlace && this.currentPlace.types.indexOf( 'establishment' ) === -1 ) {
+				item.distance = null;
+			}
 		}
 
 		this.resultList = event.detail.response.items;
