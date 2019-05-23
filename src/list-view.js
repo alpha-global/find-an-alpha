@@ -125,8 +125,6 @@ Polymer( {
 			return '';
 		}
 
-		//quick fix for Safari not support date format "YYYY-MM-DD"
-		raw = raw.replace( /-/g, "/" );
 		var time = Date.parse( raw );
 		if ( isNaN( time ) ) {
 			return '';

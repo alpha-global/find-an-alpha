@@ -21,7 +21,7 @@
 		<div id="main"
 		     class="main">
 			<div id="individual-info">
-				<h2>[[selected.mark]]. [[selected.label]]</h2>
+				<h2>[[selected.mark]]. [[selected.title]]</h2>
 				<h3>
 					<span>
 						<i class="icon-clock-o"></i>[[date]]</span>
@@ -32,23 +32,23 @@
 					</template>
 				</h3>
 				<p>[[timeDisplay]]</p>
-				<p>[[i18n.findDetailType]]: [[selected.type]]</p>
+				<p>[[i18n.findDetailType]]: [[selected.demographic]]</p>
 
 				<template is="dom-if"
-				          if="[[selected.location]]">
-					<p>[[i18n.findDetailLocation]]: [[selected.location]]</p>
+				          if="[[selected.formatted_address]]">
+					<p>[[i18n.findDetailLocation]]: [[selected.formatted_address]]</p>
 				</template>
 
 				<template is="dom-if"
-				          if="[[selected.email]]">
+				          if="[[selected.email_address]]">
 					<p>[[i18n.findDetailEmail]]:
 						<a on-tap="_onContact"
-						   href="mailto:[[selected.email]]">[[selected.email]]</a>
+						   href="mailto:[[selected.email]]">[[selected.email_address]]</a>
 					</p>
 				</template>
 				<template is="dom-if"
-				          if="[[selected.phone]]">
-					<p>[[i18n.findDetailPhone]]: [[selected.phone]]</p>
+				          if="[[selected.phone_number]]">
+					<p>[[i18n.findDetailPhone]]: [[selected.phone_number]]</p>
 				</template>
 
 				<p id="findMoreInfoText">[[i18n.findMoreInfo]]</p>
@@ -59,7 +59,7 @@
 									id="Contact"
 									on-tap="_onContact"
 									
-									class="red"><a href="mailto:[[selected.email]]">[[i18n.findContactButton]]</a></paper-button>
+									class="red"><a href="mailto:[[selected.email_address]]">[[i18n.findContactButton]]</a></paper-button>
 
 					<paper-button raised
 					              id="ical"

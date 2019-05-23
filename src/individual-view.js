@@ -32,11 +32,11 @@ Polymer( {
 		},
 		timeDisplay: {
 			type: String,
-			computed: '_formatTimeDisplay(selected.start)'
+			computed: '_formatTimeDisplay(selected.date)'
 		},
 		date: {
 			type: String,
-			computed: '_formatDate(selected.start)'
+			computed: '_formatDate(selected.date)'
 		},
 		distance: {
 			type: String,
@@ -83,8 +83,6 @@ Polymer( {
 		if ( !raw ) {
 			return '';
 		}
-		//quick fix for Safari not support date format "YYYY-MM-DD"
-		raw = raw.replace( /-/g, "/" );
 
 		var time = Date.parse( raw );
 		if ( isNaN( time ) ) {
@@ -135,8 +133,6 @@ Polymer( {
 		if ( !raw ) {
 			return '';
 		}
-		//quick fix for Safari not support date format "YYYY-MM-DD"
-		raw = raw.replace( /-/g, "/" );
 
 		var time = Date.parse( raw );
 		if ( isNaN( time ) ) {
@@ -149,18 +145,18 @@ Polymer( {
 
 	_onICal: function () {
 		var cal_single = ics();
-		var end = new Date( this.selected.start.replace( /-/g, "/" ) );
+		var end = new Date( this.selected.date );
 		end.setHours( end.getHours() + 1 );
 		var endTime = end.toLocaleString();
 		var description = window.location.href.split( "?" )[ 0 ];
-		cal_single.addEvent( this.selected.label, description, this.selected.location, this.selected.start, endTime );
+		cal_single.addEvent( this.selected.title, description, this.selected.formatted_address, this.selected.date, endTime );
 		cal_single.download( 'alpha-event' );
 
 		this.fire( 'iron-signal', { name: 'track-event', data: { event: "calendar", alpha: this.selected } } );
 	},
 
 	_onContact: function ( e ) {
-		this.fire( 'iron-signal', { name: 'track-event', data: { event: "contact", email: this.selected.email } } );
+		this.fire( 'iron-signal', { name: 'track-event', data: { event: "contact", email: this.selected.email_address } } );
 	}
 
 

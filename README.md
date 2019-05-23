@@ -39,3 +39,6 @@ Find an Alpha Geo Map
 
 ## v.1.3.6
  * Only show distance if result is an establishment or user location
+
+## v.1.4.0
+ * Update templates and response handling for new Builder API updates

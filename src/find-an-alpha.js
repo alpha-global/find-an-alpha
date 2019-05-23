@@ -288,7 +288,9 @@ FindAnAlpha = Polymer( {
 		this.isLoading = false;
 		this.loadedOnce = true;
 
-		this.count = event.detail.response.count;
+		this.count = parseInt( event.detail.xhr.getResponseHeader( 'x-wp-total' ) );
+
+
 
 		this.$.markerClusterer.markers = [];
 
@@ -308,11 +310,12 @@ FindAnAlpha = Polymer( {
 			return;
 		}
 
-		var i = 0; len = event.detail.response.items.length;
+		var i = 0; len = event.detail.response.length;
 
 		for ( i; i < len; i++ ) {
 
-			var item = event.detail.response.items[ i ];
+			var item = event.detail.response[ i ];
+			item.date = item.date.replace( /-/g, "/" ).replace( /T/, ' ' );
 
 			// only show distance if the current place is an establishment
 			if ( this.currentPlace && this.currentPlace.types.indexOf( 'establishment' ) === -1 ) {
@@ -320,7 +323,7 @@ FindAnAlpha = Polymer( {
 			}
 		}
 
-		this.resultList = event.detail.response.items;
+		this.resultList = event.detail.response;
 
 		this.$.ironPages.select( 1 );
 
