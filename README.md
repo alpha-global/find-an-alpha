@@ -45,3 +45,6 @@ Find an Alpha Geo Map
 
 ## v.1.4.1
  * Add default per_page of 150 to api requests
+
+## v.1.4.2
+ * Patch event tracking references to old api properties

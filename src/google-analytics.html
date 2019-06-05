@@ -99,14 +99,14 @@
 					case "marker":
 						switch ( find ) {
 							case "name":
-								label = data.alpha.label;
+								label = data.alpha.title;
 								break;
 							case "name,id":
-								label = data.alpha.label + " (id: " + data.alpha.ID + ")";
+								label = data.alpha.title + " (id: " + data.alpha.id + ")";
 								break;
 							case "id":
 							default:
-								label = data.alpha.ID;
+								label = data.alpha.id;
 						}
 						break;
 					case "contact":
