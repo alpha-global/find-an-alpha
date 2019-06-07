@@ -132,8 +132,20 @@ FindAnAlpha = Polymer( {
 		};
 		parent.postMessage( resizeEvent, '*' );
 	},
-
+	get_param: function ( name, url ) {
+		if ( !url ) url = location.href;
+		name = name.replace( /[\[]/, "\\\[" ).replace( /[\]]/, "\\\]" );
+		var regexS = "[\\?&]" + name + "=([^&#]*)";
+		var regex = new RegExp( regexS );
+		var results = regex.exec( url );
+		return results == null ? null : results[ 1 ];
+	},
 	ready: function () {
+
+		var rp = this.get_param( 'product', document.location.href );
+		if ( rp ) {
+			this.$.relatedToProduct.value = rp;
+		}
 
 		if ( this.i18nLocale ) {
 			dateSetLocale( this.i18nLocale );
