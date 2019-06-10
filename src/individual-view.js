@@ -55,6 +55,7 @@ Polymer( {
 				var defaults = {
 					findDetailType: 'Type',
 					findDetailLocation: 'Location',
+					findDetailMoreInfo: 'Additional Information',
 					findDetailEmail: 'Email',
 					findDetailPhone: 'Phone',
 					findMoreInfo: 'For more information about this Alpha, please contact the organizer below.',

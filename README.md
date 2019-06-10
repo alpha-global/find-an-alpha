@@ -51,3 +51,6 @@ Find an Alpha Geo Map
  
 ## v.1.4.3
  * Add ability to query for 'product' on the query params
+
+## v.1.4.4
+ * Add additional information detail field
