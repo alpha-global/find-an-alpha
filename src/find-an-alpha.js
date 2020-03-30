@@ -351,6 +351,8 @@ FindAnAlpha = Polymer( {
 
 	backToSearch: function() {
 
+		this._onClose();
+
 		// reset list view
 		this.$.list.select( 0 );
 		// go to search form
@@ -360,8 +362,6 @@ FindAnAlpha = Polymer( {
 		this.$.errorMessage.hidden = true;
 
 		this.fire( 'iron-signal', { name: 'track-event', data: { event: "edit" } } );
-
-		this._onClose();
 
 	},
 

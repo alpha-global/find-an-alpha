@@ -58,3 +58,6 @@ Find an Alpha Geo Map
 ## v1.5.0
  * Add online alpha icon
  * contact form instead of mailto
+
+## v1.5.1
+ * Patch detail view state on back to search
