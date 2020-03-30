@@ -1,4 +1,7 @@
 @import "../imports/variables.less";
+
+@import "../styles/forms.less";
+
 :host {
     display: block;
     width: 100%;
@@ -21,8 +24,7 @@
 input[type=text],
 select,
 textarea,
-option,
-{
+option {
     font-family: @theme-font;
     background: #fff;
 }
@@ -71,85 +73,6 @@ paper-button {
     margin-bottom: 18px;
 }
 
-form {
-    width: auto;
-    #fieldset {
-        border: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        >*:not(template) {
-            box-sizing: border-box;
-            width: 48.5%;
-            @media (min-width: 768px) {
-                width: 100%;
-            }
-            display: block;
-            text-align: left;
-            position: relative;
-            overflow: visible;
-            margin-top: 12px;
-            &.button-area {
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-        }
-        #placesSearch {
-            width: 100%;
-        }
-    }
-    input,
-    select {
-        appearance: none;
-        border: 1px solid @line-color;
-        box-sizing: border-box;
-        transition: all 0.30s ease-in-out;
-        outline: none;
-        color: @theme-content-color;
-        display: block;
-        width: 100%;
-        height: 50px;
-        margin: 0;
-        padding: 0px 24px;
-        font-size: 16px;
-        line-height: 1.75;
-        background-image: none;
-        &:focus,
-        &:active,
-        &:hover {
-            border: 1px solid @theme-color;
-        }
-    }
-    .selectdiv {
-        position: relative;
-    }
-    .selectdiv:after {
-        content: '< >';
-        font-size: 12px;
-        font-weight: bolder;
-        transform: rotate(90deg);
-        right: 11px;
-        /*Adjust for position however you want*/
-        color: #ccc;
-        top: 13px;
-        /*left line */
-        position: absolute;
-        pointer-events: none;
-        outline: none;
-    }
-    select {
-        &::-ms-expand {
-            display: none;
-        }
-        /* Add some styling */
-        border: 1px solid @line-color;
-        word-break: normal;
-        border-radius:0;
-    }
-}
-
 // <neon-animated-pages>
 #list {
     height: 100%;
@@ -163,9 +86,11 @@ form {
     width: 100%;
     box-sizing: border-box;
     text-align: left;
+
     p {
         margin: 0;
     }
+
     &[hidden] {
         display: none;
     }
@@ -175,6 +100,7 @@ form {
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;
+
     neon-animated-pages {
         flex-grow: 1;
     }
@@ -186,13 +112,16 @@ form {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #f1f1f1;
+
     a {
         cursor: pointer;
         display: flex;
         align-items: center;
+
         &[hidden] {
             display: none;
         }
+
         &::before {
             margin-right: 5px;
         }
@@ -211,21 +140,26 @@ form {
 }
 
 @media (min-width:768px) {
+
     #listView,
     #individualView {
         position: absolute;
     }
+
     #search {
         margin-bottom: 0;
     }
+
     #viewPanel {
         display: flex;
         flex-flow: row-reverse nowrap; //justify-content: space-between;
+
         #googleMap {
             width: 50%;
             min-width: 50%;
             margin-right: 15px;
         }
+
         #ironPages {
             flex-grow: 1;
             flex-flow: column nowrap;

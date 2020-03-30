@@ -6,7 +6,7 @@ Polymer( {
 	properties: {
 		sharedElements: {
 			type: Object,
-			value: function () {
+			value: function() {
 				return {
 					'hero': this.$.main
 				};
@@ -14,7 +14,7 @@ Polymer( {
 		},
 		animationConfig: {
 			type: Object,
-			value: function () {
+			value: function() {
 				return {
 					'entry': [ {
 						name: 'hero-animation',
@@ -49,9 +49,15 @@ Polymer( {
 			type: String,
 			value: 'Alpha'
 		},
+		hasCalendarDownload: {
+			type: String
+		},
+		contactApi: {
+			type: String
+		},
 		i18n: {
 			type: Object,
-			value: function ( inputs ) {
+			value: function( inputs ) {
 				var defaults = {
 					findDetailType: 'Type',
 					findDetailLocation: 'Location',
@@ -70,6 +76,9 @@ Polymer( {
 		},
 
 	},
+	ready: function() {
+		this.showCalendarDownload = this.hasCalendarDownload === 'true';
+	},
 
 	_formatDistance ( distance ) {
 		var fmtter = new Intl.NumberFormat( getDateLocale() );
@@ -80,7 +89,7 @@ Polymer( {
 		return parts.join( '' );
 	},
 
-	_formatTimeDisplay: function ( raw ) {
+	_formatTimeDisplay: function( raw ) {
 		if ( !raw ) {
 			return '';
 		}
@@ -107,7 +116,7 @@ Polymer( {
 				// replace weekday with our plural
 				parts[ 0 ].value = dow;
 			}
-			parts = parts.map( function ( item ) { return item.value } );
+			parts = parts.map( function( item ) { return item.value } );
 
 		}
 		// if formatToParts not supported, build the string always using the @ symbol if english ( decent fallback )
@@ -129,7 +138,7 @@ Polymer( {
 
 	},
 
-	_formatDate: function ( raw ) {
+	_formatDate: function( raw ) {
 
 		if ( !raw ) {
 			return '';
@@ -144,7 +153,7 @@ Polymer( {
 
 	},
 
-	_onICal: function () {
+	_onICal: function() {
 		var cal_single = ics();
 		var end = new Date( this.selected.date );
 		end.setHours( end.getHours() + 1 );
@@ -156,8 +165,47 @@ Polymer( {
 		this.fire( 'iron-signal', { name: 'track-event', data: { event: "calendar", alpha: this.selected } } );
 	},
 
-	_onContact: function ( e ) {
-		this.fire( 'iron-signal', { name: 'track-event', data: { event: "contact", email: this.selected.email_address } } );
+	_onShowContact: function( e ) {
+		this.showingContactForm = true;
+		this.$.main.classList.add( 'showing-form' );
+	},
+
+	_onContactSubmit: function( e ) {
+
+		e.preventDefault();
+
+		this.$.contactResponseMessage.style.display = 'none';
+
+		var name = this.$.contactName.value;
+		var email = this.$.contactEmail.value;
+
+		if ( !name ) {
+			this.$.contactName.focus();
+		} else if ( !email ) {
+			this.$.contactEmail.focus();
+		} else {
+
+			this.classList.add( 'submitting' );
+			this.$.contactForm.submit();
+		}
+	},
+	_onContactResult: function( event ) {
+
+		this.classList.remove( 'submitting' );
+		var response = event.detail.parseResponse();
+
+		this.$.contactName.value = '';
+		this.$.contactEmail.value = '';
+
+		this.$.contactResponseMessage.style.display = 'block';
+
+		this.fire( 'iron-signal', { name: 'track-event', data: { event: "contact", email: response.admin_contact_email } } );
+
+	},
+
+	_onContactError: function( error ) {
+		this.classList.remove( 'submitting' );
+		console.info( error );
 	}
 
 

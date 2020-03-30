@@ -21,14 +21,22 @@
 		<div id="main"
 		     class="main">
 			<div id="individual-info">
-				<h2>[[selected.mark]]. [[selected.title]]</h2>
+				<h2>[[selected.mark]]. [[selected.title]]
+					<template is="dom-if" if={{selected.hostedOnline}}>
+						<span class="online-icon" title="[[i18n.hostedOnlineText]]">
+						  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);">
+							  <path d="M3 3h14c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1zm13 2H4v8h12V5zm-3 1H5v4zm6 11v-1H1v1c0 .6.5 1 1.1 1h15.8c.6 0 1.1-.4 1.1-1z" fill="#e42312"/>
+						  </svg>
+					  </span>
+				  </template>
+				</h2>
 				<h3>
 					<span>
 						<i class="icon-clock-o"></i>[[date]]</span>
-					<template is="dom-if"
-					          if=[[selected.distance]]>
-						<span>
-							<i class="icon-map-marker"></i>[[distance]]</span>
+					<template is="dom-if" if="[[selected.distance]]">
+						<template is="dom-if" if="[[!selected.hostedOnline]]">
+							<span><i class="icon-map-marker"></i>[[distance]]</span>
+						</template>
 					</template>
 				</h3>
 				<p>[[timeDisplay]]</p>
@@ -62,18 +70,39 @@
 
 					<paper-button raised
 									id="Contact"
-									on-tap="_onContact"
+									on-tap="_onShowContact"
 									
-									class="red"><a href="mailto:[[selected.email_address]]">[[i18n.findContactButton]]</a></paper-button>
+									class="red"><span>[[i18n.findContactButton]]</span></paper-button>
 
-					<paper-button raised
+					<template is="dom-if" if="[[showCalendarDownload]]">
+						<paper-button raised
 					              id="ical"
 					              on-tap="_onICal"
-					              class="white">[[i18n.findICalButton]]</paper-button>
+								  class="white">[[i18n.findICalButton]]</paper-button>
+					</template>
 				</p>
 
 			</div>
-		</div>
+
+			<form id="contactForm" 
+				  is="iron-form"
+			  	  method="post"
+				  action="[[contactApi]]"
+				  on-iron-form-response="_onContactResult"
+				  on-iron-form-error="_onContactError"
+			>
+				<input id="alphaId" type="hidden" name="id" value="[[selected.id]]"/>
+				<input id="contactName" type="text" name="name" placeholder="Name"/>
+				<input id="contactEmail" type="text" name="email" placeholder="Email"/>
+				<paper-button raised class="red" on-tap="_onContactSubmit">
+					<span id="formSubmitLabel">[[i18n.buttonSubmit]]</span>
+					<ajax-loader id="formSubmitLoader" active="true"></ajax-loader>
+				</paper-button>
+
+				<p id="contactResponseMessage" style="display:none;">[[i18n.alphaQuickRegisterResponse]]</p>
+
+			</form>
+		</div>	
 
 	</template>
 

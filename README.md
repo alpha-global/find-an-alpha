@@ -54,3 +54,7 @@ Find an Alpha Geo Map
 
 ## v.1.4.4
  * Add additional information detail field
+
+## v1.5.0
+ * Add online alpha icon
+ * contact form instead of mailto

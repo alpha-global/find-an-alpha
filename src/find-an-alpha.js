@@ -46,6 +46,10 @@ FindAnAlpha = Polymer( {
 			type: String,
 			notify: true
 		},
+		contactApi: {
+			type: String,
+			notify: true
+		},
 		map: {
 			type: Object,
 			value: null
@@ -90,13 +94,16 @@ FindAnAlpha = Polymer( {
 			type: String,
 			value: 'Alpha'
 		},
+		hasCalendarDownload: {
+			type: String // Boolean always sets property to true??			
+		},
 		i18nLocale: {
 			type: String,
 			value: 'en'
 		},
 		i18n: {
 			type: Object,
-			value: function ( inputs ) {
+			value: function( inputs ) {
 				var defaults = {
 					findAddressPlaceholder: 'Enter a city or address to search nearby',
 					findLocationButton: 'Find My Location',
@@ -121,7 +128,7 @@ FindAnAlpha = Polymer( {
 		}
 	},
 
-	triggerResize: function () {
+	triggerResize: function() {
 
 		var viewHeight = screen.availHeight;
 
@@ -132,7 +139,7 @@ FindAnAlpha = Polymer( {
 		};
 		parent.postMessage( resizeEvent, '*' );
 	},
-	get_param: function ( name, url ) {
+	get_param: function( name, url ) {
 		if ( !url ) url = location.href;
 		name = name.replace( /[\[]/, "\\\[" ).replace( /[\]]/, "\\\]" );
 		var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -140,8 +147,7 @@ FindAnAlpha = Polymer( {
 		var results = regex.exec( url );
 		return results == null ? null : results[ 1 ];
 	},
-	ready: function () {
-
+	ready: function() {
 		var rp = this.get_param( 'product', document.location.href );
 		if ( rp ) {
 			this.$.relatedToProduct.value = rp;
@@ -169,7 +175,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	onRecieveMessage: function ( event ) {
+	onRecieveMessage: function( event ) {
 		//console.info(event);
 		if ( event.data.action === 'resize' ) {
 			var winW = event.data.windowWidth,
@@ -186,9 +192,9 @@ FindAnAlpha = Polymer( {
 		}
 
 	},
-	onMediaQuery: function ( event ) {
+	onMediaQuery: function( event ) {
 		if ( event.matches ) {
-			this.$.list._onIronSelect = function () {
+			this.$.list._onIronSelect = function() {
 				this._completeSelectedChanged();
 			}
 		} else {
@@ -196,7 +202,7 @@ FindAnAlpha = Polymer( {
 		}
 	},
 
-	_mapsReady: function () {
+	_mapsReady: function() {
 
 		this.autoComplete = new google.maps.places.Autocomplete( this.$.placesSearch, this.placesOptions );
 
@@ -216,7 +222,7 @@ FindAnAlpha = Polymer( {
 			}, this._onInitialGeoCode.bind( this ) );
 		}
 	},
-	_onInitialGeoCode: function ( results, status ) {
+	_onInitialGeoCode: function( results, status ) {
 
 		if ( status == google.maps.GeocoderStatus.OK ) {
 
@@ -237,7 +243,7 @@ FindAnAlpha = Polymer( {
 		}
 	},
 
-	_onPlaceSelected: function () {
+	_onPlaceSelected: function() {
 
 		this.currentPlace = this.autoComplete.getPlace();
 
@@ -251,7 +257,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	shareLocation: function () {
+	shareLocation: function() {
 		this.$.placesSearch.value = '';
 
 		if ( this.geoEvent ) {
@@ -261,7 +267,7 @@ FindAnAlpha = Polymer( {
 		this.$.geoLocation.idle = false;
 
 	},
-	onGeoLocate: function ( event ) {
+	onGeoLocate: function( event ) {
 		this.geoEvent = event;
 
 		this.search_latitude = event.detail.latitude;
@@ -271,21 +277,21 @@ FindAnAlpha = Polymer( {
 		this.fire( 'iron-signal', { name: 'track-event', data: { event: "search", place: 'Find My Location' } } );
 		this.submitForm();
 	},
-	onGeoError: function ( event ) {
+	onGeoError: function( event ) {
 		if ( event.detail.code === 1 ) {
 			// user said no
 			this.$.errorMessage.innerHTML = this.i18n.errorGeoLocation;
 			this.$.errorMessage.hidden = false;
 		}
 	},
-	onKeyDown: function ( event ) {
+	onKeyDown: function( event ) {
 		// stop enter press from submitting the form
 		if ( event.keyCode === 13 ) {
 			event.preventDefault();
 		}
 	},
 
-	submitForm: function () {
+	submitForm: function() {
 
 		if ( !this.search_latitude ) {
 			return;
@@ -296,7 +302,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	onResult: function ( event ) {
+	onResult: function( event ) {
 		this.isLoading = false;
 		this.loadedOnce = true;
 
@@ -343,7 +349,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	backToSearch: function () {
+	backToSearch: function() {
 
 		// reset list view
 		this.$.list.select( 0 );
@@ -359,7 +365,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	_onMarkerClick: function ( marker ) {
+	_onMarkerClick: function( marker ) {
 
 		var mark = marker.label;
 		var index = Number( mark - 1 );
@@ -373,14 +379,21 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	_onItemClick: function ( event, argument ) {
+	_onItemClick: function( event, argument ) {
 
 		this.$.list.selected = 1;
 		this._markerSelected( argument.index );
 
 	},
 
-	_onClose: function () {
+	_onClose: function() {
+
+		// if the contact form is open, close it
+		if ( this.$.list.selectedItem.showingContactForm ) {
+			this.$.list.selectedItem.showingContactForm = false;
+			this.$.list.selectedItem.$.main.classList.remove( 'showing-form' );
+			return;
+		}
 
 		this.$.list.selected = 0;
 		this._setAllMarkers();
@@ -392,7 +405,7 @@ FindAnAlpha = Polymer( {
 
 	},
 
-	_markerSelected: function ( index ) {
+	_markerSelected: function( index ) {
 
 		var map = this.$.googleMap;
 		var cluster = this.$.markerClusterer;
@@ -415,7 +428,7 @@ FindAnAlpha = Polymer( {
 		this.$.backToList.hidden = false;
 	},
 
-	_setAllMarkers: function () {
+	_setAllMarkers: function() {
 
 		if ( !this.resultList.length ) {
 			return;
@@ -430,7 +443,7 @@ FindAnAlpha = Polymer( {
 		/**
 		 * Create a lookup of lat,lngs to group duplicates to spread them out
 		 */
-		this.resultList.forEach( function ( element, index ) {
+		this.resultList.forEach( function( element, index ) {
 
 			var myLatLng = new google.maps.LatLng( element.lat, element.lng );
 			var key = element.lat + ',' + element.lng;
@@ -445,7 +458,7 @@ FindAnAlpha = Polymer( {
 		/**
 		 * Go through each marker
 		 */
-		this.resultList.forEach( function ( element, index ) {
+		this.resultList.forEach( function( element, index ) {
 
 			var mark = Number( index ) + 1;
 			self.resultList[ index ].mark = mark;
@@ -471,7 +484,7 @@ FindAnAlpha = Polymer( {
 				position: myLatLng,
 				label: String( mark )
 			} );
-			newmarker.addListener( 'click', function () {
+			newmarker.addListener( 'click', function() {
 
 				self._onMarkerClick( this );
 
@@ -491,10 +504,10 @@ FindAnAlpha = Polymer( {
 		this._refreshMarkCluster( markers );
 
 	},
-	_refreshMarkCluster: function ( markers ) {
+	_refreshMarkCluster: function( markers ) {
 		// set the markers once the map is idle, ensures proper clustering
 		var _this = this,
-			func = function () {
+			func = function() {
 
 				_this.$.markerClusterer.markers = markers;
 				google.maps.event.removeListener( listener );
@@ -502,14 +515,14 @@ FindAnAlpha = Polymer( {
 			listener = this.map.addListener( 'idle', func );
 	},
 
-	_onError: function ( error ) {
+	_onError: function( error ) {
 		this.isLoading = false;
 		this.$.errorMessage.innerHTML = error.message || 'There was an error.';
 		this.$.errorMessage.hidden = false;
 		this.triggerResize();
 	},
 
-	_translateRadiuses: function ( radiuses, i18n, locale ) {
+	_translateRadiuses: function( radiuses, i18n, locale ) {
 
 		var units = i18n.distanceUnit || 'km';
 		var is_rtl = isRTL( locale );
