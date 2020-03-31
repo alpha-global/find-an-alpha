@@ -127,10 +127,19 @@
         }
 
         #contactForm {
-            display: block;
+            display: flex;
+            flex-flow: row wrap;
+            margin-left: -12px;
+            width: ~"calc( 100% + 24px )";
 
             input {
-                margin-bottom: 12px;
+                margin: 12px;
+                flex: 1 1 220px;
+            }
+
+            paper-button {
+                margin: 12px;
+                flex: 1 1 220px;
             }
         }
     }

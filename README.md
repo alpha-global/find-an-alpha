@@ -61,3 +61,6 @@ Find an Alpha Geo Map
 
 ## v1.5.1
  * Patch detail view state on back to search
+
+## v1.5.2
+ * Button label and contact form styling
