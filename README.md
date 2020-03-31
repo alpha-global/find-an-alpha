@@ -64,3 +64,6 @@ Find an Alpha Geo Map
 
 ## v1.5.2
  * Button label and contact form styling
+
+## v1.5.3
+ * Inline form instead of own view

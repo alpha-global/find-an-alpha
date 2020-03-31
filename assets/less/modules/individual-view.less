@@ -70,7 +70,7 @@
         justify-content: space-between;
         margin-bottom: 0;
         margin-top: 15px;
-        max-width: 680px;
+        max-width: 880px;
 
         >* {
             width: 48.5%;
@@ -100,7 +100,21 @@
     }
 
     #contactForm {
-        display: none;
+        display: flex;
+        flex-flow: row wrap;
+        margin-left: -12px;
+        width: ~"calc( 100% + 24px )";
+        padding: 0;
+
+        input {
+            margin: 12px;
+            flex: 1 1 220px;
+        }
+
+        paper-button {
+            margin: 12px;
+            flex: 1 1 220px;
+        }
     }
 
     #formSubmitLoader {
@@ -117,30 +131,6 @@
 
         #formSubmitLabel {
             display: none;
-        }
-    }
-
-    #main.showing-form {
-        #individual-info {
-            overflow: hidden;
-            height: 0;
-        }
-
-        #contactForm {
-            display: flex;
-            flex-flow: row wrap;
-            margin-left: -12px;
-            width: ~"calc( 100% + 24px )";
-
-            input {
-                margin: 12px;
-                flex: 1 1 220px;
-            }
-
-            paper-button {
-                margin: 12px;
-                flex: 1 1 220px;
-            }
         }
     }
 

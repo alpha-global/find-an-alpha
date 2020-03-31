@@ -66,13 +66,36 @@
 
 				<p id="findMoreInfoText">[[i18n.findMoreInfo]]</p>
 
-				<p class="alpha-buttons">
+				<div class="alpha-buttons">
 
+					<!-- Form added inline for temporary online-only alphas -->
+					<form id="contactForm" 
+						is="iron-form"
+						method="post"
+						action="[[contactApi]]"
+						on-iron-form-response="_onContactResult"
+						on-iron-form-error="_onContactError"
+					>
+						<input id="alphaId" type="hidden" name="id" value="[[selected.id]]"/>
+						<input id="contactName" type="text" name="name" placeholder="Name"/>
+						<input id="contactEmail" type="text" name="email" placeholder="Email"/>
+						<paper-button raised class="red" on-tap="_onContactSubmit">
+							<span id="formSubmitLabel">[[i18n.signupButton]]</span>
+							<ajax-loader id="formSubmitLoader" active="true"></ajax-loader>
+						</paper-button>
+
+						<p id="contactResponseMessage" style="display:none;">[[i18n.alphaQuickRegisterResponse]]</p>
+
+					</form>
+
+					<!-- button commented out for now
 					<paper-button raised
-									id="Contact"
-									on-tap="_onShowContact"
-									
-									class="red"><span>[[i18n.signupButton]]</span></paper-button>
+						id="Contact"
+						on-tap="_onShowContact"
+						class="red"
+					>
+						<span>[[i18n.signupButton]]</span>
+					</paper-button>-->
 
 					<template is="dom-if" if="[[showCalendarDownload]]">
 						<paper-button raised
@@ -80,28 +103,10 @@
 					              on-tap="_onICal"
 								  class="white">[[i18n.findICalButton]]</paper-button>
 					</template>
-				</p>
+				</div>
 
 			</div>
-
-			<form id="contactForm" 
-				  is="iron-form"
-			  	  method="post"
-				  action="[[contactApi]]"
-				  on-iron-form-response="_onContactResult"
-				  on-iron-form-error="_onContactError"
-			>
-				<input id="alphaId" type="hidden" name="id" value="[[selected.id]]"/>
-				<input id="contactName" type="text" name="name" placeholder="Name"/>
-				<input id="contactEmail" type="text" name="email" placeholder="Email"/>
-				<paper-button raised class="red" on-tap="_onContactSubmit">
-					<span id="formSubmitLabel">[[i18n.buttonSubmit]]</span>
-					<ajax-loader id="formSubmitLoader" active="true"></ajax-loader>
-				</paper-button>
-
-				<p id="contactResponseMessage" style="display:none;">[[i18n.alphaQuickRegisterResponse]]</p>
-
-			</form>
+			
 		</div>	
 
 	</template>
