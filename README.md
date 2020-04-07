@@ -67,3 +67,6 @@ Find an Alpha Geo Map
 
 ## v1.5.3
  * Inline form instead of own view
+
+## v1.5.4
+ * Patch missing mailto ref in individual view
