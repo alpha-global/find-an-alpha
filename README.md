@@ -70,3 +70,6 @@ Find an Alpha Geo Map
 
 ## v1.5.4
  * Patch missing mailto ref in individual view
+
+## v1.5.5
+ * Add blog_id to contact request
