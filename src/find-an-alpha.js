@@ -33,6 +33,10 @@ FindAnAlpha = Polymer( {
 			notify: true,
 			reflectToAttribute: true
 		},
+		mapDisabled: {
+			type: Boolean,
+			value: false
+		},
 		resultList: {
 			type: Array,
 			notify: true,
@@ -130,9 +134,9 @@ FindAnAlpha = Polymer( {
 
 	triggerResize: function() {
 
-		var viewHeight = screen.availHeight;
+		//var viewHeight = screen.availHeight;
 
-		this.style.height = viewHeight + 'px';
+		//this.style.height = viewHeight + 'px';
 
 		var resizeEvent = {
 			height: this.$.viewPanel.clientHeight
@@ -151,6 +155,11 @@ FindAnAlpha = Polymer( {
 		var rp = this.get_param( 'product', document.location.href );
 		if ( rp ) {
 			this.$.relatedToProduct.value = rp;
+		}
+
+		if ( this.mapDisabled ) {
+			this.classList.add( 'map-disabled' );
+			this.$.listView.classList.add( 'map-disabled' );
 		}
 
 		if ( this.i18nLocale ) {

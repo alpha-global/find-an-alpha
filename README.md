@@ -73,3 +73,6 @@ Find an Alpha Geo Map
 
 ## v1.5.5
  * Add blog_id to contact request
+
+## v1.5.6
+ * Patch css when not displaying map to properly resize parent iframe

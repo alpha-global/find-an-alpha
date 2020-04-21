@@ -175,3 +175,37 @@ paper-button {
         }
     }
 }
+
+:host {
+    &.map-disabled {
+        #viewPanel {
+            display: block;
+
+            #googleMap {
+                display: none;
+            }
+
+            #ironPages {
+                display: block;
+            }
+        }
+
+        ::content .main {
+            overflow-y: auto;
+        }
+
+        #list {
+            height: auto;
+        }
+
+        #resultsView {
+            display: block;
+        }
+
+        #listView,
+        #individualView {
+            position: static;
+            display: block;
+        }
+    }
+}
