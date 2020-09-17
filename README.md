@@ -76,3 +76,6 @@ Find an Alpha Geo Map
 
 ## v1.5.6
  * Patch css when not displaying map to properly resize parent iframe
+
+## v1.5.7
+ * Remove contact email
