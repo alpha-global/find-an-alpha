@@ -157,7 +157,7 @@ FindAnAlpha = Polymer( {
 			this.$.relatedToProduct.value = rp;
 		}
 
-		if ( this.mapDisabled ) {
+		if ( this.mapDisabled.value ) {
 			this.classList.add( 'map-disabled' );
 			this.$.listView.classList.add( 'map-disabled' );
 		}
