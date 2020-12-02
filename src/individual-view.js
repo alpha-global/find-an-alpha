@@ -192,7 +192,7 @@ Polymer( {
 	_onContactResult: function( event ) {
 
 		this.classList.remove( 'submitting' );
-		var response = event.detail.parseResponse();
+		var response = event.detail.response;
 
 		this.$.contactName.value = '';
 		this.$.contactEmail.value = '';
