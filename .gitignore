@@ -4,3 +4,4 @@ node_modules
 .vagrant
 .vscode
 build/
+/false/

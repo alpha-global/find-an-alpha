@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+    find-an-alpha:
+      container_name: alpha-map
+      hostname: dev.faa
+      build: ./
+      volumes:
+        - './:/src/app'
+      ports:
+        - '8081:8081'

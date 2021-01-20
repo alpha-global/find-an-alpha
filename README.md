@@ -1,3 +1,28 @@
+### PLEASE NOTE ###
+
+When running locally and not in Docker there is a bug where the local /.nvm/versions/node/v15.3.0/lib/node_modules/polymer-cli/bin/polymer.js needs to be removed if you have to rebuild the project. If this happens remove the aforementioned folder from /polymer-cli down or switch to a different node version which allows cache clean.
+
+How to run locally:
+
+```bash
+
+bower install && npm i -g polymer-cli && npm install && npm run start
+```
+
+How to build prior to working with docker:
+
+```bash
+
+bower install && npm i -g polymer-cli && npm install 
+```
+
+How to run in a Docker container:
+
+```bash
+docker-compose up --build
+```
+
+Running in Docker is recommended. The project will come up on port 8081 on localhost using the polymer server framework. Feel free to add whatever DNS entries you require into your hostfile. For testing I used 'dev.faa' for example.
 # find-an-alpha
 Find an Alpha Geo Map
 
