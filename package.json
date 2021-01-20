@@ -4,7 +4,7 @@
 	"description": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "polymer serve",
+		"start": "polymer serve --hostname 0.0.0.0",
 		"build": "polymer build && gulp production:post-build"
 	},
 	"author": "",
