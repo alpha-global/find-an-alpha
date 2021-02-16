@@ -40,7 +40,9 @@
 					</template>
 				</h3>
 				<p>[[timeDisplay]]</p>
-				<p>[[i18n.findDetailType]]: [[selected.demographic]]</p>
+				<template is="dom-if" if="[[selected.demographic]]">
+					<p>[[i18n.findDetailType]]: [[selected.demographic]]</p>
+				</template>
 
 				<template is="dom-if"
 				          if="[[selected.formatted_address]]">
