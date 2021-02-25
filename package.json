@@ -1,27 +1,31 @@
 {
-	"name": "alpha-map",
-	"version": "1.5.8",
-	"description": "",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "polymer serve",
-		"build": "polymer build && gulp production:post-build"
-	},
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"del": "^3.0.0",
-		"gulp": "^4.0.0",
-		"gulp-concat": "*",
-		"gulp-concat-util": "^0.5.5",
-		"gulp-inline-css": "^3.3.1",
-		"gulp-inline-source": "^4.0.0",
-		"gulp-less": "^4.0.1",
-		"gulp-load-plugins": "*",
-		"gulp-minify-css": "*",
-		"gulp-rename": "^1.4.0",
-		"gulp-uglify": "*",
-		"less-plugin-autoprefix": "^2.0.0",
-		"multipipe": "*"
-	}
+  "name": "new-find-alpha",
+  "version": "1.0.0",
+  "description": "New Find an Alpha component in JS",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "NODE_ENV=development webpack --watch",
+    "build": "webpack",
+    "extract-languages": "cd src/nodeBackend && node server.js"
+  },
+  "author": "Welton Demetrio",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/animejs": "^3.1.2",
+    "axios": "^0.21.1",
+    "css-loader": "^5.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.1",
+    "luxon": "^1.25.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.15.0",
+    "webpack-cli": "^4.3.1"
+  },
+  "dependencies": {
+    "@googlemaps/markerclustererplus": "^1.0.3",
+    "animejs": "^3.2.1",
+    "dotenv": "^8.2.0",
+    "qs": "^6.9.6"
+  }
 }
