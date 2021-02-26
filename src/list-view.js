@@ -55,6 +55,10 @@ class ListView extends HTMLElement {
                     justify-content: space-between;
                 }
 
+				#results {
+					padding: 0 15px;
+				}
+
                 #result-list {
                     width: 100%;
                     margin-left: -250px;

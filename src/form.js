@@ -1,6 +1,7 @@
 import * as helper from './helper';
 const axios = require('axios').default;
 import './list-view';
+import './fonts.min.css';
 
 let selectedCity;
 const endPoint = helper.getConfig().api ? helper.getConfig().api : 'https://run.alphacanada.org/wp-json/wp/v2/alpha';
@@ -89,6 +90,10 @@ class FormComponent extends HTMLElement {
     render() {
         this.shadow.innerHTML = `
             <style>
+				* {
+					font-family: ITCAvantGardeStd;
+				}
+
                 button {
                     border: none;
                 }
@@ -107,7 +112,15 @@ class FormComponent extends HTMLElement {
                     color: #FFF;
                     height: 50px;
                 }
+
+				#form {
+					padding: 0 15px;
+				}
                 
+				label {
+					margin: 0 0 10px 20px;
+				}
+
                 input, select {
                     -moz-appearance: none;
                     appearance: none;
@@ -125,6 +138,7 @@ class FormComponent extends HTMLElement {
                     font-size: 16px;
                     line-height: 1.75;
                     background-image: none;
+					margin-top: 10px;
                 }
 
                 #city-name {

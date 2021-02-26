@@ -37,11 +37,30 @@ class ItemView extends HTMLElement {
                     font-size: 1.2rem;
                 }
 
+				#item-details {
+					padding: 0 15px;
+				}
+
+				button {
+					font-family: ITCAvantGardeStd;
+					margin-top: 10px;
+				}
+
                 .inputs-holder {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
                 }
+
+				@media only screen and (max-width: 600px) {
+					.inputs-holder {
+						flex-direction: column;
+					}
+
+					input {
+						margin: 5px 0;
+					}
+				}
 
                 .signup {
                     width: 100%;
@@ -50,6 +69,7 @@ class ItemView extends HTMLElement {
                     height: 50px;
                     border: none;
                     shadow: none;
+					margin-top: 10px;
                 }
                 
                 input {
@@ -73,12 +93,15 @@ class ItemView extends HTMLElement {
 
                 .input-container {
                     flex: 1;
+					width: 100%;
                 }
 
                 #item-details {
                     width: 100%;
-                    margin-left: -500px;
+                    margin-left: 0;
                     opacity: 0;
+					box-sizing: border-box;
+					padding-bottom: 30px;
                 }
             </style>
             <div id="item-details">
@@ -86,7 +109,7 @@ class ItemView extends HTMLElement {
 				<p>${helper.translationObject().demographic ?? '' }</p>
                 <p>${this.alpha.formattedDate}</p>
                 <p>${this.alpha.formattedTime}</p>
-                <p><span>${helper.translationObject().findDetailLocation ?? 'Location' }</span>: ${this.alpha.formatted_address}</p>
+                <p><span>${helper.translationObject().findDetailLocation ?? 'Location' }</span>: ${this.alpha.location.address ? this.alpha.location.address : this.alpha.formatted_address}</p>
                 <p>${this.alpha.additional_information}</p>
                 <br>
                 <p>${helper.translationObject().findMoreInfo || 'For more information about this Alpha, please contact the organizer below.'}</p>
@@ -119,9 +142,9 @@ class ItemView extends HTMLElement {
         const form = this.shadow.querySelectorAll('form');
         anime({
             targets: [itemDetails, h2, p, form],
-            translateX: 250,
+			translateX: [250, 0],
             opacity: 1,
-            delay: anime.stagger(100, {start: 100})
+            delay: anime.stagger(100, {start: 0}),
         })
     }
 

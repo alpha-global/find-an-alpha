@@ -5,6 +5,7 @@ import './form';
 import * as helper from './helper';
 import MarkerClusterer from '@googlemaps/markerclustererplus';
 import './action-bar';
+import './fonts.min.css';
 
 let googleMap;
 let autocomplete;
@@ -185,7 +186,167 @@ class FindAlpha extends HTMLElement {
     initGoogleMaps() {
         googleMap = new google.maps.Map(this.shadow.getElementById('map'), {
             center: { lat: parseInt(helper.getConfig().latitude, 10), lng: parseInt(helper.getConfig().longitude, 10) } || {lat: -34.397, lng: 150.644},
-            zoom: parseInt(helper.getConfig().zoom, 10) || 8
+            zoom: parseInt(helper.getConfig().zoom, 10) || 8,
+			styles: [
+				{
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#f5f5f5"
+					}
+				  ]
+				},
+				{
+				  "elementType": "labels.icon",
+				  "stylers": [
+					{
+					  "visibility": "off"
+					}
+				  ]
+				},
+				{
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#616161"
+					}
+				  ]
+				},
+				{
+				  "elementType": "labels.text.stroke",
+				  "stylers": [
+					{
+					  "color": "#f5f5f5"
+					}
+				  ]
+				},
+				{
+				  "featureType": "administrative.land_parcel",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#bdbdbd"
+					}
+				  ]
+				},
+				{
+				  "featureType": "poi",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#eeeeee"
+					}
+				  ]
+				},
+				{
+				  "featureType": "poi",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#757575"
+					}
+				  ]
+				},
+				{
+				  "featureType": "poi.park",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#e5e5e5"
+					}
+				  ]
+				},
+				{
+				  "featureType": "poi.park",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#9e9e9e"
+					}
+				  ]
+				},
+				{
+				  "featureType": "road",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#ffffff"
+					}
+				  ]
+				},
+				{
+				  "featureType": "road.arterial",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#757575"
+					}
+				  ]
+				},
+				{
+				  "featureType": "road.highway",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#dadada"
+					}
+				  ]
+				},
+				{
+				  "featureType": "road.highway",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#616161"
+					}
+				  ]
+				},
+				{
+				  "featureType": "road.local",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#9e9e9e"
+					}
+				  ]
+				},
+				{
+				  "featureType": "transit.line",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#e5e5e5"
+					}
+				  ]
+				},
+				{
+				  "featureType": "transit.station",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#eeeeee"
+					}
+				  ]
+				},
+				{
+				  "featureType": "water",
+				  "elementType": "geometry",
+				  "stylers": [
+					{
+					  "color": "#c9c9c9"
+					}
+				  ]
+				},
+				{
+				  "featureType": "water",
+				  "elementType": "labels.text.fill",
+				  "stylers": [
+					{
+					  "color": "#9e9e9e"
+					}
+				  ]
+				}
+			  ] 
         });
 
         autocomplete = new google.maps.places.Autocomplete(
@@ -215,7 +376,7 @@ class FindAlpha extends HTMLElement {
         this.shadow.innerHTML = `
             <style>
                 * {
-                    font-family: sans-serif;
+                    font-family: ITCAvantGardeStd;
                 }
     
                 body {
@@ -238,7 +399,6 @@ class FindAlpha extends HTMLElement {
                 
                 #right-side {
                     flex: 1;
-                    padding-left: 10px;
                     height: 450px;
                     overflow: auto;
                     margin: 0 5px
