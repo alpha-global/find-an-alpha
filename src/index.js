@@ -2,9 +2,18 @@
 // document.body.appendChild(fa);
 
 import './form';
-import * as helper from './helper';
+import {
+	alphaWithFriendlyDateTime,
+	createComponentAttribute,
+	loadComponent,
+	getConfig,
+	getTranslation,
+	isMobile,
+	hideShowMap
+} from './helper';
 import MarkerClusterer from '@googlemaps/markerclustererplus';
 import './action-bar';
+import './fonts.min.css';
 
 let googleMap;
 let autocomplete;
@@ -88,7 +97,7 @@ class FindAlpha extends HTMLElement {
         if (!this.alphamarkers.length) {
             return;
         }
-        const nAlphas = helper.alphaWithFriendlyDateTime(this.alphamarkers);
+        const nAlphas = alphaWithFriendlyDateTime(this.alphamarkers);
 		let bounds = new google.maps.LatLngBounds();
 
         let lnghash = {};
@@ -152,7 +161,7 @@ class FindAlpha extends HTMLElement {
 			googleMap.setZoom( this.maxZoom );
 		}
 
-        markerCluster = new MarkerClusterer(googleMap, markers, { imagePath: 'images/m' });
+        markerCluster = new MarkerClusterer(googleMap, markers, { imagePath: 'https://staging-alpha-online.s3.ca-central-1.amazonaws.com/static/find_a_course/m' });
 
     }
 
@@ -162,8 +171,8 @@ class FindAlpha extends HTMLElement {
      */
     goToAlpha(alphaData) {
 		const listView = document.querySelector('find-a-course').shadowRoot.querySelector('faa-list-view');
-		const attributeData = helper.creteComponentAttribute('alpha', alphaData);
-		helper.loadComponent('faa-item', attributeData, listView);
+		const attributeData = createComponentAttribute('alpha', alphaData);
+		loadComponent('faa-item', attributeData, listView);
 		this.shadowRoot.querySelector('faa-action-bar').setAttribute('allowback', true);
     }
 
@@ -184,8 +193,15 @@ class FindAlpha extends HTMLElement {
      */
     initGoogleMaps() {
         googleMap = new google.maps.Map(this.shadow.getElementById('map'), {
-            center: { lat: parseInt(helper.getConfig().latitude, 10), lng: parseInt(helper.getConfig().longitude, 10) } || {lat: -34.397, lng: 150.644},
-            zoom: parseInt(helper.getConfig().zoom, 10) || 8
+            center: { 
+						lat: getConfig()?.latitude
+							 ? parseInt(getConfig().latitude, 10)
+							 : -34.397, 
+						lng: getConfig()?.longitude
+							 ? parseInt(getConfig().longitude, 10)
+							 : 150.644
+			},
+            zoom: getConfig()?.zoom ? parseInt(getConfig().zoom, 10) : 8
         });
 
         autocomplete = new google.maps.places.Autocomplete(
@@ -214,9 +230,26 @@ class FindAlpha extends HTMLElement {
     render() {
         this.shadow.innerHTML = `
             <style>
+				:host {
+					--color-primary: #e42312;
+					--color-secondary: #5d6368;
+				}
+
+				faa-load {
+					position: absolute;
+					top: 0;
+					width: 100%;
+					height: 100%;
+				}
+				
                 * {
-                    font-family: sans-serif;
+                    font-family: ITCAvantGardeStd;
+					color: #5d6368;
                 }
+
+				button {
+					font-size: medium
+				}
     
                 body {
                     padding: 0;
@@ -232,16 +265,16 @@ class FindAlpha extends HTMLElement {
                     flex: 1;
                     width: 100%;
                     height: auto;
-                    height: 450px;
+                    height: 565px;
                     margin: 0 5px;
                 }
                 
                 #right-side {
                     flex: 1;
-                    padding-left: 10px;
-                    height: 450px;
+                    height: 565px;
                     overflow: auto;
-                    margin: 0 5px
+                    margin: 0 5px;
+					overflow-x: hidden;
                 }
 
 				@media only screen and (max-width: 600px) {
@@ -261,15 +294,16 @@ class FindAlpha extends HTMLElement {
 
             <div id="main">
                 <div id="map" style="display: block"></div>
-                <div id="right-side">
+                <div id="right-side" style="position: ${isMobile() ? 'static' : 'relative'}">
                     <faa-action-bar style="display: none"></faa-action-bar>
                     <faa-form></faa-form>
                 </div>
             </div>
         `;
-        helper.getTranslation();
-        if (helper.isMobile()) {
-            helper.hideShowMap();
+        getTranslation();
+        if (isMobile()) {
+            hideShowMap();
+			this.shadow.querySelector('#right-side').style.height = 'auto';
         }
     }
 

@@ -1,8 +1,12 @@
 import './item-view';
-import * as helper from './helper';
 import anime from 'animejs/lib/anime.es.js';
+import { isMobile, alphaWithFriendlyDateTime, shortDate, loadComponent, hideShowMap, mobileSearchBar, translationObject } from './helper';
 
 let showFullSearchQuery;
+const onlineIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);">
+	<path d="M3 3h14c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1zm13 2H4v8h12V5zm-3 1H5v4zm6 11v-1H1v1c0 .6.5 1 1.1 1h15.8c.6 0 1.1-.4 1.1-1z" fill="#e42312"/>
+</svg>`;
 
 /**
  * Component that displays a list of found alphas.
@@ -43,7 +47,7 @@ class ListView extends HTMLElement {
         this.shadow.innerHTML = `
             <style>
                 h2 {
-                    color: #ff0000;
+                    color: #e42312;
                     font-size: 1.2rem;
                 }
                 .edit-header {
@@ -55,19 +59,23 @@ class ListView extends HTMLElement {
                     justify-content: space-between;
                 }
 
+				#results {
+					padding: 0 15px;
+				}
+				
                 #result-list {
-                    width: 100%;
+					width: 100%;
                     margin-left: -250px;
                     opacity: 0;
                 }
                 
                 ul {
-                    margin: 0;
+					margin: 0;
                     padding: 0;
                 }
                 
                 ul li {
-                    border: 1px solid #c7c7c7;
+					border: 1px solid #c7c7c7;
                     border-radius: 10px;
                     padding: 15px 10px;
                     display: flex;
@@ -78,24 +86,29 @@ class ListView extends HTMLElement {
                     cursor: pointer;
                     transition: all 1s;
                 }
-
-                    ul li:hover {
-                        border: 1px solid red;
-                        box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
-                        -webkit-box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
-                        -moz-box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
-                    }
+				
+				ul li:hover {
+					border: 1px solid #e42312;
+					box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
+					-webkit-box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
+					-moz-box-shadow: 1px 7px 34px -14px rgba(0,0,0,0.75);
+				}
                 
                 ul li h2 {
-                    margin: 0
+					margin: 0 0 5px 0;
                 }
                 
                 ul li p {
-                    margin: 0;
+					margin: 0;
                 }
+				
+				#few-results {
+					color: var(--color-primary);
+					padding: 0 15px;
+					margin-bottom: 20px;
+				}
 
 				/* * MOBILE SPECIFIC * */
-
 				#mobile-ul {
 					display: inline-flex;
 					justify-content: space-between;
@@ -132,6 +145,7 @@ class ListView extends HTMLElement {
 				}
 
             </style>
+			<p id="few-results" style="margin-top: ${isMobile() ? '0' : '55px'}"></p>
 			<div id="results">
 				<ul id="result-list"></ul>
 			</div>
@@ -145,8 +159,13 @@ class ListView extends HTMLElement {
         if (!this.alphas) {
             return;
         }
+
+		// If the results are less than 3
+		if (this.alphas.length < 3) {
+			this.displayFewResultsBlock();
+		}
         const resultsList = this.shadow.getElementById('result-list');
-        const nAlphas = helper.alphaWithFriendlyDateTime(this.alphas);
+        const nAlphas = alphaWithFriendlyDateTime(this.alphas);
         nAlphas.forEach((el, index) => {
 			// Creates and appends the `<li>` element
 			const li = document.createElement('li');
@@ -156,33 +175,29 @@ class ListView extends HTMLElement {
 
 			// Creates and append the title
 			const title = document.createElement('h2');
-			title.innerText = `${index + 1}. ${el.title}`;
+			title.innerHTML = `${index + 1}. ${el.title} ${!isMobile() ? (el.onlineDelivery === 'Online' ? onlineIcon : '') : ''}`;
 			this.shadow.getElementById(el.id).appendChild(title);
 
-			if (helper.isMobile()) {
+			if (isMobile()) {
 				const iconTimeHolder = document.createElement('div');
-				iconTimeHolder.classList.add('icon-time-holder')
 				iconTimeHolder.innerHTML = `
-					<div style="flex: 1;">
-						<svg id="email" width="40" style="enable-background:new 0 0 64 64;" version="1.1" viewBox="0 0 64 64" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-							<style type="text/css">.st0{fill:red;}</style>
-							<g>
-								<g id="Icon-Envelope" transform="translate(78.000000, 232.000000)">
-									<path class="st0" d="M-22.5-213.2l-1.9-1.9l-17.6,17.6c-2.2,2.2-5.9,2.2-8.1,0L-67.7-215l-1.9,1.9l13.1,13.1
-										l-13.1,13.1l1.9,1.9l13.1-13.1l2.6,2.6c1.6,1.6,3.7,2.5,5.9,2.5s4.3-0.9,5.9-2.5l2.6-2.6l13.1,13.1l1.9-1.9l-13.1-13.1
-										L-22.5-213.2" id="Fill-3"/>
-									<path class="st0" d="M-26.2-181.6h-39.5c-2.3,0-4.2-1.9-4.2-4.2v-28.2c0-2.3,1.9-4.2,4.2-4.2h39.5
-										c2.3,0,4.2,1.9,4.2,4.2v28.2C-22-183.5-23.9-181.6-26.2-181.6L-26.2-181.6z M-65.8-215.5c-0.8,0-1.4,0.6-1.4,1.4v28.2
-										c0,0.8,0.6,1.4,1.4,1.4h39.5c0.8,0,1.4-0.6,1.4-1.4v-28.2c0-0.8-0.6-1.4-1.4-1.4H-65.8L-65.8-215.5z" id="Fill-4"/>
-								</g>
-							</g>
-						</svg>
+					<div class="icon-time-holder">
+						<div style="flex: 1; display: ${el.onlineDelivery === 'Online' ? 'block' : 'none'}">
+							<svg enable-background="new 0 0 48 48" width="30" id="computer" fill="#e42312" version="1.1" viewBox="0 0 48 48" width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+								<path clip-rule="evenodd" d="M43,35H29.195c0.595,3.301,2.573,5.572,4.401,7H36c0.553,0,1,0.447,1,1
+									s-0.447,1-1,1H12c-0.553,0-1-0.447-1-1s0.447-1,1-1h2.403c1.827-1.428,3.807-3.699,4.401-7H5c-2.209,0-4-1.791-4-4V8
+									c0-2.209,1.791-4,4-4h38c2.209,0,4,1.791,4,4v23C47,33.209,45.209,35,43,35z M17.397,42h13.205c-1.595-1.682-3.015-3.976-3.459-7
+									h-6.287C20.412,38.024,18.992,40.318,17.397,42z M45,8c0-1.104-0.896-2-2-2H5C3.896,6,3,6.896,3,8v19l0,0h42V8z M45,29H3l0,0v2
+									c0,1.104,0.896,2,2,2h14l0,0h10l0,0h14c1.104,0,2-0.896,2-2V29z M24,32c-0.553,0-1-0.447-1-1s0.447-1,1-1s1,0.447,1,1
+									S24.553,32,24,32z" fill-rule="evenodd"/>
+							</svg>
+						</div>
+						<div style="flex: 3;">${shortDate(el.date)}</div>
 					</div>
-					<div style="flex: 1;">
-						<svg enable-background="new 0 0 48 48" width="30" id="computer" fill="red" version="1.1" viewBox="0 0 48 48" width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path clip-rule="evenodd" d="M43,35H29.195c0.595,3.301,2.573,5.572,4.401,7H36c0.553,0,1,0.447,1,1  s-0.447,1-1,1H12c-0.553,0-1-0.447-1-1s0.447-1,1-1h2.403c1.827-1.428,3.807-3.699,4.401-7H5c-2.209,0-4-1.791-4-4V8  c0-2.209,1.791-4,4-4h38c2.209,0,4,1.791,4,4v23C47,33.209,45.209,35,43,35z M17.397,42h13.205c-1.595-1.682-3.015-3.976-3.459-7  h-6.287C20.412,38.024,18.992,40.318,17.397,42z M45,8c0-1.104-0.896-2-2-2H5C3.896,6,3,6.896,3,8v19l0,0h42V8z M45,29H3l0,0v2  c0,1.104,0.896,2,2,2h14l0,0h10l0,0h14c1.104,0,2-0.896,2-2V29z M24,32c-0.553,0-1-0.447-1-1s0.447-1,1-1s1,0.447,1,1  S24.553,32,24,32z" fill-rule="evenodd"/></svg>
+					<div style="width: 100%; display: block">
+						${el.location.address ? el.location.address : el.formatted_address}
 					</div>
-					<div style="flex: 3;">${helper.shortDate(el.date)}</div>
-				`;
+					`;
 				this.shadow.getElementById(el.id).appendChild(iconTimeHolder);
 			} else {
 				const dateTime = document.createElement('p');
@@ -197,16 +212,16 @@ class ListView extends HTMLElement {
             attrName: 'alpha',
             data: JSON.stringify(alpha)
         };
-        helper.loadComponent('faa-item', compAttr, this);
+        loadComponent('faa-item', compAttr, this);
         document.querySelector('find-a-course').shadowRoot.querySelector('faa-action-bar').setAttribute('allowback', true);
     }
 
 	renderMobile() {
-		if ( helper.isMobile() ) {
+		if ( isMobile() ) {
 			showFullSearchQuery = false;
 			this.shadow.querySelector('#results').classList.add('mobile-results');
 			this.shadow.querySelector('#result-list').classList.add('mobile-result-list');
-			helper.hideShowMap();
+			hideShowMap();
 			this.setMobileListView();
 		}
 	}
@@ -228,11 +243,11 @@ class ListView extends HTMLElement {
 		formRef.shadowRoot.querySelector('#filter').addEventListener('click', () => {
 			if (showFullSearchQuery) {
 				showFullSearchQuery = false;
-				helper.mobileSearchBar(formRef);
+				mobileSearchBar(formRef);
 				this.setMobileListView();
 			} else {
 				showFullSearchQuery = true;
-				helper.mobileSearchBar(formRef, 'block');
+				mobileSearchBar(formRef, 'block');
 				
 				mapRef.style.display = 'none';
 				formRef.style.position = 'relative';
@@ -240,6 +255,13 @@ class ListView extends HTMLElement {
 
 		})
 
+		this.shadow.querySelector('#results').style.marginTop = 0;
+
+	}
+
+	displayFewResultsBlock() {
+		const translation = translationObject()?.errorLimitedResults || 'Only {$NUM} result(s) were found with your search criteria. Try broadening your search radius to find more Alphas.';
+		this.shadow.getElementById('few-results').innerText = translation.replace('{$NUM}', this.alphas.length);
 	}
 }
 

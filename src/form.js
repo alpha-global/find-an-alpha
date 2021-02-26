@@ -1,9 +1,22 @@
-import * as helper from './helper';
 const axios = require('axios').default;
 import './list-view';
+import './fonts.min.css';
+import {
+	getConfig,
+	translationObject,
+	resetGoogleMapsMarks,
+	showLoader,
+	isMobile,
+	showAlert,
+	dismissLoader,
+	goHome,
+	loadComponent,
+	removeSpaces,
+	getSingleConfig
+} from './helper';
 
 let selectedCity;
-const endPoint = helper.getConfig().api ? helper.getConfig().api : 'https://run.alphacanada.org/wp-json/wp/v2/alpha';
+const endPoint = getConfig()?.api ? getConfig().api : 'https://alphabuilderadmin.com/wp-json/wp/v2/alpha';
 let stateMinimized = false;
 
 // Form Selector Default Constants
@@ -89,6 +102,14 @@ class FormComponent extends HTMLElement {
     render() {
         this.shadow.innerHTML = `
             <style>
+				* {
+					font-family: ITCAvantGardeStd;
+				}
+
+				select, option {
+					font: -moz-pull-down-menu;
+				}
+
                 button {
                     border: none;
                 }
@@ -103,12 +124,22 @@ class FormComponent extends HTMLElement {
                 
                 #find-button {
                     width: 100%;
-                    background-color: #ff0000;
+                    background-color: var(--color-primary);
                     color: #FFF;
                     height: 50px;
+					font-size: medium
                 }
+
+				#form {
+					padding: 0 15px;
+				}
                 
+				label {
+					margin: 0 0 10px 20px;
+				}
+
                 input, select {
+					-webkit-appearance: none;
                     -moz-appearance: none;
                     appearance: none;
                     border: 1px solid #f1f1f1;
@@ -117,7 +148,7 @@ class FormComponent extends HTMLElement {
                     -webkit-transition: all .3s ease-in-out;
                     transition: all .3s ease-in-out;
                     outline: 0;
-                    color: #5d6368;
+                    color: var(--color-secondary);
                     display: block;
                     width: 100%;
                     height: 50px;
@@ -125,6 +156,7 @@ class FormComponent extends HTMLElement {
                     font-size: 16px;
                     line-height: 1.75;
                     background-image: none;
+					margin-top: 10px;
                 }
 
                 #city-name {
@@ -146,27 +178,30 @@ class FormComponent extends HTMLElement {
                     display: none;
                 }
 
-                
+				.error-inline-block {
+					color: var(--color-primary)
+				}
             </style>
             <form id="form">
-                <button type="button" id="find-button">${helper.translationObject().findLocationButton || 'Find My Location' }</button>
+                <button type="button" id="find-button">${translationObject()?.findLocationButton ? translationObject().findLocationButton : 'Find My Location' }</button>
                 <div class="input-address">
                     <i class="filter-icon" id="filter">
-						<svg enable-background="new 0 0 26 26" fill="red" id="Слой_1" version="1.1" viewBox="0 0 26 26" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+						<svg enable-background="new 0 0 26 26" fill="#e42312" id="Слой_1" version="1.1" viewBox="0 0 26 26" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 							<g>
-								<path d="M1.75,7.75h6.6803589c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891 S13.9000854,9.0452271,14.2356567,7.75H24.25C24.6640625,7.75,25,7.4140625,25,7s-0.3359375-0.75-0.75-0.75H14.2356567 c-0.3355713-1.2952271-1.5039063-2.2587891-2.9026489-2.2587891S8.7659302,4.9547729,8.4303589,6.25H1.75 C1.3359375,6.25,1,6.5859375,1,7S1.3359375,7.75,1.75,7.75z M11.3330078,5.4912109 c0.8320313,0,1.5087891,0.6767578,1.5087891,1.5087891s-0.6767578,1.5087891-1.5087891,1.5087891S9.8242188,7.8320313,9.8242188,7 S10.5009766,5.4912109,11.3330078,5.4912109z" fill="red"/>
-								<path d="M24.25,12.25h-1.6061401c-0.3355713-1.2952271-1.5039063-2.2587891-2.9026489-2.2587891 S17.1741333,10.9547729,16.838562,12.25H1.75C1.3359375,12.25,1,12.5859375,1,13s0.3359375,0.75,0.75,0.75h15.088562 c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891s2.5670776-0.963562,2.9026489-2.2587891H24.25 c0.4140625,0,0.75-0.3359375,0.75-0.75S24.6640625,12.25,24.25,12.25z M19.7412109,14.5087891 c-0.8320313,0-1.5087891-0.6767578-1.5087891-1.5087891s0.6767578-1.5087891,1.5087891-1.5087891S21.25,12.1679688,21.25,13 S20.5732422,14.5087891,19.7412109,14.5087891z" fill="red"/>
-								<path d="M24.25,18.25H9.7181396c-0.3355103-1.2952271-1.5037842-2.2587891-2.9017334-2.2587891 c-1.3987427,0-2.5670776,0.963562-2.9026489,2.2587891H1.75C1.3359375,18.25,1,18.5859375,1,19s0.3359375,0.75,0.75,0.75h2.1637573 c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891c1.3979492,0,2.5662231-0.963562,2.9017334-2.2587891H24.25 c0.4140625,0,0.75-0.3359375,0.75-0.75S24.6640625,18.25,24.25,18.25z M6.8164063,20.5087891 c-0.8320313,0-1.5087891-0.6767578-1.5087891-1.5087891s0.6767578-1.5087891,1.5087891-1.5087891 c0.8310547,0,1.5078125,0.6767578,1.5078125,1.5087891S7.6474609,20.5087891,6.8164063,20.5087891z" fill="red"/>
+								<path d="M1.75,7.75h6.6803589c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891 S13.9000854,9.0452271,14.2356567,7.75H24.25C24.6640625,7.75,25,7.4140625,25,7s-0.3359375-0.75-0.75-0.75H14.2356567 c-0.3355713-1.2952271-1.5039063-2.2587891-2.9026489-2.2587891S8.7659302,4.9547729,8.4303589,6.25H1.75 C1.3359375,6.25,1,6.5859375,1,7S1.3359375,7.75,1.75,7.75z M11.3330078,5.4912109 c0.8320313,0,1.5087891,0.6767578,1.5087891,1.5087891s-0.6767578,1.5087891-1.5087891,1.5087891S9.8242188,7.8320313,9.8242188,7 S10.5009766,5.4912109,11.3330078,5.4912109z" fill="#e42312"/>
+								<path d="M24.25,12.25h-1.6061401c-0.3355713-1.2952271-1.5039063-2.2587891-2.9026489-2.2587891 S17.1741333,10.9547729,16.838562,12.25H1.75C1.3359375,12.25,1,12.5859375,1,13s0.3359375,0.75,0.75,0.75h15.088562 c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891s2.5670776-0.963562,2.9026489-2.2587891H24.25 c0.4140625,0,0.75-0.3359375,0.75-0.75S24.6640625,12.25,24.25,12.25z M19.7412109,14.5087891 c-0.8320313,0-1.5087891-0.6767578-1.5087891-1.5087891s0.6767578-1.5087891,1.5087891-1.5087891S21.25,12.1679688,21.25,13 S20.5732422,14.5087891,19.7412109,14.5087891z" fill="#e42312"/>
+								<path d="M24.25,18.25H9.7181396c-0.3355103-1.2952271-1.5037842-2.2587891-2.9017334-2.2587891 c-1.3987427,0-2.5670776,0.963562-2.9026489,2.2587891H1.75C1.3359375,18.25,1,18.5859375,1,19s0.3359375,0.75,0.75,0.75h2.1637573 c0.3355713,1.2952271,1.5039063,2.2587891,2.9026489,2.2587891c1.3979492,0,2.5662231-0.963562,2.9017334-2.2587891H24.25 c0.4140625,0,0.75-0.3359375,0.75-0.75S24.6640625,18.25,24.25,18.25z M6.8164063,20.5087891 c-0.8320313,0-1.5087891-0.6767578-1.5087891-1.5087891s0.6767578-1.5087891,1.5087891-1.5087891 c0.8310547,0,1.5078125,0.6767578,1.5078125,1.5087891S7.6474609,20.5087891,6.8164063,20.5087891z" fill="#e42312"/>
 							</g>
 						</svg>
 					</i>
-					<input type="text" name="city-name" id="city-name" placeholder="${helper.translationObject().findAddressPlaceholder || 'Enter a city or address to search nearby'}"></input>
+					<input type="text" name="city-name" id="city-name" placeholder="${translationObject()?.findAddressPlaceholder ? translationObject().findAddressPlaceholder : 'Enter a city or address to search nearby'}"></input>
                 </div>
             </form>
         `;
         this.createDropDowns();
         this.listenToFindLocationClick();
         this.listenToFormChanges();
+		
     }
 
     /**
@@ -182,43 +217,47 @@ class FormComponent extends HTMLElement {
      * Method is automatically executed after the user enters a city
      * on the form or a form value is changed.
      * @param {*} userLocation  Object { lat: numnber, lng: number }
+	 * @todo Refactor the form elements and api endpoint.
      */
     performSearch(userLocation) {
         if (userLocation) {
             const { latitude, longitude } = userLocation.coords;
             selectedCity = { lat: latitude, lng: longitude };
-            helper.dismissLoader();
+            dismissLoader();
         }
-        helper.resetGoogleMapsMarks();
-        helper.showLoader();
+        resetGoogleMapsMarks();
+		const mapComponent = document.querySelector('find-a-course').shadowRoot.querySelector('#map');
+        showLoader(mapComponent);
+		this.removeInlineErrorBlock();
         let form = this.shadow.getElementById('form')
         let formData = form.elements;
-
         const ageGroup = formData.age.value.toLowerCase();
         const language = formData.language.value.toLowerCase();
         const radius = formData.radius.value.toLowerCase();
         const startDate = formData.startingin.value.toLowerCase();
 
-        const apiEndPoint = `${helper.getConfig().api}?latitude=${selectedCity.lat}&longitude=${selectedCity.lng}&per_page=150&starting-in=${startDate}&language=${language}&demographics=${ageGroup}&radius=${radius}`;
+        const apiEndPoint = `${endPoint}?latitude=${selectedCity.lat}&longitude=${selectedCity.lng}&per_page=150&starting-in=${startDate}&language=${language}&demographic=${ageGroup}&radius=${radius}`;
 
         const results = axios.get(apiEndPoint);
         results
             .then(
                 res => {
 					// If Mobile, the behavior for the action-bar is different.
-					if (helper.isMobile() && !stateMinimized) {
+					if (isMobile() && !stateMinimized) {
 						stateMinimized = true;
 						this.mobileRender()
 					}
-                    res.data.length ? this.showList(res.data) : helper.showAlert(true, helper.translationObject().errorNoResults || 'Sorry, there are no Alphas with these parameters.');
+                    res.data.length
+					? this.showList(res.data)
+					: this.showInlineErrorBlock();
                 }
             )
             .catch(
                 (e) => {
-                    helper.showAlert(true, e)
+                    showAlert(true, e)
                 }
             )
-            .finally(() => helper.dismissLoader())
+            .finally(() => dismissLoader(mapComponent))
     }
 
     /**
@@ -227,9 +266,9 @@ class FormComponent extends HTMLElement {
      */
     showList(alphaData) {
 		if ( document.querySelector('find-a-course').shadowRoot.querySelector('faa-list-view') ) {
-			helper.goHome(); // Resets all the views
+			goHome(); // Resets all the views
 		}
-        helper.loadComponent('faa-list-view', { attrName: 'alphas', data: JSON.stringify(alphaData), id:'faa-list-view' }, this);
+        loadComponent('faa-list-view', { attrName: 'alphas', data: JSON.stringify(alphaData), id:'faa-list-view' }, this);
         this.setMarkers(JSON.stringify(alphaData));
     }
 
@@ -250,25 +289,24 @@ class FormComponent extends HTMLElement {
     createDropDowns() {
         const labels = [
             {
-                label: helper.translationObject().findLabelStartingIn || 'Starting in',
+                label: translationObject()?.findLabelStartingIn ? translationObject().findLabelStartingIn : 'Starting in',
 				id: 'startingIn',
-                options: JSON.parse(helper.getConfig().dates) ?? STARTING_IN_DEFAULT_OPTIONS
+                options: getConfig()?.dates ? JSON.parse(getConfig().dates) : STARTING_IN_DEFAULT_OPTIONS
             },
             {
-                label: helper.translationObject().findLabelLanguage || 'Language',
+                label: translationObject()?.findLabelLanguage ? translationObject().findLabelLanguage : 'Language',
 				id: 'language',
-                options: JSON.parse(helper.getConfig().languages) ?? LANGUAGES_DEFAULT_OPTIONS
+                options: getConfig()?.languages ? JSON.parse(getConfig().languages) : LANGUAGES_DEFAULT_OPTIONS
             },
             {
-                label: helper.translationObject().findLabelAge || 'Age',
+                label: translationObject() ? translationObject().findLabelAge : 'Age',
 				id: 'age',
-                options: JSON.parse(helper.getConfig().ages) ?? AGES_DEFAULT_OPTIONS
+                options: getConfig()?.ages ? JSON.parse(getConfig().ages) : AGES_DEFAULT_OPTIONS
             },
             {
-                label: helper.translationObject().findLabelRadius || 'Radius',
+                label: translationObject()?.findLabelRadius ? translationObject().findLabelRadius : 'Radius',
 				id: 'radius',
-                options: JSON.parse(helper.getConfig().radiuses)
-							.forEach(el => el.label = `${el.label} (${helper.translationObject().distanceUnit ?? km})`) ?? RADIUSES_DEFAULT_OPTIONS
+                options: this.appendDistanceUnitToRadiuses() ? this.appendDistanceUnitToRadiuses() : RADIUSES_DEFAULT_OPTIONS
             }
         ];
     
@@ -278,8 +316,8 @@ class FormComponent extends HTMLElement {
             this.shadow.getElementById('form').appendChild(label);
     
             const select = document.createElement('select');
-            select.id = helper.removeSpaces(el.id).toLowerCase();
-            select.name = helper.removeSpaces(el.id).toLowerCase();
+            select.id = removeSpaces(el.id).toLowerCase();
+            select.name = removeSpaces(el.id).toLowerCase();
             select.setAttribute('arial-label', el.label);
             
             el.options.forEach(optEl => {
@@ -292,19 +330,32 @@ class FormComponent extends HTMLElement {
         })
     }
 
+	appendDistanceUnitToRadiuses() {
+		const radiuses = getConfig()?.radiuses ? JSON.parse(getConfig()?.radiuses) : null;
+		const distanceUnit = getSingleConfig('i18n')?.distanceUnit;
+		if (radiuses && distanceUnit) {
+			const radiusArray = [];
+			radiuses.map(el => {
+				const newObj = { label: `${el.label} ${distanceUnit}`, value: el.value };
+				radiusArray.push(newObj);
+			});
+			return radiusArray;
+		}
+	}
+
     /**
      * Returns the current user location based on the HTML5 Geolocation API.
      * If the location is fetched it will then call `performSearch` method, else
      * it displays an error using the `Alert` class.
      */
     getCurrentLocation() {
-        helper.showLoader();
+        showLoader();
         if (navigator.geolocation) {
             navigator.geolocation
 			.getCurrentPosition(
 				this.performSearch.bind(this),
-				(helper.dismissLoader(),
-				helper.showAlert(true, helper.translationObject().errorGeoLocation || 'We need permission to access your location.'))
+				(dismissLoader(),
+				showAlert(true, translationObject()?.errorGeoLocation ? translationObject().errorGeoLocation : 'We need permission to access your location.'))
 			);
         }
     }
@@ -329,6 +380,17 @@ class FormComponent extends HTMLElement {
             this.shadow.getElementById('filter').style.display = 'none';
 		}
     }
+
+	showInlineErrorBlock() {
+		const errorEl = document.createElement('p');
+		errorEl.className = 'error-inline-block';
+		errorEl.innerText = translationObject()?.errorNoResults ? translationObject().errorNoResults : 'Sorry, there are no Alphas with these parameters.';
+		this.shadow.appendChild(errorEl);
+	}
+
+	removeInlineErrorBlock() {
+		this.shadow.querySelector('.error-inline-block')?.remove();
+	}
 }
 
 customElements.define('faa-form', FormComponent);

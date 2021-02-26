@@ -1,4 +1,5 @@
 import anime from 'animejs/lib/anime.es.js';
+import { isMobile } from './helper';
 
 /**
  * Global Component to display alerts. It listens to 2 attributes,
@@ -33,7 +34,13 @@ class Alert extends HTMLElement {
     }
 
     render() {
-        this.listenToClick();
+		if (!isMobile()) {
+			this.listenToClick();
+		} else {
+			setTimeout(() => {
+				this.dismissAlert()
+			}, 3500);
+		}
         this.shadow.innerHTML = `
             <style>
                 #backdrop {
@@ -61,6 +68,12 @@ class Alert extends HTMLElement {
                     flex-direction: column;
                 }
 
+				@media only screen and (max-width: 600px) {
+					#alert-container {
+						width: 80%;
+					}
+				}
+
                 #close-button {
                     position: absolute;
                     top: 15px;
@@ -71,7 +84,7 @@ class Alert extends HTMLElement {
                 }
 
                 h2 {
-                    color: red;
+                    color: #e42312;
                 }
 
                 h3 {
@@ -79,60 +92,113 @@ class Alert extends HTMLElement {
                 }
 
                 .alert-icon {
-                    width: 20%;
+                    width: 100px;
                     height: auto;
+					margin: 20px auto;
                 }
 
                 #errorIcon {
-                    fill: red;
+                    fill: #e42312;
                 }
+
+				/* SVG ANIMATIONS */
+				.ui-success,
+				.ui-error {
+					width: 100px;
+					height: 100px;
+				}
+				.ui-success-circle {
+					stroke-dasharray: 260.75219025px, 260.75219025px;
+					stroke-dashoffset: 260.75219025px;
+					transform-origin: center center;
+					stroke-linecap: round;
+					animation: ani-success-circle 1s ease-in both;
+				}
+				.ui-success-path {
+					stroke-dasharray: 60px 64px;
+					stroke-dashoffset: 62px;
+					stroke-linecap: round;
+					animation: ani-success-path 0.4s 1s ease-in both;
+				}
+				@keyframes ani-success-circle {
+					to {
+						stroke-dashoffset: 782.25657074px;
+					}
+				}
+				@keyframes ani-success-path {
+					0% {
+						stroke-dashoffset: 62px;
+					}
+					65% {
+						stroke-dashoffset: -5px;
+					}
+					84% {
+						stroke-dashoffset: 4px;
+					}
+					100% {
+						stroke-dashoffset: -2px;
+					}
+				}
+				.ui-error-circle {
+					stroke-dasharray: 260.75219025px, 260.75219025px;
+					stroke-dashoffset: 260.75219025px;
+					animation: ani-error-circle 1.2s linear;
+				}
+				.ui-error-line1 {
+					stroke-dasharray: 54px 55px;
+					stroke-dashoffset: 55px;
+					stroke-linecap: round;
+					animation: ani-error-line 0.15s 1.2s linear both;
+				}
+				.ui-error-line2 {
+					stroke-dasharray: 54px 55px;
+					stroke-dashoffset: 55px;
+					stroke-linecap: round;
+					animation: ani-error-line 0.2s 0.9s linear both;
+				}
+				@keyframes ani-error-line {
+					to {
+						stroke-dashoffset: 0;
+					}
+				}
+				@keyframes ani-error-circle {
+					0% {
+						stroke-dasharray: 0, 260.75219025px;
+						stroke-dashoffset: 0;
+					}
+					35% {
+						stroke-dasharray: 120px, 120px;
+						stroke-dashoffset: -120px;
+					}
+					70% {
+						stroke-dasharray: 0, 260.75219025px;
+						stroke-dashoffset: -260.75219025px;
+					}
+					100% {
+						stroke-dasharray: 260.75219025px, 0;
+						stroke-dashoffset: -260.75219025px;
+					}
+				}
+
+
             </style>
             <div id="backdrop">
-                <div id="alert-container">
-                </div>
+                <div id="alert-container"></div>
             </div>
         `;
         this.animateWindow();
-        this.sortAlertType();
-    }
-
-    /**
-     * Checks what type of alert should be presented.
-     */
-    sortAlertType() {
-        this.isError ? this.renderError() : this.renderSuccess();
-    }
-
-    /**
-     * Renders a success alert window.
-     */
-    renderSuccess() {
-        console.log('success');
+		this.displayAlertWindow();
     }
 
     /**
      * Renders an Error alert window.
      */
-    renderError() {
+    displayAlertWindow() {
         const alertContainer = this.shadow.querySelector('#alert-container');
         alertContainer.innerHTML = `
-            <div id="close-button"></div>
+            ${!isMobile() ? '<div id="close-button"></div>' : ''}
             <div class="alert-icon">
-                <?xml version="1.0" ?>
-                <svg enable-background="new 0 0 52 52" id="errorIcon" version="1.1" viewBox="0 0 52 52" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <g>
-                        <path d="M49.4656715,41.2599487l-20.25-34.4099731C28.5256691,5.6900024,27.3256569,5,25.9956398,5
-                                c-1.3200073,0-2.5299683,0.6900024-3.2099609,1.8499756l-20.25,34.4099731
-                                c-0.710022,1.2000122-0.7200317,2.6400146-0.0300293,3.8500366C3.1856432,46.289978,4.3956652,47,5.7456408,47h40.5100098
-                                c1.3499756,0,2.5599976-0.710022,3.2299805-1.8900146C50.1856422,43.8999634,50.1756325,42.4599609,49.4656715,41.2599487z
-                                M23.9363747,19.8552856h3.3808594v3.1870117l-0.7246094,8.9189453H24.660984l-0.7246094-8.9189453V19.8552856z
-                                M26.9065895,37.1985474c-0.3540039,0.3623047-0.7768555,0.5439453-1.2675781,0.5439453
-                                c-0.4912109,0-0.9140625-0.1816406-1.2680664-0.5439453c-0.3544922-0.3623047-0.53125-0.7939453-0.53125-1.296875
-                                c0-0.5019531,0.1767578-0.9345703,0.53125-1.296875c0.3540039-0.3623047,0.7768555-0.5439453,1.2680664-0.5439453
-                                c0.4907227,0,0.9135742,0.1816406,1.2675781,0.5439453s0.53125,0.7949219,0.53125,1.296875
-                                C27.4378395,36.4046021,27.2605934,36.8362427,26.9065895,37.1985474z"/>
-                    </g>
-                </svg>
+				${this.icon()}
             </div>
             <h3>${this.message}</h3>
         `;
@@ -144,6 +210,39 @@ class Alert extends HTMLElement {
         });
     }
 
+	icon() {
+		const okIcon = `
+		<div class="ui-success">
+			<svg viewBox="0 0 87 87" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<g id="Group-3" transform="translate(2.000000, 2.000000)">
+								<circle id="Oval-2" stroke="rgba(165, 220, 134, 0.2)" stroke-width="4" cx="41.5" cy="41.5" r="41.5"></circle>
+									<circle  class="ui-success-circle" id="Oval-2" stroke="#A5DC86" stroke-width="4" cx="41.5" cy="41.5" r="41.5"></circle>
+									<polyline class="ui-success-path" id="Path-2" stroke="#A5DC86" stroke-width="4" points="19 38.8036813 31.1020744 54.8046875 63.299221 28"></polyline>
+							</g>
+					</g>
+			</svg>
+		</div>`;
+
+		const errorIcon = `
+			<div class="ui-error">
+				<svg  viewBox="0 0 87 87" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<g id="Group-2" transform="translate(2.000000, 2.000000)">
+								<circle id="Oval-2" stroke="rgba(252, 191, 191, .5)" stroke-width="4" cx="41.5" cy="41.5" r="41.5"></circle>
+								<circle  class="ui-error-circle" stroke="#F74444" stroke-width="4" cx="41.5" cy="41.5" r="41.5"></circle>
+									<path class="ui-error-line1" d="M22.244224,22 L60.4279902,60.1837662" id="Line" stroke="#F74444" stroke-width="3" stroke-linecap="square"></path>
+									<path class="ui-error-line2" d="M60.755776,21 L23.244224,59.8443492" id="Line" stroke="#F74444" stroke-width="3" stroke-linecap="square"></path>
+							</g>
+					</g>
+				</svg>
+			</div>`;
+
+		return this.isError === false ? errorIcon : okIcon;
+
+
+	}
+
     /**
      * Initial animation for the component.
      */
@@ -151,7 +250,7 @@ class Alert extends HTMLElement {
         const errorContainer = this.shadow.querySelector('#alert-container');
         anime({
             targets: errorContainer,
-            scale: 1.1
+            scale: [0, 1]
         })
     }
 
@@ -160,8 +259,8 @@ class Alert extends HTMLElement {
      */
     listenToClick() {
         // Dismiss alert.
-        this.shadow.addEventListener('click', (event) => {
-            if (event.target.id === 'close-button') {
+        this.shadow.addEventListener('click' , (event) => {
+            if (event.target.id === 'close-button' || event.target.id === 'backdrop') {
                 this.dismissAlert();
             }
         })
@@ -174,7 +273,8 @@ class Alert extends HTMLElement {
         const errorContainer = this.shadow.querySelector('#alert-container');
         anime({
             targets: errorContainer,
-            scale: 0,
+            scale: [1, 0],
+			opacity: [1, 0],
             duration: 500,
             complete: () =>{ this.remove() }
         });

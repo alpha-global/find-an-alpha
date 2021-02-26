@@ -15,7 +15,7 @@ class Loading extends HTMLElement {
                     width: 100%;
                     height: 100%;
                     display: flex;
-                    position: fixed;
+                    position: relative;
                     background: rgba(255,255,255,.6);
                     align-items: center;
                     justify-content: center;
@@ -36,8 +36,8 @@ class Loading extends HTMLElement {
                         height: 64px;
                         margin: 8px;
                         border-radius: 50%;
-                        border: 6px solid red;
-                        border-color: red transparent red transparent;
+                        border: 6px solid #e42312;
+                        border-color: transparent #e42312 transparent;
                         animation: lds-dual-ring 1.2s linear infinite;
                     }
                     

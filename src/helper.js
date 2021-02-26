@@ -20,17 +20,21 @@ export function removeSpaces(word) {
 /**
  * Display loader.
  */
-export function showLoader() {
+export function showLoader(elementToAppend) {
     const l = document.createElement('faa-load');
-    document.body.appendChild(l)
+	elementToAppend
+		? elementToAppend.appendChild(l)
+		: document.querySelector('find-a-course').shadowRoot.querySelector('#right-side').append(l)
 }
 
 /**
  * Removes loader.
  */
-export function dismissLoader() {
-    const l = document.getElementsByTagName('faa-load');
-    document.body.removeChild(l[0])
+export function dismissLoader(parentComponent) {
+    let loaderEl = parentComponent
+			? parentComponent.querySelector('faa-load')
+			: document.querySelector('find-a-course').shadowRoot.querySelector('faa-load');
+	parentComponent ? parentComponent.removeChild(loaderEl) : document.querySelector('find-a-course').shadowRoot.querySelector('#right-side').removeChild(loaderEl);
 }
 
 /**
@@ -90,8 +94,8 @@ export function alphaWithFriendlyDateTime(alphas) {
  * @param {*} date 
  */
 function internationalizeDate(date) {
-    const time = DateTime.fromISO(date, { locale: getConfig().i18nLocale }).toLocaleString(DateTime.TIME_SIMPLE);
-    const dateString = DateTime.fromISO(date, { locale: getConfig().i18nLocale }).toFormat('DDDD');
+    const time = DateTime.fromISO(date, { locale: getConfig() ? getConfig().i18nLocale : 'en' }).toLocaleString(DateTime.TIME_SIMPLE);
+    const dateString = DateTime.fromISO(date, { locale: getConfig() ? getConfig().i18nLocale : 'en' }).toFormat('DDDD');
     return { formattedDate: dateString, formattedTime: time };
 }
 
@@ -158,6 +162,10 @@ export function loadComponent(componentName, attributes, parentComponent) {
 	if (parentComponent) {
 		if (isMobile() && attributes.id === 'faa-list-view') {
 			mobileSearchBar(parentComponent);
+		} else if (isMobile() && parentComponent.tagName === 'FAA-LIST-VIEW') {
+			// Adds the actionBar into the `item-view` to show the back button.
+			parentComponent.style.display = 'none';
+			actionBar('show');
 		} else {
 			parentComponent.style.display = 'none';
 		}
@@ -173,7 +181,6 @@ export function loadComponent(componentName, attributes, parentComponent) {
 		} else {
 			component.setAttribute(attrName ? attrName : 'alpha', typeof(data) !== 'string' ? JSON.stringify(data) : data);
 		}
-
 		if (!isMobile()) {
 			actionBar('show');
 		}
@@ -204,7 +211,8 @@ export function actionBar(action) {
 }
 
 /**
- * 
+ * Selects all the components that are created dynamically and removes from the DOM or
+ * resets all the attributes.
  */
 export function goHome() {
     const rightSide = document.querySelector('find-a-course').shadowRoot.getElementById('right-side');
@@ -227,7 +235,8 @@ export function goHome() {
 
 /**
  * Displays an alert message, it can be an alert or success based on
- * the `isError` param.
+ * the `isError` param. This creates and appends the HTML element on the
+ * UI. The component itself comes from the  `alert-component.ts` file.
  * @param {*} isError 
  * @param {*} errorMsg 
  */
@@ -281,7 +290,12 @@ export function hideShowMap() {
 	} else {
 		mapRef.display = 'block'
 		rightSideRef.paddingLeft = 10;
+		setMobileMapSize(mapRef);
 	}
+}
+
+function setMobileMapSize(mapEl) {
+	mapEl.height = '250px'
 }
 
 /**
@@ -289,27 +303,33 @@ export function hideShowMap() {
  */
 export function getConfig() {
 	const findACourseElement = document.querySelector('find-a-course');
-	
 	const settings = {};
+
+	if ( findACourseElement.hasAttributes() ) {
+		findACourseElement.getAttributeNames().forEach(attrName => {
+			settings[converToCamelCase(attrName)] = findACourseElement.getAttribute(attrName)
+		});
+		
+		return settings;
+	}
 	
-	findACourseElement.getAttributeNames().forEach(attrName => {
-		settings[converToCamelCase(attrName)] = findACourseElement.getAttribute(attrName)
-	});
-	
-	return settings;
 }
 
 export function translationObject() {
-	if (getConfig()) {
+	const config = getConfig();
+	if (config?.i18n) {
 		return JSON.parse(getConfig().i18n);
 	}
 }
 
 export function getSingleConfig(confName) {
-	return JSON.parse(getConfig().confName);
+	if (getConfig()) {
+		const configuration = getConfig()[confName];
+		return configuration ? JSON.parse(configuration) : null;
+	}
 }
 
-export function creteComponentAttribute(attrName, attrData) {
+export function createComponentAttribute(attrName, attrData) {
 	return {
 			name: attrName,
 			data: typeof(attrData) !== 'string'
