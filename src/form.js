@@ -299,7 +299,7 @@ class FormComponent extends HTMLElement {
                 options: getConfig()?.languages ? JSON.parse(getConfig().languages) : LANGUAGES_DEFAULT_OPTIONS
             },
             {
-                label: translationObject() ? translationObject().findLabelAge : 'Age',
+                label: translationObject()?.findLabelAge ? translationObject().findLabelAge : 'Age',
 				id: 'age',
                 options: getConfig()?.ages ? JSON.parse(getConfig().ages) : AGES_DEFAULT_OPTIONS
             },
@@ -309,6 +309,12 @@ class FormComponent extends HTMLElement {
                 options: this.appendDistanceUnitToRadiuses() ? this.appendDistanceUnitToRadiuses() : RADIUSES_DEFAULT_OPTIONS
             }
         ];
+
+		// If the request is from Marriage Builder, removes the age selector.
+		if (getConfig()?.src === 'mb') {
+			const agesPropIndex = labels.map(item => item.id).indexOf('age');
+			labels.splice(agesPropIndex, 1);
+		}
     
         labels.forEach(el => {
             const label = document.createElement('label');
