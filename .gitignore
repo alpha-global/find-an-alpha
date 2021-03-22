@@ -4,3 +4,5 @@ node_modules
 .vagrant
 .vscode
 build/
+package-lock.json
+/fac/
