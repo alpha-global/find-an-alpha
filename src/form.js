@@ -359,9 +359,14 @@ class FormComponent extends HTMLElement {
         if (navigator.geolocation) {
             navigator.geolocation
 			.getCurrentPosition(
-				this.performSearch.bind(this),
-				(dismissLoader(),
-				showAlert(true, translationObject()?.errorGeoLocation ? translationObject().errorGeoLocation : 'We need permission to access your location.'))
+				(location) => {
+					this.setAddressOnSearchBar(location);
+					this.performSearch(location);
+				},
+				(e) => {
+					dismissLoader();
+					showAlert(true, translationObject()?.errorGeoLocation ? translationObject().errorGeoLocation : 'We need permission to access your location.')
+				}
 			);
         }
     }
@@ -396,6 +401,39 @@ class FormComponent extends HTMLElement {
 
 	removeInlineErrorBlock() {
 		this.shadow.querySelector('.error-inline-block')?.remove();
+	}
+
+	/**
+	 * Uses Google's geolocation to run a reverse geolocation query that returns the address
+	 * of a given coordinate.
+	 * @param userLocation 
+	 */
+	setAddressOnSearchBar(userLocation) {
+		const { latitude, longitude } = userLocation.coords;
+		const endPoint = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCDg-fW9cJEOCEPq7pmcugfKO8lT6Ow-CI`;
+		const address = axios.get(endPoint);
+		address
+		.then( res => {
+			const data = res.data;
+			const cityName = this.getCityNameFromReverseGeolocation(data.results);
+			this.shadowRoot.querySelector('#city-name').value = cityName;
+		})
+		.catch( e => {
+			showAlert(true, e)
+		})
+	}
+
+	/**
+	 * Google's Reverse Geocode returns an array that will be different depending on the location.
+	 * Each element of the array contains a specific type of data that determines the `formatted_address`
+	 * property. This method only needs the City, Province/State, Country, therefore the type that contains
+	 * such data is 'locality'.
+	 * @param reverseGeolocationData { plus_code: object, results: [] }
+	 * @returns 
+	 */
+	getCityNameFromReverseGeolocation(reverseGeolocationData) {
+		const address = reverseGeolocationData.find(el => el.types.includes('locality'));
+		return address.formatted_address;
 	}
 }
 
