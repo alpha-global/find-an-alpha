@@ -231,7 +231,7 @@ class FormComponent extends HTMLElement {
 		this.removeInlineErrorBlock();
         let form = this.shadow.getElementById('form')
         let formData = form.elements;
-        const ageGroup = formData.age.value.toLowerCase();
+        const ageGroup = getConfig()?.src === 'mb' ? null : formData.age.value.toLowerCase();
         const language = formData.language.value.toLowerCase();
         const radius = formData.radius.value.toLowerCase();
         const startDate = formData.startingin.value.toLowerCase();
