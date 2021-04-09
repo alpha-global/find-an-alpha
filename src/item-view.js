@@ -247,7 +247,17 @@ class ItemView extends HTMLElement {
 
 	signupToAttend(name, email) {
 		showLoader();
-		const reqObj = qs.stringify({ id: this.alpha.id, name: name, email: email });
+		let contactObj = {
+			id: this.alpha.id,
+			email: email,
+			name: name
+		};
+		// The `blog_id` attribute is only provided in cases the source of the request comes from
+		// a global site.
+		if (this.alpha.blog_id) {
+			contactObj.blog_id = this.alpha.blog_id;
+		}
+		const reqObj = qs.stringify(contactObj);
 		const endPoint = getConfig()?.contactApi ? getConfig().contactApi : 'https://alphabuilderadmin.com/wp-json/wp/v2/alpha/contact';
 		axios.post(endPoint, reqObj, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
 			.then(res => {
