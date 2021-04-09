@@ -1,5 +1,5 @@
 # Find An Alpha JS
-This is a **browser** VanillaJS web component that loads a Google Map and upcoming Alphas from both Alpha and Marriage Builder.
+This is a **browser** VanillaJS web component that loads Google Map and upcoming Alphas from both Alpha and Marriage Builder.
 
 It's composed of 7 webcomponents and 1 helper global file.
 All the components has its own `shadow-dom`.
@@ -20,9 +20,20 @@ All the components has its own `shadow-dom`.
 ---
 
 # How it works
-This webcomponent is dependant on the [find-an-alpha.php](https://github.com/alpha-global/alphabuilder/blob/master/wp-content/themes/alpha/templates/find-an-alpha.php) file on [**AlphaBuilder**](https://github.com/alpha-global/alphabuilder) project.
+This webcomponent is dependant on these files:
+
+**Alphas**
+
+[find-an-alpha.php](https://github.com/alpha-global/alphabuilder/blob/master/wp-content/themes/alpha/templates/find-an-alpha.php) file on [**AlphaBuilder**](https://github.com/alpha-global/alphabuilder) project.
+
+
+**Marriage Builder**
+
+ [find-a-course.php](https://github.com/alpha-global/marriage-builder/blob/master/wp-content/themes/marriage-builder/templates/find-a-course.php) for [Marriage Builder](https://github.com/alpha-global/marriage-builder).
 
 The PHP file instantiates this component and passes all the settings as attributes. Each 'country' or *'site'* has its own settings, for example, in Canada there are Alphas in English, French, Spanish... in Brazil, there are only in Portuguese and English. These languages options *(among others)* are passed to the component by these settings.
+
+There is also a special `src` setting that's parsed on the Marriable Builder side that "tells" the component to hide the "age group" select from the ui.
 
 ```
 The settings from each site comes from the Wordpress admin panel.
@@ -139,6 +150,40 @@ This component uses `anime.js` as dependency for animation.
 
 Differently from the `item-list`, this component is destroyed everytime the user clicks on the "bacK" button.
 
+### **Methods and Properties**
+
+- **alpha**: Parsed as parameter to this component:
+```
+{
+	"id":number,
+   "date": ISOString,
+   "title": string,
+   "phone_number": string,
+   "email_address": string,
+   "additional_information": string,
+   "lat": number,
+   "lng": number,
+   "formatted_address": string,
+   "location":{
+      "address": string,
+      "city": string,
+      "postal_code": string,
+      "locality": string,
+      "country": string
+   },
+   "language": string,
+   "demographic": string,
+   "setting" string:,
+   "onlineDelivery": string,
+   "delivery": string,
+   "distance": number,
+   "blog_id": number,
+   "formattedDate": string,
+   "formattedTime": string
+}
+```
+
+- **signupToAttend(name, email):** Submits the information entered by the user on the UI. This method has a special condition that checks wether or not the `alpha` property has the `blog_id` property assigned to it. This is only assigned in case the request to the end-point comes from a Global site *(i.e: https://alphabuilderadmin.com...)*. From local requests, *i.e: https://**germany**.alphabuilderadmin.com...* the `blog_id` property is not presented.  This property is used by the contact end-point to find on which table the information for a given alpha is. Because we use multisites on WP, each coutry has its own ID.
 
 ---
 
@@ -157,7 +202,7 @@ It also extends the `HTMLElement` class, taking advantage of its lifecycle hooks
 
 **Methods and properties:**
 
-- `selectedcity` variable: Its value comes from the `city` attribute that's passed to this component by the `find-a-course` component. The `attributeChangedCallbacl()` is responsible for reacting to any changes to it.
+- `selectedcity` variable: Its value comes from the `city` attribute that's passed to this component by the `find-a-course` component. The `attributeChangedCallback()` is responsible for reacting to any changes to it.
 
 - `performSearch()` method: It will perform a search based on the form elements. It first checks if there is a value for the `userLocation` parameter. This parameter will only have a value if the user clicks on the 'Find My Location' button.
 If no such parameter is provided, it will then use whatever value is on `selectedcity` variable plus all the other form elements and calls the api end point that will result in a Promise. If no errors, it checks if the user is using a mobile device, if so it will set `stateMinimized` to true and call the `mobileRender()` method. It also checks for the length of the results, if greater than 0, it calls the `showList()` component passing the `data` as parameter. In cases there are no results, it will display the alert window using the `alert-component.js`.
@@ -171,56 +216,5 @@ If no such parameter is provided, it will then use whatever value is on `selecte
 - `setMarkers()` method: It takes a parameter that represents the found alphas and passes those to the `find-a-course` as a `alphamarkers` attribute. The `find-a-course` element has a method to catch those changes and reflects it on the map.
 
 - `createDropDowns()` method: Programatically creates the `select` element and items for *starting date, language, age group* and *radius*.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
-
-# Translations
-This was designed to be browser web component, in order to get the translations up to date, there is a integrated Node service to be executed on its own.
-All the files inside `nodeBacked` are NOT bundled by Webpack, as they are triggered by the deployment pipeline.
-
-The translations are coming from the **Find an Alpha** project on *PO Editor*.
-To execute and download the translations run `npm run extract-languages`;
-
-The translation are fetched following this recipe:
-
-1. Fetches all the available languages
-2. Fetches all the translations for each language
-3. Creates/Adds into the `translations.json` file as
-```
-{
-    "lang_key": [
-      {
-         "term": "",        // Reference for the i18n
-         "definition":"",   // Translation value
-         "context":"",
-         "term_plural":"",
-         "reference":"",
-         "comment":""
-      }]
-}
-```
 
 ---
