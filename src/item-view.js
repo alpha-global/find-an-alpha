@@ -24,6 +24,10 @@ const onlineDeliveryIcon = `
 		</g>
 	</svg>
 `;
+
+let emailFieldValid = false;
+let nameFieldValid = false;
+
 class ItemView extends HTMLElement {
     constructor() {
         super();
@@ -119,6 +123,10 @@ class ItemView extends HTMLElement {
 					width: 100%;
                 }
 
+				button:disabled {
+					background: var(--color-secondary)
+				}
+
 				.online-delivery-holder {
 					display: flex;
 					flex: 1;
@@ -205,19 +213,20 @@ class ItemView extends HTMLElement {
                 <form id="contact-form">
                     <div class="inputs-holder">
                         <div class="input-container">
-                            <input type="text" name="name" id="name" placeholder="Name"></input>
+                            <input type="text" name="name" id="name" placeholder="Name*" required />
                         </div>
                         <div class="input-container">
-                            <input type="email" name="email" id="email" placeholder="Email"></input>
+                            <input type="email" name="email" id="email" placeholder="Email*" required />
                         </div>
                     </div>
-                    <button type="button" id="signup" class="signup">${translationObject()?.signupButton ? translationObject()?.signupButton : 'Signup to attend' }</button
+                    <button type="button" id="signup" class="signup" disabled>${translationObject()?.signupButton ? translationObject()?.signupButton : 'Signup to attend' }</button
                 </form>
             </div>
         `;
         this.animate();
         this.setMarkerOnMap();
 		this.listenToSubmit();
+		this.validateForm();
     }
 
 	listenToSubmit() {
@@ -225,6 +234,29 @@ class ItemView extends HTMLElement {
 			const name = this.shadow.getElementById('name').value;
 			const email = this.shadow.getElementById('email').value;
 			this.signupToAttend(name, email);
+		});
+	}
+
+	validateForm() {
+		let submitButton = this.shadow.querySelector('#signup');
+
+		this.shadow.querySelector('#email').addEventListener('keyup', (e) => {
+			const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			emailFieldValid = re.test(String(e.target.value).toLowerCase());
+
+			submitButton.disabled = true;
+			if (emailFieldValid && nameFieldValid) {
+				submitButton.disabled = false;
+			}
+		});
+
+		this.shadow.querySelector('#name').addEventListener('keyup', (e) => {
+			e.target.value.length ? nameFieldValid = true : nameFieldValid = false;
+
+			submitButton.disabled = true;
+			if (nameFieldValid && emailFieldValid) {
+				submitButton.disabled = false;
+			}
 		});
 	}
 
