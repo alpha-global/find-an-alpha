@@ -206,7 +206,7 @@ class ItemView extends HTMLElement {
 					${translationObject()?.findDetailType ? translationObject().findDetailType : 'Type'}: ${this.alpha.demographic}</p>
                 <p style="text-transform: capitalize; display: flex; align-items: center;"><i>b</i> ${this.alpha.formattedDate}</p>
                 <p>${this.alpha.formattedTime}</p>
-                <p><span>${translationObject()?.findDetailLocation ? translationObject().findDetailLocation : 'Location' }</span>: ${this.alpha.location.address ? this.alpha.location.address : this.alpha.formatted_address}</p>
+                <p><span>${translationObject()?.findDetailLocation ? translationObject().findDetailLocation : 'Location' }</span>: ${this.alpha.formatted_address ? this.alpha.formatted_address : this.alpha.location.address}</p>
                 <p>${this.alpha.additional_information}</p>
                 <p>${translationObject()?.findMoreInfo ? translationObject().findMoreInfo : 'For more information about this Alpha, please contact the organizer below.'}</p>
 				<br>
