@@ -237,8 +237,7 @@ class Alert extends HTMLElement {
 					</g>
 				</svg>
 			</div>`;
-
-		return this.isError === false ? errorIcon : okIcon;
+		return this.isError === 'true' ? errorIcon : okIcon;
 
 
 	}
