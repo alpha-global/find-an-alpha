@@ -1,6 +1,6 @@
 import './item-view';
 import anime from 'animejs/lib/anime.es.js';
-import { isMobile, alphaWithFriendlyDateTime, shortDate, loadComponent, hideShowMap, mobileSearchBar, translationObject } from './helper';
+import { isMobile, alphaWithFriendlyDateTime, shortDate, loadComponent, hideShowMap, mobileSearchBar, translationObject, getConfig } from './helper';
 
 let showFullSearchQuery;
 const onlineIcon = `
@@ -261,7 +261,11 @@ class ListView extends HTMLElement {
 
 	displayFewResultsBlock() {
 		const translation = translationObject()?.errorLimitedResults || 'Only {$NUM} result(s) were found with your search criteria. Try broadening your search radius to find more Alphas.';
-		this.shadow.getElementById('few-results').innerText = translation.replace('{$NUM}', this.alphas.length);
+		if ( getConfig().src === 'mb') {
+			this.shadow.getElementById('few-results').innerText = translation.replace('{{num}}', this.alphas.length);
+		} else {
+			this.shadow.getElementById('few-results').innerText = translation.replace('{$NUM}', this.alphas.length);
+		}
 	}
 }
 

@@ -1,10 +1,9 @@
 import './action-bar';
 import anime from 'animejs/lib/anime.es.js';
 import { isMobile, translationObject, showLoader, getConfig, showAlert, dismissLoader } from './helper'
-
-
 const axios = require('axios').default;
 const qs = require('qs');
+
 const onlineDeliveryIcon = `
 	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 54 54">
 		<defs>
@@ -24,6 +23,9 @@ const onlineDeliveryIcon = `
 		</g>
 	</svg>
 `;
+const ALPHA_QUICK_MESSAGE = 'Thank you for registering for this Alpha. An organizer of this course will be in touch with you shortly with further details.';
+const ALPHA_QUICK_MESSAGE_ERROR = 'There was an error processing your request. Please try again later.';
+const isMarriageBuilder = getConfig().src;
 
 let emailFieldValid = false;
 let nameFieldValid = false;
@@ -207,7 +209,7 @@ class ItemView extends HTMLElement {
                 <p style="text-transform: capitalize; display: flex; align-items: center;"><i>b</i> ${this.alpha.formattedDate}</p>
                 <p>${this.alpha.formattedTime}</p>
                 <p><span>${translationObject()?.findDetailLocation ? translationObject().findDetailLocation : 'Location' }</span>: ${this.alpha.location.address ? this.alpha.location.address : this.alpha.formatted_address}</p>
-                <p>${this.alpha.additional_information}</p>
+                <p>${this.alpha.additional_information || ''}</p>
                 <p>${translationObject()?.findMoreInfo ? translationObject().findMoreInfo : 'For more information about this Alpha, please contact the organizer below.'}</p>
 				<br>
                 <form id="contact-form">
@@ -293,11 +295,18 @@ class ItemView extends HTMLElement {
 		const endPoint = getConfig()?.contactApi ? getConfig().contactApi : 'https://alphabuilderadmin.com/wp-json/wp/v2/alpha/contact';
 		axios.post(endPoint, reqObj, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
 			.then(res => {
-				showAlert(false, translationObject()?.alphaQuickRegisterResponse
-										? translationObject()?.alphaQuickRegisterResponse 
-										: 'Thank you for registering for this Alpha. An organizer of this course will be in touch with you shortly with further details.' )
+				// If MB shows a different success message.
+				const message = isMarriageBuilder
+								? (translationObject()?.mbQuickRegisterResponse || ALPHA_QUICK_MESSAGE)
+								: (translationObject()?.alphaQuickRegisterResponse || ALPHA_QUICK_MESSAGE);
+				showAlert(false, message);
 			})
-			.catch((e) => console.log(e))
+			.catch((e) => {
+				const errorMessage = isMarriageBuilder
+									 ? (translationObject()?.mbQuickRegisterResponseError || ALPHA_QUICK_MESSAGE_ERROR)
+									 : (translationObject()?.alphaQuickRegisterResponseError || ALPHA_QUICK_MESSAGE_ERROR);
+				showAlert(true, errorMessage);
+			})
 			.finally(() => dismissLoader() )
 	}
 }
