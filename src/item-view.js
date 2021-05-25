@@ -25,7 +25,7 @@ const onlineDeliveryIcon = `
 `;
 const ALPHA_QUICK_MESSAGE = 'Thank you for registering for this Alpha. An organizer of this course will be in touch with you shortly with further details.';
 const ALPHA_QUICK_MESSAGE_ERROR = 'There was an error processing your request. Please try again later.';
-const isMarriageBuilder = getConfig().src;
+const isMarriageBuilder = getConfig()?.src;
 
 let emailFieldValid = false;
 let nameFieldValid = false;
