@@ -45,7 +45,7 @@ const LANGUAGES_DEFAULT_OPTIONS = [
 const RADIUSES_DEFAULT_OPTIONS = [
 	{ label: '10 km', value: 10 },
 	{ label: '25 km', value: 25 },
-	{ label: '50 km', value: 50 },
+	{ label: '50 km', value: 50, selected: true },
 	{ label: '100 km', value: 100 },
 	{ label: '200 km', value: 200 },
 ];
@@ -330,6 +330,7 @@ class FormComponent extends HTMLElement {
                 const option = document.createElement('option');
                 option.value = optEl.value;
                 option.innerText = optEl.label;
+                option.selected = optEl.selected ? true : false;
                 select.appendChild(option);
             });
             this.shadow.getElementById('form').appendChild(select);
@@ -342,8 +343,8 @@ class FormComponent extends HTMLElement {
 		if (radiuses && distanceUnit) {
 			const radiusArray = [];
 			radiuses.map(el => {
-				const newObj = { label: `${el.label} ${distanceUnit}`, value: el.value };
-				radiusArray.push(newObj);
+				el.label = `${el.label} ${distanceUnit}`;
+				radiusArray.push(el);
 			});
 			return radiusArray;
 		}

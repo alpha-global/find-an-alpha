@@ -1,16 +1,16 @@
 {
   "name": "@alpha-global/find-an-alpha",
-  "version": "2.0.9",
+  "version": "2.0.11",
   "description": "New Find an Alpha component in JS",
   "main": "./fac/main.js",
   "repository": "git://github.com/alpha-global/find-an-alpha.git",
   "publishConfig": {
-	"registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/"
   },
   "files": [
     "fac"
-   ],
-   "prepublishOnly": "webpack",
+  ],
+  "prepublishOnly": "webpack",
   "scripts": {
     "start:dev": "NODE_ENV=development webpack --watch",
     "build": "webpack",
