@@ -1,6 +1,6 @@
 {
   "name": "@alpha-global/find-an-alpha",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "New Find an Alpha component in JS",
   "main": "./fac/main.js",
   "repository": "git://github.com/alpha-global/find-an-alpha.git",
