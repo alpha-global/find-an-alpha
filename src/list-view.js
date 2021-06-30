@@ -1,12 +1,33 @@
 import './item-view';
 import anime from 'animejs/lib/anime.es.js';
-import { isMobile, alphaWithFriendlyDateTime, shortDate, loadComponent, hideShowMap, mobileSearchBar, translationObject, getConfig } from './helper';
+import { isMobile, alphaWithFriendlyDateTime, shortDate, loadComponent, hideShowMap, mobileSearchBar, translationObject, getConfig, getMainComponent } from './helper';
 
 let showFullSearchQuery;
 const onlineIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);">
 	<path d="M3 3h14c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1zm13 2H4v8h12V5zm-3 1H5v4zm6 11v-1H1v1c0 .6.5 1 1.1 1h15.8c.6 0 1.1-.4 1.1-1z" fill="#e42312"/>
 </svg>`;
+
+export function setMobileListView() {
+	const mapRef = getMainComponent().querySelector('#map');
+	const formRef = getMainComponent().querySelector('faa-form');
+
+	mapRef.style.top = '80px';
+	mapRef.style.marginBottom = '80px';
+	mapRef.style.display = 'block';
+
+	formRef.style.position = 'absolute';
+	formRef.style.top = 0;
+	formRef.style.left = 0;
+	formRef.style.width = '100%';
+
+	const listView = getMainComponent().querySelector('faa-list-view') !== null;
+
+	if (listView) {
+		getMainComponent().querySelector('faa-list-view').shadowRoot.querySelector('#results').style.marginTop = 0;
+	}
+
+}
 
 /**
  * Component that displays a list of found alphas.
@@ -222,46 +243,13 @@ class ListView extends HTMLElement {
 			this.shadow.querySelector('#results').classList.add('mobile-results');
 			this.shadow.querySelector('#result-list').classList.add('mobile-result-list');
 			hideShowMap();
-			this.setMobileListView();
+			setMobileListView();
 		}
-	}
-
-	setMobileListView() {
-		const findCourseElRef = document.querySelector('find-a-course');
-		const mapRef = findCourseElRef.shadowRoot.querySelector('#map');
-		const formRef = findCourseElRef.shadowRoot.querySelector('faa-form');
-
-		mapRef.style.top = '80px';
-		mapRef.style.marginBottom = '80px';
-		mapRef.style.display = 'block';
-
-		formRef.style.position = 'absolute';
-		formRef.style.top = 0;
-		formRef.style.left = 0;
-		formRef.style.width = '100%';
-
-		formRef.shadowRoot.querySelector('#filter').addEventListener('click', () => {
-			if (showFullSearchQuery) {
-				showFullSearchQuery = false;
-				mobileSearchBar(formRef);
-				this.setMobileListView();
-			} else {
-				showFullSearchQuery = true;
-				mobileSearchBar(formRef, 'block');
-				
-				mapRef.style.display = 'none';
-				formRef.style.position = 'relative';
-			}
-
-		})
-
-		this.shadow.querySelector('#results').style.marginTop = 0;
-
 	}
 
 	displayFewResultsBlock() {
 		const translation = translationObject()?.errorLimitedResults || 'Only {$NUM} result(s) were found with your search criteria. Try broadening your search radius to find more Alphas.';
-		if ( getConfig().src === 'mb') {
+		if ( getConfig()?.src === 'mb') {
 			this.shadow.getElementById('few-results').innerText = translation.replace('{{num}}', this.alphas.length);
 		} else {
 			this.shadow.getElementById('few-results').innerText = translation.replace('{$NUM}', this.alphas.length);

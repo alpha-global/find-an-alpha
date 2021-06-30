@@ -337,3 +337,11 @@ export function createComponentAttribute(attrName, attrData) {
 				  : attrData
 			}
 }
+
+/**
+ * Simple method to avoid more typing. Just returns the `find-a-course` HTML element.
+ * @returns 
+ */
+export function getMainComponent() {
+    return document.querySelector('find-a-course').shadowRoot;
+}

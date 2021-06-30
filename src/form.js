@@ -12,12 +12,17 @@ import {
 	goHome,
 	loadComponent,
 	removeSpaces,
-	getSingleConfig
+	getSingleConfig,
+    getMainComponent,
+    mobileSearchBar
 } from './helper';
+import { setMobileListView } from './list-view'
 
 let selectedCity;
 const endPoint = getConfig()?.api ? getConfig().api : 'https://alphabuilderadmin.com/wp-json/wp/v2/alpha';
 let stateMinimized = false;
+let showFullSearchQuery = false;
+let hasResults = false;
 
 // Form Selector Default Constants
 const STARTING_IN_DEFAULT_OPTIONS = [
@@ -179,8 +184,23 @@ class FormComponent extends HTMLElement {
                 }
 
 				.error-inline-block {
-					color: var(--color-primary)
+					color: var(--color-primary);
+                    background: #FFF;
+                    padding: 11px 0;
+                    margin: -3px auto;
 				}
+
+                .error-inline-mobile {
+                    position: absolute;
+                    top: 323px;
+                    color: var(--color-primary);
+                }
+
+                .mobile-form {
+                    background: #FFF;
+                    z-index: 2;
+                    position: relative;
+                }
             </style>
             <form id="form">
                 <button type="button" id="find-button">${translationObject()?.findLocationButton ? translationObject().findLocationButton : 'Find My Location' }</button>
@@ -226,9 +246,10 @@ class FormComponent extends HTMLElement {
             dismissLoader();
         }
         resetGoogleMapsMarks();
+        this.removeExistedListComponent();
 		const mapComponent = document.querySelector('find-a-course').shadowRoot.querySelector('#map');
         showLoader(mapComponent);
-		this.removeInlineErrorBlock();
+        this.removeInlineErrorBlock();
         let form = this.shadow.getElementById('form')
         let formData = form.elements;
         const ageGroup = getConfig()?.src === 'mb' ? null : formData.age.value.toLowerCase();
@@ -245,11 +266,11 @@ class FormComponent extends HTMLElement {
 					// If Mobile, the behavior for the action-bar is different.
 					if (isMobile() && !stateMinimized) {
 						stateMinimized = true;
-						this.mobileRender()
+						this.mobileRender();
 					}
                     res.data.length
-					? this.showList(res.data)
-					: this.showInlineErrorBlock();
+					? ( this.showList(res.data), hasResults = true )
+					: ( this.showInlineErrorBlock(), hasResults = false );
                 }
             )
             .catch(
@@ -257,7 +278,7 @@ class FormComponent extends HTMLElement {
                     showAlert(true, e)
                 }
             )
-            .finally(() => dismissLoader(mapComponent))
+            .finally(() => dismissLoader(mapComponent) )
     }
 
     /**
@@ -391,17 +412,24 @@ class FormComponent extends HTMLElement {
         } else {
             this.shadow.getElementById('filter').style.display = 'none';
 		}
+        this.listenToFilterClick();
     }
 
 	showInlineErrorBlock() {
+        const map = getMainComponent().querySelector('#map').style.display;
+
+        // If the map exists it will apply a different class for the error message.
 		const errorEl = document.createElement('p');
-		errorEl.className = 'error-inline-block';
+        errorEl.className = (isMobile() && map === 'none') ? 'error-inline-block' : 'error-inline-mobile';
 		errorEl.innerText = translationObject()?.errorNoResults ? translationObject().errorNoResults : 'Sorry, there are no Alphas with these parameters.';
+
 		this.shadow.appendChild(errorEl);
 	}
 
 	removeInlineErrorBlock() {
-		this.shadow.querySelector('.error-inline-block')?.remove();
+        const className =['.error-inline-mobile', '.error-inline-block'];
+        className.forEach(c => this.shadow.querySelector(c)?.remove());
+		
 	}
 
 	/**
@@ -436,6 +464,37 @@ class FormComponent extends HTMLElement {
 		const address = reverseGeolocationData.find(el => el.types.includes('locality'));
 		return address.formatted_address;
 	}
+
+    removeExistedListComponent() {
+        const mc = getMainComponent();
+        const list = mc?.querySelector('faa-list-view');
+        if (list) {
+            list.remove();
+        }
+    }
+
+    listenToFilterClick() {
+        if (isMobile) {
+            const mapRef = getMainComponent().querySelector('#map');
+            const form = this.shadowRoot.querySelector('form');
+            this.removeInlineErrorBlock();
+
+            this.shadowRoot.querySelector('#filter').addEventListener('click', () => {
+                if (showFullSearchQuery) {
+                    showFullSearchQuery = false;
+                    mobileSearchBar(this);
+                    setMobileListView();
+                } else {
+                    showFullSearchQuery = true;
+                    mobileSearchBar(this, 'block');
+                    
+                    mapRef.style.display = 'none';
+                    form.className = 'mobile-form';
+                }
+    
+            });
+        }
+    }
 }
 
 customElements.define('faa-form', FormComponent);
